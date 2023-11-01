@@ -39,6 +39,7 @@ dependencies {
 
     implementation 'org.dcm4che:dcm4che-core:5.30.0'
     implementation 'org.dcm4che:dcm4che-imageio:5.30.0'
+
 }
 
 tasks.named('test') {
