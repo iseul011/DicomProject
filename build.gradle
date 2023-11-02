@@ -40,6 +40,10 @@ dependencies {
     implementation 'org.dcm4che:dcm4che-core:5.30.0'
     implementation 'org.dcm4che:dcm4che-imageio:5.30.0'
 
+    implementation fileTree(dir: '../dcm4che-5.31.0/lib')
+
+    // https://mvnrepository.com/artifact/commons-cli/commons-cli
+    implementation 'commons-cli:commons-cli:1.4'
 }
 
 tasks.named('test') {
