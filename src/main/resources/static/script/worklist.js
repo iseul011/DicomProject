@@ -17,12 +17,11 @@ function loadData() {
             let seriescnt = row.insertCell(6);
             let imagecnt = row.insertCell(7);
             let verify = row.insertCell(8);
+            let checkboxCell = row.insertCell(9);
 
             row.addEventListener('click', function () {
                 loadPrevious(item.pid, item.pname);
             });
-
-
 
             pid.innerHTML = item.pid;
             pname.innerHTML = item.pname;
@@ -33,9 +32,28 @@ function loadData() {
             seriescnt.innerHTML = item.seriescnt;
             imagecnt.innerHTML = item.imagecnt;
             verify.innerHTML = item.verifyflag;
-        }))
 
+            let checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkboxCell.appendChild(checkbox);
+
+            checkbox.addEventListener('change', function () {
+                handleCheckboxChange(item, checkbox);
+            });
+
+        }))
 }
+
+function handleCheckboxChange(item, checkbox) {
+    console.log(`체크박스 선택된 아이템: `, item);
+
+    if (checkbox.checked) {
+        //동작
+    } else {
+
+    }
+}
+
 
 function loadPrevious(pid, pname) {
     let table = document.querySelector(".previousList");

@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<script src="https://unpkg.com/cornerstone-core@2.2.4/dist/cornerstone.js"></script>
 <html>
 <head>
     <title>WebViewer</title>
@@ -61,7 +62,8 @@
             <div id="search_count">
 
             </div>
-            <table class="searchList">
+            <table class="searchList" border="1">
+
                 <tr>
                     <th>환자 아이디</th>
                     <th>환자 이름</th>
