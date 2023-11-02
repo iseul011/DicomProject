@@ -1,9 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>WebViewer</title>
-</head>
-<body>
+
+<%@ include file="include/header.jsp" %>
 
 <div class="container flex">
     <div class="sideBar flex">
@@ -14,6 +11,7 @@
 
         </div>
     </div>
+
     <div class="mainBox flex">
         <div class="listBox flex">
             <div class="searchBox">
@@ -58,11 +56,16 @@
                     </div>
                 </div>
             </div>
+            <div id="delBut">
+                <button onclick="del()">검사 삭제</button>
+                <button onclick="download()">다운로드</button>
+            </div>
             <div id="search_count">
 
             </div>
-            <table class="searchList">
+            <table class="searchList" border="1">
                 <tr>
+                    <th><input type="checkbox" value='selectall' onclick="chkAll(this)" /></th>
                     <th>환자 아이디</th>
                     <th>환자 이름</th>
                     <th>검사 장비</th>
@@ -73,6 +76,7 @@
                     <th>이미지</th>
                     <th>verify</th>
                 </tr>
+
             </table>
         </div>
         <div class="previousBox">
@@ -85,7 +89,7 @@
                 <span>환자 이름 : </span>
                 <span id="patient_name"></span>
             </div>
-            <table class="previousList">
+            <table class="previousList" border="1">
                 <tr>
                     <th>검사 장비</th>
                     <th>검사 설명</th>
@@ -102,6 +106,5 @@
         </div>
     </div>
 </div>
-<script src="/script/worklist.js"></script>
-</body>
-</html>
+
+<%@ include file="include/footer.jsp" %>
