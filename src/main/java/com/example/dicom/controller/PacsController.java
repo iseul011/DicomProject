@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class PacsController {
 
+    @GetMapping("/img/home")
+    public String img() {
+        return "/worklist";
+    }
+
     @GetMapping("/worklist")
     public String worklist() {
         return "/worklist";
@@ -16,4 +21,6 @@ public class PacsController {
     public String loadOtherPage(@PathVariable String studykey, @PathVariable String studyinsuid, @PathVariable String pid) {
         return "/viewer";
     }
+
+
 }
