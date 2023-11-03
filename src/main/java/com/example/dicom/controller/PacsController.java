@@ -17,6 +17,11 @@ import java.util.Base64;
 @Controller
 public class PacsController {
 
+    @GetMapping("/img/home")
+    public String img() {
+        return "/worklist";
+    }
+
     @GetMapping("/worklist")
     public String worklist() {
         return "/worklist";
@@ -26,6 +31,7 @@ public class PacsController {
     public String loadOtherPage(@PathVariable String studykey, @PathVariable String studyinsuid, @PathVariable String pid) {
         return "/viewer";
     }
+
 
     @GetMapping("/view")
     public String viewDicom(Model model) {
@@ -52,4 +58,5 @@ public class PacsController {
 
         return "view";
     }
+
 }

@@ -9,4 +9,7 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
 
     List<PacsStudytab> findAllByPid(String pid);
 
+    void deleteByPid(String pid);
+
+
 }
