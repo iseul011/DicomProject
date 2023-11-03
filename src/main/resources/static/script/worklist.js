@@ -2,13 +2,14 @@ function loadData() {
     let table = document.querySelector(".searchList");
     let rows = table.querySelectorAll("tr");
 
+    let page = document.getElementById("paging");
+
     let count= 0;
 
     fetch("/v1/storage/search/PacsStudytab")
         .then(res=> res.json())
         .then(json => json.forEach(function (item) {
             let row = table.insertRow(1);
-
             let chk =row.insertCell(0);
             let pid = row.insertCell(1);
             let pname = row.insertCell(2);
@@ -20,16 +21,13 @@ function loadData() {
             let imagecnt = row.insertCell(8);
             let verify = row.insertCell(9);
 
-
             row.addEventListener('click', function () {
                 loadPrevious(item.pid, item.pname);
             });
 
-
-            let checkbox = '<input type="checkbox" name="del" id="del" value="${item.pid}"/>';
-            console.log(item.pid);
+            let checkbox = `<input type="checkbox" name="del" id="del" value="${item.pid}"/>`;
+            console.log(checkbox);
             chk.innerHTML = checkbox;
-
             pid.innerHTML = item.pid;
             pname.innerHTML = item.pname;
             modality.innerHTML = item.modality;
@@ -40,10 +38,9 @@ function loadData() {
             imagecnt.innerHTML = item.imagecnt;
             verify.innerHTML = item.verifyflag;
 
+
         }))
-
 }
-
 
 function loadPrevious(pid, pname) {
     let table = document.querySelector(".previousList");
@@ -60,6 +57,7 @@ function loadPrevious(pid, pname) {
         .then(res => res.json())
         .then(json =>
             json.forEach(function (item) {
+
                 let row = table.insertRow(1);
                 let modality = row.insertCell(0);
                 let studydesc = row.insertCell(1);
@@ -98,7 +96,7 @@ function del() {
     const selectedElementsCnt = selectedElements.length;
     const pid = new Array(selectedElementsCnt);
 
-    document.querySelectorAll('input[name="chk"]:checked').forEach(function(v, i) {
+    document.querySelectorAll('input[name="del"]:checked').forEach(function(v, i) {
         pid[i] = v.value;
     });
 
@@ -118,6 +116,21 @@ function del() {
             }
         });
 }
+
+// function paging(item) {
+//
+//     let str = "";
+//
+//     str += `<table>`;
+//     str += `<tr>item.</tr>`;
+//     str += ``;
+//     str += ``;
+//     str += ``;
+//     str += ``;
+//     str += ``;
+//     str += `</table>`;
+//
+// }
 
 // function download() {
 //     const chk = 'input[name="del"]:checked';
