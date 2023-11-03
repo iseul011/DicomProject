@@ -8,6 +8,7 @@ function loadData() {
         .then(res=> res.json())
         .then(json => json.forEach(function (item) {
             let row = table.insertRow(1);
+
             let chk =row.insertCell(0);
             let pid = row.insertCell(1);
             let pname = row.insertCell(2);
@@ -19,13 +20,16 @@ function loadData() {
             let imagecnt = row.insertCell(8);
             let verify = row.insertCell(9);
 
+
             row.addEventListener('click', function () {
                 loadPrevious(item.pid, item.pname);
             });
 
+
             let checkbox = '<input type="checkbox" name="del" id="del" value="${item.pid}"/>';
             console.log(item.pid);
             chk.innerHTML = checkbox;
+
             pid.innerHTML = item.pid;
             pname.innerHTML = item.pname;
             modality.innerHTML = item.modality;
@@ -37,7 +41,9 @@ function loadData() {
             verify.innerHTML = item.verifyflag;
 
         }))
+
 }
+
 
 function loadPrevious(pid, pname) {
     let table = document.querySelector(".previousList");

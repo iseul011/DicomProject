@@ -1,6 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<script src="https://unpkg.com/cornerstone-core@2.2.4/dist/cornerstone.js"></script>
+<html>
+<head>
+    <title>WebViewer</title>
+</head>
+<body>
 <%@ include file="include/header.jsp" %>
+
 
 <div class="container flex">
     <div class="sideBar flex">
@@ -64,6 +71,7 @@
 
             </div>
             <table class="searchList" border="1">
+
                 <tr>
                     <th><input type="checkbox" value='selectall' onclick="chkAll(this)" /></th>
                     <th>환자 아이디</th>
