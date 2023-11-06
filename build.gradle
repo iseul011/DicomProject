@@ -24,7 +24,11 @@ application {
 }
 
 run {
-    systemProperty 'java.library.path', 'C:/Users/TJ/pacs/dcm4che-5.31.0/lib/windows-x86-64'
+    systemProperty 'java.library.path', 'C:/dev/workspace-spring/dcm4che-5.31.0/lib/windows-x86-64'
+}
+
+tasks.withType(Exec) {
+    inputs.files(fileTree('node_modules')) // 노드 모듈 디렉토리를 입력으로 지정
 }
 
 repositories {
