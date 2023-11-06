@@ -1,13 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<script src="https://unpkg.com/cornerstone-core@2.2.4/dist/cornerstone.js"></script>
 <html>
 <head>
     <title>WebViewer</title>
 </head>
 <body>
 <%@ include file="include/header.jsp" %>
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/cornerstone-core"></script>
 
 <div class="container flex">
     <div class="sideBar flex">
@@ -114,5 +114,7 @@
         </div>
     </div>
 </div>
+<script src="/script/worklist.js"></script>
+</body>
 
 <%@ include file="include/footer.jsp" %>

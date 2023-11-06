@@ -4,10 +4,9 @@ import com.example.dicom.domain.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
+
 
 @RequestMapping({"/v1/storage"})
 @AllArgsConstructor
@@ -20,14 +19,13 @@ public class PacsRestController {
     @GetMapping("/search/PacsSeriestab")
     public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey){
 
-        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findByStudykey(studykey);
+        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
         return pacsSeriestab;
     }
 
     @GetMapping("/search/PacsImagetab")
-    public PacsImagetab getPacsImagetab(@RequestParam int studykey){
-
-        PacsImagetab pacsImagetab = pacsImagetabRepository.findByStudykey(studykey);
+    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey){
+        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findByStudykey(studykey);
         return pacsImagetab;
     }
 
@@ -54,15 +52,7 @@ public class PacsRestController {
             pacsStudytabRepository.deleteByPid(pid.get(i));
         }
     }
-    @GetMapping("/getImagePath")
-    public String getImagePath(@RequestParam int studykey){
-        PacsImagetab pacsImagetab = getPacsImagetab(studykey);
-        String path = pacsImagetab.getPath();
-        String fname = pacsImagetab.getFname();
-        String filePath = "Z:\\"+ path + fname;
 
-        return filePath;
-    }
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {//        log.info("download file: " + fileName);

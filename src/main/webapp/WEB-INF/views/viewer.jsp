@@ -6,6 +6,8 @@
 </head>
 <body>
 <%@ include file="include/header.jsp" %>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/cornerstone-core"></script>
 
 <div class="container flex">
     <div class="sideBar flex">
@@ -53,13 +55,14 @@
             <p>Study Key: ${studykey}</p>
             <p>Study Instance UID: ${studyinsuid}</p>
             <p>PID: ${pid}</p>
+            <div id="img"></div>
             <canvas id="imageCanvas" width="400" height="300"></canvas>
         </div>
     </div>
 </div>
 <%@ include file="include/footer.jsp" %>
 </body>
-<script src="/script/viewer.js"></script>
+<script src="/script/test.js"></script>
 </html>
 
 
