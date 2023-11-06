@@ -1,4 +1,3 @@
-import axios from "axios";
 
 function loadData() {
     let table = document.querySelector(".searchList");

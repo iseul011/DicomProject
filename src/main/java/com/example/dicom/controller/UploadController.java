@@ -1,5 +1,9 @@
 package com.example.dicom.controller;
 
+import com.example.dicom.domain.*;
+import com.example.dicom.domain.PacsImagetab;
+import com.example.dicom.domain.PacsImagetabRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +19,10 @@ import java.util.Base64;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class UploadController {
+    private final PacsImagetabRepository pacsImagetabRepository;
+
     @GetMapping("/getFiles")
     public List<String> getFiles(@RequestParam String directoryPath) {
 
@@ -49,6 +56,11 @@ public class UploadController {
         return imagesAsBase64;
     }
 
+    @GetMapping("/getImagePath")
+    public String getImagePath(@RequestParam int studykey, @RequestParam int serieskey){
+        PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSerieskey(studykey,serieskey);
+        return pacsImagetab.getPath();
+    }
 
     private String convertBufferedImageToBase64(BufferedImage image, String formatName) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
