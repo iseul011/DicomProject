@@ -63,8 +63,8 @@
                     </div>
                 </div>
             </div>
-            <div id="delBut">
-                <button onclick="del()">검사 삭제</button>
+            <div class="deleteBtnWrap">
+                <button onclick="deleteData()">검사 삭제</button>
                 <button onclick="download()">다운로드</button>
             </div>
             <div id="search_count">

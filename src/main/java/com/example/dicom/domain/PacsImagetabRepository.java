@@ -7,5 +7,5 @@ import java.util.List;
 public interface PacsImagetabRepository extends JpaRepository<PacsImagetab, Integer> {
     List<PacsImagetab> findByStudykeyAndSerieskey(int studykey,int serieskey);
 
-    List<PacsImagetab> findByStudykey(int studykey);
+    PacsImagetab findByStudykey(int studykey);
 }
