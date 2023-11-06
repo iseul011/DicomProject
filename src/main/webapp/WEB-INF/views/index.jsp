@@ -3,18 +3,18 @@
 <html>
 <head>
     <title>Title</title>
-    <script src="http://localhost:8081/js/jquery-3.6.4.min.js"></script>
-
+    <script src="https://unpkg.com/cornerstone-core/dist/cornerstone.js"></script>
+    <script src="https://unpkg.com/cornerstone-tools/dist/cornerstoneTools.js"></script>
 </head>
 <body>
 <form>
     <input type="text" name="path" value="201608\22\MS0010\MR\9" >
     <input type="text" name="fname" value="1.3.12.2.1107.5.1.4.65266.30000018122721584475300010337.dcm" >
-    <input type="button" onclick="imaget(form)">
+    <input type="button" onclick="getImage(form)">
 
     <div id="img"></div>
 
 </form>
-<script src="/script/test.js"></script>
+<script src="/script/LJW.js"></script>
 </body>
 </html>

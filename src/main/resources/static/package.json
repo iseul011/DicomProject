@@ -13,6 +13,8 @@
     "@cornerstonejs/core": "^1.26.0",
     "@cornerstonejs/streaming-image-volume-loader": "^1.26.0",
     "@cornerstonejs/tools": "^1.26.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "cornerstone-core": "^2.6.1",
+    "cornerstone-tools": "^6.0.10"
   }
 }
