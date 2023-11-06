@@ -1,26 +1,47 @@
-function imaget(form) {
-    var directoryPath = encodeURIComponent(form.path.value);
-    var receivedImages;
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/getFiles?directoryPath=" + directoryPath, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        console.log(xhr.readyState);
-        console.log(xhr.status);
-        if (xhr.readyState === 4 && xhr.status === 200) {
+import axios from "axios";
 
-            receivedImages = JSON.parse(xhr.responseText);
-            console.log(receivedImages.length);
-            for (var i = 0; i < receivedImages.length; i++) {
-                var imgElement = document.createElement('img');
-                imgElement.src = "data:image/png;base64," + receivedImages[i];
-                console.log(imgElement);
-                document.getElementById('img').appendChild(imgElement);
-            }
+
+function getImage(form) {
+    let directoryPath = encodeURIComponent(form.path.value);
+
+    axios.get("/getFiles", {
+        params: {
+            directoryPath: directoryPath
         }
-    };
-    var data = {
-        path: form.path.value
-    };
-    xhr.send(JSON.stringify(data));
+    })
+        .then(response => {
+            if (response.status === 200) {
+                let receivedImages = response.data;
+                console.log(receivedImages.length);
+
+                for (let i = 0; i < receivedImages.length; i++) {
+                    let imgElement = document.createElement('img');
+                    imgElement.src = "data:image/png;base64," + receivedImages[i];
+                    console.log(imgElement);
+                    document.getElementById('img').appendChild(imgElement);
+                }
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+function getImagePath(){
+    const pathArray = window.location.pathname.split('/');
+    const studykey = pathArray[2];
+
+    axios.get("/getImagePath", {
+        params : {
+            studykey : studykey
+        }
+    })
+        .then(response=>{
+            if (response.status === 200) {
+                return response.data;
+            }
+        })
+        .catch(error => {
+            console.error(error);
+        });
 }

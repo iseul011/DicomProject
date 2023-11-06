@@ -25,10 +25,9 @@ public class PacsRestController {
     }
 
     @GetMapping("/search/PacsImagetab")
-    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, HttpSession session){
+    public PacsImagetab getPacsImagetab(@RequestParam int studykey){
 
-        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findByStudykey(studykey);
-        session.setAttribute("imaget",pacsImagetab);
+        PacsImagetab pacsImagetab = pacsImagetabRepository.findByStudykey(studykey);
         return pacsImagetab;
     }
 
@@ -49,11 +48,20 @@ public class PacsRestController {
     }
 
     @DeleteMapping("/delete")
-    public void getDelete(@RequestBody List<String> pid) {
+    public void Delete(@RequestBody List<String> pid) {
 
         for(int i=0; i<pid.size(); i++) {
             pacsStudytabRepository.deleteByPid(pid.get(i));
         }
+    }
+    @GetMapping("/getImagePath")
+    public String getImagePath(@RequestParam int studykey){
+        PacsImagetab pacsImagetab = getPacsImagetab(studykey);
+        String path = pacsImagetab.getPath();
+        String fname = pacsImagetab.getFname();
+        String filePath = "Z:\\"+ path + fname;
+
+        return filePath;
     }
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
