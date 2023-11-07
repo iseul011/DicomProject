@@ -2,6 +2,10 @@ package com.example.dicom.controller;
 
 import com.example.dicom.domain.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -37,6 +41,15 @@ public class PacsRestController {
         return pacsStudytab;
     }
 
+//    @GetMapping("/search/PacsStudytab")
+//    public List<PacsStudytab> getPacsStudytab(@PageableDefault(sort = "pid", size = 8, direction = Sort.Direction.DESC) Pageable pageable){
+//
+//        Page<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll(pageable);
+//        List<PacsStudytab> paging = pacsStudytab.getContent();
+//
+//        return paging;
+//    }
+
     @GetMapping("/search/PacsStudytab/{pid}")
     public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid){
 
@@ -55,9 +68,7 @@ public class PacsRestController {
 
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-//    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {//        log.info("download file: " + fileName);
-//
-//
+//    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {
 //
 //        if(resource.exists() == false) {
 //            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
