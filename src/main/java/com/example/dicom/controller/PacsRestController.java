@@ -4,10 +4,9 @@ import com.example.dicom.domain.*;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
+
 
 @RequestMapping({"/v1/storage"})
 @AllArgsConstructor
@@ -20,15 +19,13 @@ public class PacsRestController {
     @GetMapping("/search/PacsSeriestab")
     public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey){
 
-        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findByStudykey(studykey);
+        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
         return pacsSeriestab;
     }
 
     @GetMapping("/search/PacsImagetab")
-    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, HttpSession session){
-
+    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey){
         List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findByStudykey(studykey);
-        session.setAttribute("imaget",pacsImagetab);
         return pacsImagetab;
     }
 
@@ -49,12 +46,13 @@ public class PacsRestController {
     }
 
     @DeleteMapping("/delete")
-    public void getDelete(@RequestBody List<String> pid) {
+    public void Delete(@RequestBody List<String> pid) {
 
         for(int i=0; i<pid.size(); i++) {
             pacsStudytabRepository.deleteByPid(pid.get(i));
         }
     }
+
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {//        log.info("download file: " + fileName);
