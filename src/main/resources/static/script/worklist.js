@@ -1,16 +1,23 @@
-
+let number;
 function loadData() {
+
     let table = document.querySelector(".searchList");
     let rows = table.querySelectorAll("tr");
 
-    let count = 0;
+    selectPaging();
+    let count = selectPaging().value;
 
     axios.get("/v1/storage/search/PacsStudytab")
         .then(response => {
             const data = response.data;
-            data.forEach(function (item) {
-                let row = table.insertRow(1);
 
+            if(data.length < count) {
+                count = data.length;
+            }
+
+            // foreach -> for
+            for(let i=0; i<count; i++) {
+                let row = table.insertRow(1);
                 let chk = row.insertCell(0);
                 let pid = row.insertCell(1);
                 let pname = row.insertCell(2);
@@ -23,23 +30,23 @@ function loadData() {
                 let verify = row.insertCell(9);
 
                 row.addEventListener('click', function () {
-                    loadPrevious(item.pid, item.pname);
+                    loadPrevious(data[i].pid, data[i].pname);
                 });
 
-                let checkbox = `<input type="checkbox" name="del" id="del" value="${item.pid}"/>`;
-                console.log(item.pid);
+                let checkbox = `<input type="checkbox" name="del" id="del" value="${data[i].pid}"/>`;
+                console.log(checkbox);
                 chk.innerHTML = checkbox;
 
-                pid.innerHTML = item.pid;
-                pname.innerHTML = item.pname;
-                modality.innerHTML = item.modality;
-                studydesc.innerHTML = item.studydesc;
-                studydate.innerHTML = item.studydate;
-                reportstatus.innerHTML = item.reportstatus;
-                seriescnt.innerHTML = item.seriescnt;
-                imagecnt.innerHTML = item.imagecnt;
-                verify.innerHTML = item.verifyflag;
-            });
+                pid.innerHTML = data[i].pid;
+                pname.innerHTML = data[i].pname;
+                modality.innerHTML = data[i].modality;
+                studydesc.innerHTML = data[i].studydesc;
+                studydate.innerHTML = data[i].studydate;
+                reportstatus.innerHTML = data[i].reportstatus;
+                seriescnt.innerHTML = data[i].seriescnt;
+                imagecnt.innerHTML = data[i].imagecnt;
+                verify.innerHTML = data[i].verifyflag;
+            }
         });
 }
 
@@ -57,6 +64,7 @@ function loadPrevious(pid, pname) {
     axios.get(`/v1/storage/search/PacsStudytab/${pid}`)
         .then(response => {
             const data = response.data;
+
             data.forEach(function (item) {
                 let row = table.insertRow(1);
                 let modality = row.insertCell(0);
@@ -112,6 +120,18 @@ function deleteData() {
                 alert("리로드");
             }
         });
+}
+
+function selectPaging() {
+    let select = document.getElementById("selectPaging");
+    let option = select.options[select.selectedIndex];
+
+    return option;
+}
+
+
+function clickPaging() {
+
 }
 
 // function download() {

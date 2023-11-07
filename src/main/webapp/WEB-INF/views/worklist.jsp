@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -56,7 +57,7 @@
 
                         </div>
                         <div class="searchIcon" id="search_submit">
-                            <button onclick="loadData()">
+                            <button id="reset" onclick="loadData()">
                                 검색
                             </button>
                         </div>
@@ -68,10 +69,13 @@
                 <button onclick="download()">다운로드</button>
             </div>
             <div id="search_count">
-
+                <select id="selectPaging" onchange="selectPaging()">
+                    <option value="8">8개씩</option>
+                    <option value="16">16개씩</option>
+                    <option value="24">24개씩</option>
+                </select>
             </div>
             <table class="searchList" border="1">
-
                 <tr>
                     <th><input type="checkbox" value='selectall' onclick="chkAll(this)" /></th>
                     <th>환자 아이디</th>
@@ -84,8 +88,8 @@
                     <th>이미지</th>
                     <th>verify</th>
                 </tr>
-
             </table>
+            <button onclick="clickPaging()">더보기 ▽</button>
         </div>
         <div class="previousBox">
             <div class="header" id="previous_header">
