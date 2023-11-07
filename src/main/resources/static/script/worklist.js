@@ -1,4 +1,23 @@
-let number;
+let reset = document.getElementById("reset");
+reset.addEventListener('click', () => {
+    let searchList = document.querySelector(".searchList");
+    searchList.innerHTML='<table class="searchList" border="1">' +
+        '                 <tr>\n' +
+        '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
+        '                    <th>환자 아이디</th>\n' +
+        '                    <th>환자 이름</th>\n' +
+        '                    <th>검사 장비</th>\n' +
+        '                    <th>검사 설명</th>\n' +
+        '                    <th>검사 일시</th>\n' +
+        '                    <th>판독 상태</th>\n' +
+        '                    <th>시리즈</th>\n' +
+        '                    <th>이미지</th>\n' +
+        '                    <th>verify</th>\n' +
+        '                </tr></table>';
+
+    loadData();
+});
+
 function loadData() {
 
     let table = document.querySelector(".searchList");
@@ -18,6 +37,7 @@ function loadData() {
             // foreach -> for
             for(let i=0; i<count; i++) {
                 let row = table.insertRow(1);
+
                 let chk = row.insertCell(0);
                 let pid = row.insertCell(1);
                 let pname = row.insertCell(2);
@@ -48,6 +68,7 @@ function loadData() {
                 verify.innerHTML = data[i].verifyflag;
             }
         });
+
 }
 
 function loadPrevious(pid, pname) {
