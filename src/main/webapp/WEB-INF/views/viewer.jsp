@@ -47,6 +47,9 @@
             <button>
                 <span>1시리즈</span>
             </button>
+<%--            <button id="brightnessButton">--%>
+<%--                <span>밝기 조절</span>--%>
+<%--            </button>--%>
 
         </div>
         <div class="contentBox">
