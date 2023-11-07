@@ -8,7 +8,7 @@
 <body>
 <header>
     <button>
-        <a href="/img/home">
+        <a href="/worklist">
             <img src="/img/logo_white.47988f1d7fe07963d2bb776adf9e2ade.png"/>
         </a>
     </button>

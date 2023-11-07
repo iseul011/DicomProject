@@ -9,11 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Controller
 public class PacsController {
 
-    @GetMapping("/img/home")
-    public String img() {
-        return "/worklist";
-    }
-
     @GetMapping("/worklist")
     public String worklist() {
         return "/worklist";
