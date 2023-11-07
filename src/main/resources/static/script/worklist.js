@@ -3,6 +3,8 @@ function loadData() {
     let table = document.querySelector(".searchList");
     let rows = table.querySelectorAll("tr");
 
+
+    let page = document.getElementById("paging");
     let count = 0;
 
     axios.get("/v1/storage/search/PacsStudytab")
@@ -58,6 +60,7 @@ function loadPrevious(pid, pname) {
         .then(response => {
             const data = response.data;
             data.forEach(function (item) {
+
                 let row = table.insertRow(1);
                 let modality = row.insertCell(0);
                 let studydesc = row.insertCell(1);
@@ -96,7 +99,7 @@ function deleteData() {
     const selectedElementsCnt = selectedElements.length;
     const pid = new Array(selectedElementsCnt);
 
-    document.querySelectorAll('input[name="chk"]:checked').forEach(function(v, i) {
+    document.querySelectorAll('input[name="del"]:checked').forEach(function(v, i) {
         pid[i] = v.value;
     });
 
@@ -113,6 +116,21 @@ function deleteData() {
             }
         });
 }
+
+// function paging(item) {
+//
+//     let str = "";
+//
+//     str += `<table>`;
+//     str += `<tr>item.</tr>`;
+//     str += ``;
+//     str += ``;
+//     str += ``;
+//     str += ``;
+//     str += ``;
+//     str += `</table>`;
+//
+// }
 
 // function download() {
 //     const chk = 'input[name="del"]:checked';
