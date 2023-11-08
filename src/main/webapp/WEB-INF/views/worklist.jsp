@@ -57,7 +57,7 @@
 
                         </div>
                         <div class="searchIcon" id="search_submit">
-                            <button id="reset" >
+                            <button id="clickCount" >
                                 검색
                             </button>
                         </div>
@@ -89,7 +89,7 @@
                     <th>verify</th>
                 </tr>
             </table>
-            <button onclick="clickPaging()">더보기 ▽</button>
+            <button id="clickPaging">더보기 ▽</button>
         </div>
         <div class="previousBox">
             <div class="header" id="previous_header">

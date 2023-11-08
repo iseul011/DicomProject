@@ -1,5 +1,7 @@
-let reset = document.getElementById("reset");
-reset.addEventListener('click', () => {
+let clickCount = document.getElementById("clickCount");
+clickCount.addEventListener('click', () => {
+    number = 0;
+
     let searchList = document.querySelector(".searchList");
     searchList.innerHTML='<table class="searchList" border="1">' +
         '                 <tr>\n' +
@@ -14,20 +16,40 @@ reset.addEventListener('click', () => {
         '                    <th>이미지</th>\n' +
         '                    <th>verify</th>\n' +
         '                </tr></table>';
-
     loadData();
 });
+
+
+let clickPaging = document.getElementById("clickPaging");
+let number = 0;
+clickPaging.addEventListener("click", () => {
+    number += 8;
+
+    let searchList = document.querySelector(".searchList");
+    searchList.innerHTML='<table class="searchList" border="1">' +
+        '                 <tr>\n' +
+        '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
+        '                    <th>환자 아이디</th>\n' +
+        '                    <th>환자 이름</th>\n' +
+        '                    <th>검사 장비</th>\n' +
+        '                    <th>검사 설명</th>\n' +
+        '                    <th>검사 일시</th>\n' +
+        '                    <th>판독 상태</th>\n' +
+        '                    <th>시리즈</th>\n' +
+        '                    <th>이미지</th>\n' +
+        '                    <th>verify</th>\n' +
+        '                </tr></table>';
+    loadData();
+});
+
 
 function loadData() {
 
     let table = document.querySelector(".searchList");
     let rows = table.querySelectorAll("tr");
 
-    selectPaging();
-    let count = selectPaging().value;
-
-
-
+    let count = parseInt(selectPaging().value, 10) + parseInt(number, 10);
+    console.log(count);
 
     axios.get("/v1/storage/search/PacsStudytab")
         .then(response => {
@@ -69,6 +91,7 @@ function loadData() {
                 seriescnt.innerHTML = data[i].seriescnt;
                 imagecnt.innerHTML = data[i].imagecnt;
                 verify.innerHTML = data[i].verifyflag;
+
             }
         });
 
@@ -152,16 +175,11 @@ function selectPaging() {
     let select = document.getElementById("selectPaging");
     let option = select.options[select.selectedIndex];
 
+    console.log(option.value);
     return option;
 }
 
-
-function clickPaging() {
-
-}
-
 // function paging(item) {
-//
 //     let str = "";
 //
 //     str += `<table>`;
@@ -174,7 +192,6 @@ function clickPaging() {
 //     str += `</table>`;
 //
 // }
-
 
 // function download() {
 //     const chk = 'input[name="del"]:checked';
