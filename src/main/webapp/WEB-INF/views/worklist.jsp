@@ -57,7 +57,7 @@
 
                         </div>
                         <div class="searchIcon" id="search_submit">
-                            <button id="reset" onclick="loadData()">
+                            <button id="reset" >
                                 검색
                             </button>
                         </div>
