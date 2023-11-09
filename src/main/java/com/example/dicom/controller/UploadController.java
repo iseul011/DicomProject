@@ -43,12 +43,6 @@ public class UploadController {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    try {
-                        image = ImageIO.read(file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
 
         }
