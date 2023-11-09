@@ -35,6 +35,7 @@ public class UploadController {
     private final PacsImagetabRepository pacsImagetabRepository;
 
     @GetMapping("/getFiles")
+
 //    public List<String> getFiles(@RequestParam String directoryPath) {
 //
 //        List<String> imagesAsBase64 = new ArrayList<>();
@@ -83,6 +84,8 @@ public class UploadController {
                     });
         } catch (Exception e) {
             e.printStackTrace();
+
+
         }
 
         return dicomFilesList;
