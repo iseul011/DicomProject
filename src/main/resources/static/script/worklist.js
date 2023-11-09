@@ -1,9 +1,9 @@
-let clickCount = document.getElementById("clickCount");
+const clickCount = document.getElementById("clickCount");
 clickCount.addEventListener('click', () => {
     number = 0;
 
-    let searchList = document.querySelector(".searchList");
-    searchList.innerHTML='<table class="searchList" border="1">' +
+    const searchList = document.querySelector(".searchList");
+    searchList.innerHTML='<table class="searchList">' +
         '                 <tr>\n' +
         '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
         '                    <th>환자 아이디</th>\n' +
@@ -19,14 +19,11 @@ clickCount.addEventListener('click', () => {
     loadData();
 });
 
-
-let clickPaging = document.getElementById("clickPaging");
+const clickPaging = document.getElementById("clickPaging");
 let number = 0;
 clickPaging.addEventListener("click", () => {
-    number += 8;
-
-    let searchList = document.querySelector(".searchList");
-    searchList.innerHTML='<table class="searchList" border="1">' +
+    const searchList = document.querySelector(".searchList");
+    searchList.innerHTML='<table class="searchList">' +
         '                 <tr>\n' +
         '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
         '                    <th>환자 아이디</th>\n' +
@@ -39,11 +36,14 @@ clickPaging.addEventListener("click", () => {
         '                    <th>이미지</th>\n' +
         '                    <th>verify</th>\n' +
         '                </tr></table>';
+
+    number += 8;
     loadData();
 });
 
-
 function loadData() {
+    // 무한 스크롤
+    const listScroll = document.getElementById("listScroll");
 
     let table = document.querySelector(".searchList");
     let rows = table.querySelectorAll("tr");
@@ -91,8 +91,8 @@ function loadData() {
                 seriescnt.innerHTML = data[i].seriescnt;
                 imagecnt.innerHTML = data[i].imagecnt;
                 verify.innerHTML = data[i].verifyflag;
-
             }
+
         });
 
 }
@@ -170,7 +170,6 @@ function deleteData() {
         });
 }
 
-
 function selectPaging() {
     let select = document.getElementById("selectPaging");
     let option = select.options[select.selectedIndex];
@@ -190,7 +189,6 @@ function selectPaging() {
 //     str += ``;
 //     str += ``;
 //     str += `</table>`;
-//
 // }
 
 // function download() {
