@@ -1,0 +1,9 @@
+#listScroll {
+    width: 1000px;
+    height: 280px;
+    overflow-y: auto;
+}
+
+table, th, td {
+    border: 1px solid;
+}

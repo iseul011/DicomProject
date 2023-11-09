@@ -1,7 +1,29 @@
-let reset = document.getElementById("reset");
-reset.addEventListener('click', () => {
-    let searchList = document.querySelector(".searchList");
-    searchList.innerHTML='<table class="searchList" border="1">' +
+const clickCount = document.getElementById("clickCount");
+clickCount.addEventListener('click', () => {
+    number = 0;
+
+    const searchList = document.querySelector(".searchList");
+    searchList.innerHTML='<table class="searchList">' +
+        '                 <tr>\n' +
+        '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
+        '                    <th>환자 아이디</th>\n' +
+        '                    <th>환자 이름</th>\n' +
+        '                    <th>검사 장비</th>\n' +
+        '                    <th>검사 설명</th>\n' +
+        '                    <th>검사 일시</th>\n' +
+        '                    <th>판독 상태</th>\n' +
+        '                    <th>시리즈</th>\n' +
+        '                    <th>이미지</th>\n' +
+        '                    <th>verify</th>\n' +
+        '                </tr></table>';
+    loadData();
+});
+
+const clickPaging = document.getElementById("clickPaging");
+let number = 0;
+clickPaging.addEventListener("click", () => {
+    const searchList = document.querySelector(".searchList");
+    searchList.innerHTML='<table class="searchList">' +
         '                 <tr>\n' +
         '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
         '                    <th>환자 아이디</th>\n' +
@@ -15,19 +37,19 @@ reset.addEventListener('click', () => {
         '                    <th>verify</th>\n' +
         '                </tr></table>';
 
+    number += 8;
     loadData();
 });
 
 function loadData() {
+    // 무한 스크롤
+    const listScroll = document.getElementById("listScroll");
 
     let table = document.querySelector(".searchList");
     let rows = table.querySelectorAll("tr");
 
-    selectPaging();
-    let count = selectPaging().value;
-
-
-
+    let count = parseInt(selectPaging().value, 10) + parseInt(number, 10);
+    console.log(count);
 
     axios.get("/v1/storage/search/PacsStudytab")
         .then(response => {
@@ -70,6 +92,7 @@ function loadData() {
                 imagecnt.innerHTML = data[i].imagecnt;
                 verify.innerHTML = data[i].verifyflag;
             }
+
         });
 
 }
@@ -147,21 +170,15 @@ function deleteData() {
         });
 }
 
-
 function selectPaging() {
     let select = document.getElementById("selectPaging");
     let option = select.options[select.selectedIndex];
 
+    console.log(option.value);
     return option;
 }
 
-
-function clickPaging() {
-
-}
-
 // function paging(item) {
-//
 //     let str = "";
 //
 //     str += `<table>`;
@@ -172,9 +189,7 @@ function clickPaging() {
 //     str += ``;
 //     str += ``;
 //     str += `</table>`;
-//
 // }
-
 
 // function download() {
 //     const chk = 'input[name="del"]:checked';
