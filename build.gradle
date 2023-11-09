@@ -4,9 +4,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.17'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'application'
-
 }
-
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -26,11 +24,7 @@ application {
 }
 
 run {
-    systemProperty 'java.library.path', 'C:/dev/workspace-spring/dcm4che-5.31.0/lib/windows-x86-64'
-}
-
-tasks.withType(Exec) {
-    inputs.files(fileTree('node_modules')) // 노드 모듈 디렉토리를 입력으로 지정
+    systemProperty 'java.library.path', 'C:/Users/TJ/pacs/dcm4che-5.31.0/lib/windows-x86-64'
 }
 
 repositories {
@@ -53,7 +47,11 @@ dependencies {
     implementation 'taglibs:standard:1.1.2' // JSTL
     implementation 'com.oracle.database.jdbc:ojdbc8'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:2.7.5'
-
+    implementation 'org.webjars.npm:cornerstone-core:2.2.8'
+    implementation 'org.webjars.npm:cornerstone-tools:4.21.1'
+    implementation 'org.webjars.npm:cornerstone-wado-image-loader:3.1.2'
+    implementation 'org.webjars.npm:cornerstone-math:0.1.8'
+    implementation 'org.webjars.npm:cornerstone-web-image-loader:2.1.1'
 }
 
 tasks.named('test') {

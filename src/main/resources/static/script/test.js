@@ -1,22 +1,46 @@
-async function getImage() {
+// async function getImage() {
+//     try {
+//         let seriesTabList = await getSeriesTab();
+//
+//         for (const item of seriesTabList) {
+//             let directoryPath = await getImagePath(item.studykey, item.serieskey);
+//             let response = await axios.get("/getFiles", {
+//                 params: {
+//                     directoryPath: directoryPath
+//                 }
+//             });
+//
+//             if (response.status === 200) {
+//                 let receivedImages = response.data;
+//                 for (let i = 0; i < receivedImages.length; i++) {
+//                     let imgElement = document.createElement('img');
+//                     imgElement.src = "data:image/png;base64," + receivedImages[i];
+//                     document.getElementById('img').appendChild(imgElement);
+//                 }
+//             }
+//         }
+//     } catch (error) {
+//         console.error(error);
+//     }
+// }
+
+async function getDicomFile() {
     try {
         let seriesTabList = await getSeriesTab();
 
         for (const item of seriesTabList) {
             let directoryPath = await getImagePath(item.studykey, item.serieskey);
-            let response = await axios.get("/getFiles", {
+            let response = await axios.get("/getDicomFiles", {
                 params: {
-                    directoryPath: directoryPath
+                    directoryPath: directoryPath,
+                    responseType: 'arraybuffer'
                 }
             });
 
             if (response.status === 200) {
-                let receivedImages = response.data;
-
-                for (let i = 0; i < receivedImages.length; i++) {
-                    let imgElement = document.createElement('img');
-                    imgElement.src = "data:image/png;base64," + receivedImages[i];
-                    document.getElementById('img').appendChild(imgElement);
+                let receivedDicom = response.data;
+                for (let i = 0; i < receivedDicom.length; i++) {
+                    dicomParser
                 }
             }
         }

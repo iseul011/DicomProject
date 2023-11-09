@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -21,20 +22,20 @@ public class PacsRestController {
     private final PacsStudytabRepository pacsStudytabRepository;
 
     @GetMapping("/search/PacsSeriestab")
-    public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey){
+    public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
 
         List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
         return pacsSeriestab;
     }
 
     @GetMapping("/search/PacsImagetab")
-    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey){
-        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findByStudykey(studykey);
+    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
+        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
         return pacsImagetab;
     }
 
     @GetMapping("/search/PacsStudytab")
-    public List<PacsStudytab> getPacsStudytab(){
+    public List<PacsStudytab> getPacsStudytab() {
 
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
 
@@ -42,7 +43,7 @@ public class PacsRestController {
     }
 
     @GetMapping("/search/PacsStudytab/{pid}")
-    public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid){
+    public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
 
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
 
@@ -52,10 +53,11 @@ public class PacsRestController {
     @DeleteMapping("/delete")
     public void Delete(@RequestBody List<String> pid) {
 
-        for(int i=0; i<pid.size(); i++) {
+        for (int i = 0; i < pid.size(); i++) {
             pacsStudytabRepository.deleteByPid(pid.get(i));
         }
     }
+
 
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

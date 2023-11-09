@@ -41,6 +41,7 @@ clickPaging.addEventListener("click", () => {
     loadData();
 });
 
+
 function loadData() {
     // 무한 스크롤
     const listScroll = document.getElementById("listScroll");
