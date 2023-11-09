@@ -3,11 +3,17 @@
 <html>
 <head>
     <title>WebViewer</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cornerstone-core/dist/cornerstone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cornerstone-math@0.1.10/dist/cornerstoneMath.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@6.0.10/dist/cornerstoneTools.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
 </head>
 <body>
 <%@ include file="include/header.jsp" %>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/cornerstone-core"></script>
+
 
 <div class="container flex">
     <div class="sideBar flex">
@@ -47,9 +53,9 @@
             <button>
                 <span>1시리즈</span>
             </button>
-<%--            <button id="brightnessButton">--%>
-<%--                <span>밝기 조절</span>--%>
-<%--            </button>--%>
+            <%--            <button id="brightnessButton">--%>
+            <%--                <span>밝기 조절</span>--%>
+            <%--            </button>--%>
 
         </div>
         <div class="contentBox">
@@ -58,14 +64,15 @@
             <p>Study Key: ${studykey}</p>
             <p>Study Instance UID: ${studyinsuid}</p>
             <p>PID: ${pid}</p>
-            <div id="img"></div>
-            <canvas id="imageCanvas" width="400" height="300"></canvas>
+            <div id="dicomImageContainer"></div>
         </div>
     </div>
 </div>
 <%@ include file="include/footer.jsp" %>
+<div id="dicomImage" style="width: 512px; height: 512px;"></div>
+
 </body>
-<script src="/script/test.js"></script>
+<script src="/script/cornerstoneTest.js"></script>
 </html>
 
 
