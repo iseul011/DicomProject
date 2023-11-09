@@ -1,12 +1,7 @@
 #listScroll {
     width: 1000px;
-    height: 250px;
+    height: 280px;
     overflow-y: auto;
-}
-
-th {
-    padding-left: 3px;
-    padding-right: 3px;
 }
 
 table, th, td {
