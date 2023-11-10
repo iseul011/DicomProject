@@ -21,7 +21,7 @@ public class PacsRestController {
     private final PacsImagetabRepository pacsImagetabRepository;
     private final PacsStudytabRepository pacsStudytabRepository;
 
-    //여기서 부터 페이징
+    //여기서 부터 써치
     @GetMapping("/search/PacsStudytab/{pid}")
     public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
 
@@ -56,7 +56,7 @@ public class PacsRestController {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeFindAll(pid, pname, reportstatus);
         return pacsStudytab;
     }
-    //여기가 페이징 끝
+    //여기가 써치 끝
 
     @GetMapping("/search/PacsSeriestab")
     public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
