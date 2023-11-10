@@ -29,16 +29,22 @@
                 <div class="searchWrap">
                     <div class="searchInner">
                         <label for="input_patient_id" id="patient_id_label">
-                            <input type="text" id="input_patient_id">
+                            환자 ID: <input type="text" id="input_patient_id"> <!--환자 ID-->
                         </label>
                     </div>
                     <div class="searchInner">
                         <label for="input_patient_name" id="patient_name_label">
-                            <input type="text" id="input_patient_name">
+                            환자 이름: <input type="text" id="input_patient_name"> <!--환자 NAME-->
                         </label>
                     </div>
-                    <div class="searchInner" id="reading_Status">
-
+                    <div class="searchInner">
+                        <select id="reading_Status">
+                            <option value="" selected>판독상태</option>
+                            <option value="3">읽지않음</option>
+                            <option value="4">열람중</option>
+                            <option value="5">예비판독</option>
+                            <option value="6">판독</option>
+                        </select>
                     </div>
                     <div class="searchIconWrap">
                         <div class="searchIcon" id="search_allTime">
