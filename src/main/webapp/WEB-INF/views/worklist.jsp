@@ -45,6 +45,35 @@
         </div>
     </div>
 
+    <div class="mainBox flex">
+        <div class="listBox flex">
+            <div class="searchBox">
+                <div class="header" id="search_header">
+                    <h3>검색</h3>
+                </div>
+                <div class="searchWrap">
+                    <div class="searchInner">
+                        <label for="input_patient_id" id="patient_id_label">
+                            환자 ID: <input type="text" id="input_patient_id"> <!--환자 ID-->
+                        </label>
+                    </div>
+                    <div class="searchInner">
+                        <label for="input_patient_name" id="patient_name_label">
+                            환자 이름: <input type="text" id="input_patient_name"> <!--환자 NAME-->
+                        </label>
+                    </div>
+                    <div class="searchInner">
+                        <select id="reading_Status">
+                            <option value="" selected>판독상태</option>
+                            <option value="3">읽지않음</option>
+                            <option value="4">열람중</option>
+                            <option value="5">예비판독</option>
+                            <option value="6">판독</option>
+                        </select>
+                    </div>
+                    <div class="searchIconWrap">
+                        <div class="searchIcon" id="search_allTime">
+                          
     <div class="mainBox ">
         <div class="sideBox">
             <div class="sideBoxWrap advancedSearch">
@@ -52,6 +81,7 @@
 
                 </div>
                 <div class="date">
+
 
                 </div>
                 <div class="modality">

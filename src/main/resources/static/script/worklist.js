@@ -1,33 +1,70 @@
-const searchSubmit = document.getElementById("search_submit");
-searchSubmit.addEventListener('click', () => {
+
+const searchList = document.querySelector(".searchList");
+let htmlInput = '<table class="searchList">' +
+    '                 <tr>\n' +
+    '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
+    '                    <th>환자 아이디</th>\n' +
+    '                    <th>환자 이름</th>\n' +
+    '                    <th>검사 장비</th>\n' +
+    '                    <th>검사 설명</th>\n' +
+    '                    <th>검사 일시</th>\n' +
+    '                    <th>판독 상태</th>\n' +
+    '                    <th>시리즈</th>\n' +
+    '                    <th>이미지</th>\n' +
+    '                    <th>verify</th>\n' +
+    '                </tr></table>';
+
+const clickCount = document.getElementById("clickCount");
+clickCount.addEventListener('click', () => {
     number = 0;
 
-    const searchList = document.querySelector(".searchListBody");
-    searchList.innerHTML='';
+    searchList.innerHTML = htmlInput;
+
     loadData();
 });
 
 const clickPaging = document.getElementById("clickPaging");
 let number = 0;
 clickPaging.addEventListener("click", () => {
-    const searchList = document.querySelector(".searchListBody");
-    searchList.innerHTML='';
+
+    searchList.innerHTML = htmlInput;
+
 
     number += 8;
     loadData();
 });
 
-
 function loadData() {
+    const getPid = document.getElementById("input_patient_id");
+    const getPname = document.getElementById("input_patient_name");
+    const getReading_Status = document.getElementById("reading_Status");
+
+    console.log(getReading_Status.value);
+    console.log(getPid.value);
+    console.log(getPname.value);
     // 무한 스크롤
-    const listScroll = document.getElementById("listScroll");
+    // const listScroll = document.getElementById("listScroll");
 
     let table = document.querySelector(".searchListBody");
     let rows = table.querySelectorAll("tr");
 
     let count = parseInt(selectPaging().value, 10) + parseInt(number, 10);
 
-    axios.get("/v1/storage/search/PacsStudytab")
+    let change;
+    if(getPid.value != "" || getPname.value != "" || getReading_Status.value != "") {
+        const value =
+            (getPid.value != "") ? `/v1/storage/search/PacsStudytab/${getPid.value}` :
+                (getPname.value != "") ? `/v1/storage/search/PacsStudytab/a/${getPname.value}` :
+                    (getReading_Status.value != "") ? `/v1/storage/search/PacsStudytab/b/${getReading_Status.value}` :
+                        (getPid.value != "" && getPname.value != "") ? `/v1/storage/search/PacsStudytab/${getPid.value}/${getPname.value}` :
+                            (getPid.value != "" && getPname.value != "" && getReading_Status.value) != "" ? `/v1/storage/search/PacsStudytab/${getPid.value}/${getPname.value}/${getReading_Status.value}` : null;
+
+        change = value;
+    } else {
+        change = "/v1/storage/search/PacsStudytab";
+    }
+
+    axios.get(change)
         .then(response => {
             const data = response.data;
 

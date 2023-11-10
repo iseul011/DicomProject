@@ -21,17 +21,48 @@ public class PacsRestController {
     private final PacsImagetabRepository pacsImagetabRepository;
     private final PacsStudytabRepository pacsStudytabRepository;
 
+    //여기서 부터 페이징
+    @GetMapping("/search/PacsStudytab/{pid}")
+    public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
+        return pacsStudytab;
+    }
+
+    @GetMapping("/search/PacsStudytab/a/{pname}")
+    public List<PacsStudytab> getPacsStudytabByPname(@PathVariable String pname) {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPname(pname);
+        return pacsStudytab;
+    }
+
+    @GetMapping("/search/PacsStudytab/b/{reportstatus}")
+    public List<PacsStudytab> getPacsStudytabBy(@PathVariable String reportstatus) {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.ReportstatusAll(reportstatus);
+        return pacsStudytab;
+    }
+
+    @GetMapping("/search/PacsStudytab/{pid}/{pname}")
+    public List<PacsStudytab> getPacsStudytabSearch(@PathVariable String pid, @PathVariable String pname) {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPidAndPname(pid, pname);
+        return pacsStudytab;
+    }
+
+    @GetMapping("/search/PacsStudytab/{pid}/{pname}/{reportstatus}")
+    public List<PacsStudytab> getPacsStudytabSearch2(@PathVariable String pid, @PathVariable String pname, @PathVariable String reportstatus) {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeFindAll(pid, pname, reportstatus);
+        return pacsStudytab;
+    }
+    //여기가 페이징 끝
+
     @GetMapping("/search/PacsSeriestab")
     public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
 
         List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
         return pacsSeriestab;
-    }
-
-    @GetMapping("/search/PacsImagetab")
-    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
-        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
-        return pacsImagetab;
     }
 
     @GetMapping("/search/PacsStudytab")
@@ -42,12 +73,11 @@ public class PacsRestController {
         return pacsStudytab;
     }
 
-    @GetMapping("/search/PacsStudytab/{pid}")
-    public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
+    @GetMapping("/search/PacsImagetab/search")
+    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
 
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
-
-        return pacsStudytab;
+        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
+        return pacsImagetab;
     }
 
     @DeleteMapping("/delete")
