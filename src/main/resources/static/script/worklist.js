@@ -1,41 +1,17 @@
-const clickCount = document.getElementById("clickCount");
-clickCount.addEventListener('click', () => {
+const searchSubmit = document.getElementById("search_submit");
+searchSubmit.addEventListener('click', () => {
     number = 0;
 
-    const searchList = document.querySelector(".searchList");
-    searchList.innerHTML='<table class="searchList">' +
-        '                 <tr>\n' +
-        '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
-        '                    <th>환자 아이디</th>\n' +
-        '                    <th>환자 이름</th>\n' +
-        '                    <th>검사 장비</th>\n' +
-        '                    <th>검사 설명</th>\n' +
-        '                    <th>검사 일시</th>\n' +
-        '                    <th>판독 상태</th>\n' +
-        '                    <th>시리즈</th>\n' +
-        '                    <th>이미지</th>\n' +
-        '                    <th>verify</th>\n' +
-        '                </tr></table>';
+    const searchList = document.querySelector(".searchListBody");
+    searchList.innerHTML='';
     loadData();
 });
 
 const clickPaging = document.getElementById("clickPaging");
 let number = 0;
 clickPaging.addEventListener("click", () => {
-    const searchList = document.querySelector(".searchList");
-    searchList.innerHTML='<table class="searchList">' +
-        '                 <tr>\n' +
-        '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
-        '                    <th>환자 아이디</th>\n' +
-        '                    <th>환자 이름</th>\n' +
-        '                    <th>검사 장비</th>\n' +
-        '                    <th>검사 설명</th>\n' +
-        '                    <th>검사 일시</th>\n' +
-        '                    <th>판독 상태</th>\n' +
-        '                    <th>시리즈</th>\n' +
-        '                    <th>이미지</th>\n' +
-        '                    <th>verify</th>\n' +
-        '                </tr></table>';
+    const searchList = document.querySelector(".searchListBody");
+    searchList.innerHTML='';
 
     number += 8;
     loadData();
@@ -46,11 +22,10 @@ function loadData() {
     // 무한 스크롤
     const listScroll = document.getElementById("listScroll");
 
-    let table = document.querySelector(".searchList");
+    let table = document.querySelector(".searchListBody");
     let rows = table.querySelectorAll("tr");
 
     let count = parseInt(selectPaging().value, 10) + parseInt(number, 10);
-    console.log(count);
 
     axios.get("/v1/storage/search/PacsStudytab")
         .then(response => {
@@ -62,7 +37,7 @@ function loadData() {
 
             // foreach -> for
             for(let i=0; i<count; i++) {
-                let row = table.insertRow(1);
+                let row = table.insertRow(0);
 
                 let chk = row.insertCell(0);
                 let pid = row.insertCell(1);
@@ -80,9 +55,19 @@ function loadData() {
                 });
 
                 let checkbox = `<input type="checkbox" name="del" id="del" value="${data[i].pid}"/>`;
-                console.log(checkbox);
-                chk.innerHTML = checkbox;
+                row.className = "searchListBodyRow"
+                chk.className = "searchListBodyColumnCenter"
+                pid.className = "searchListBodyColumnLeft"
+                pname.className = "searchListBodyColumnLeft"
+                modality.className = "searchListBodyColumnCenter"
+                studydesc.className = "searchListBodyColumnLeft"
+                studydate.className = "searchListBodyColumnCenter"
+                reportstatus.className = "searchListBodyColumnCenter"
+                seriescnt.className = "searchListBodyColumnCenter"
+                imagecnt.className = "searchListBodyColumnCenter"
+                verify.className = "searchListBodyColumnCenter"
 
+                chk.innerHTML = checkbox;
                 pid.innerHTML = data[i].pid;
                 pname.innerHTML = data[i].pname;
                 modality.innerHTML = data[i].modality;

@@ -54,7 +54,7 @@ public class UploadController {
         // HTTP Response 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/dicom"));
-        headers.setContentDispositionFormData("attachment", "CR.1.2.410.200013.1.510.1.20210310170346701.0009.dcm");
+        headers.setContentDispositionFormData("attachment", "");
 
         return ResponseEntity.ok()
                 .headers(headers)
