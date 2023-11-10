@@ -1,9 +1,20 @@
-#listScroll {
-    width: 1000px;
-    height: 280px;
-    overflow-y: auto;
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-text-size-adjust: none;
+}
+header {
+    height: 60px;
 }
 
-table, th, td {
-    border: 1px solid;
+header > button{
+    background: rgb(56, 56, 56);
+    border: none;
+}
+
+header > button > img {
+    width: 200px;
+    height: auto;
+    margin: 18px 0 11px 40px;
 }
