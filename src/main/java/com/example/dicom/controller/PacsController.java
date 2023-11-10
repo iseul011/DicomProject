@@ -18,7 +18,7 @@ public class PacsController {
 
     @GetMapping("/viewPage")
     public String viewPage() {
-        return "/viewPage";
+        return "/viewer";
     }
 
     @GetMapping("/viewer/{studykey}/{studyinsuid}/{pid}")

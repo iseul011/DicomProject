@@ -10,6 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
+
+    <link href="/style/vierer.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <%@ include file="include/header.jsp" %>
@@ -58,6 +60,7 @@
             <%--            </button>--%>
 
         </div>
+
         <div class="contentBox">
             <div id="data-container" studykey="${studykey}" studyinsuid="${studyinsuid}" pid="${pid}"></div>
             <h1>Viewer Page</h1>
