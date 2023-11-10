@@ -11,16 +11,37 @@
 <script src="https://unpkg.com/cornerstone-core"></script>
 <link href="/style/worklist.css" rel="stylesheet" type="text/css"/>
 
+
 <div class="container">
     <div class="sideBar">
         <div class="sideMenu-wrap">
-            <div class="sideMenu-btn" id="profile"></div>
-            <div class="sideMenu-btn" id="morePInfo"></div>
-            <div class="sideMenu-btn" id="advancedSearch"></div>
+            <div>
+                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="AccountCircleIcon">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88C7.55 15.8 9.68 15 12 15s4.45.8 6.14 2.12C16.43 19.18 14.03 20 12 20z"></path>
+                </svg>
+                <span class="hospital">DICOM</span>
+            </div>
+            <div class="MuiBox-root css-0">
+                <div class="icon MuiBox-root css-0">
+                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="AddToPhotosIcon">
+                        <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"></path>
+                    </svg>
+                </div>
+                <span class="thumbnailBox ">세부검색</span>
+            </div>
         </div>
         <div class="sideSetting-wrap">
-            <div class="sideMenu-btn" id="setting"></div>
-            <div class="sideMenu-btn" id="logout"></div>
+            <div class="sideMenu-btn" id="setting">
+                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SettingsIcon">
+                    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
+                </svg>
+            </div>
+
+            <div class="sideMenu-btn" id="logout">
+                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="LogoutIcon">
+                    <path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
+                </svg>
+            </div>
         </div>
     </div>
 
@@ -45,6 +66,7 @@
 
             </div>
         </div>
+      
         <div class="listBox">
             <div class="totalList">
                 <div class="searchBox">
@@ -104,6 +126,7 @@
                         </div>
                     </div>
                 </div>
+              
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
@@ -132,6 +155,7 @@
                         </div>
                     </div>
                 </div>
+              
                 <div class="searchListBox" id="listScroll">
                     <table class="searchList">
                         <thead class="searchListHead">
