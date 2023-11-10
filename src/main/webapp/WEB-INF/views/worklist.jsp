@@ -57,7 +57,7 @@
 
                         </div>
                         <div class="searchIcon" id="search_submit">
-                            <button id="reset" onclick="loadData()">
+                            <button id="clickCount" >
                                 검색
                             </button>
                         </div>
@@ -66,7 +66,7 @@
             </div>
             <div class="deleteBtnWrap">
                 <button onclick="deleteData()">검사 삭제</button>
-                <button onclick="download()">다운로드</button>
+                <!--<button onclick="download()">다운로드</button>-->
             </div>
             <div id="search_count">
                 <select id="selectPaging" onchange="selectPaging()">
@@ -75,21 +75,25 @@
                     <option value="24">24개씩</option>
                 </select>
             </div>
-            <table class="searchList" border="1">
-                <tr>
-                    <th><input type="checkbox" value='selectall' onclick="chkAll(this)" /></th>
-                    <th>환자 아이디</th>
-                    <th>환자 이름</th>
-                    <th>검사 장비</th>
-                    <th>검사 설명</th>
-                    <th>검사 일시</th>
-                    <th>판독 상태</th>
-                    <th>시리즈</th>
-                    <th>이미지</th>
-                    <th>verify</th>
-                </tr>
-            </table>
-            <button onclick="clickPaging()">더보기 ▽</button>
+            <div id="listScroll">
+                <table class="searchList">
+                    <tr>
+                        <td><input type="checkbox" value='selectall' onclick="chkAll(this)" /></td>
+                        <th>환자 아이디</th>
+                        <th>환자 이름</th>
+                        <th>검사 장비</th>
+                        <th>검사 설명</th>
+                        <th>검사 일시</th>
+                        <th>판독 상태</th>
+                        <th>시리즈</th>
+                        <th>이미지</th>
+                        <th>verify</th>
+                    </tr>
+                </table>
+            </div>
+            <div id="plusBtn">
+                <button id="clickPaging">더보기 ▽</button>
+            </div>
         </div>
         <div class="previousBox">
             <div class="header" id="previous_header">

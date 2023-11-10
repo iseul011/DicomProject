@@ -42,15 +42,6 @@ public class PacsRestController {
         return pacsStudytab;
     }
 
-//    @GetMapping("/search/PacsStudytab")
-//    public List<PacsStudytab> getPacsStudytab(@PageableDefault(sort = "pid", size = 8, direction = Sort.Direction.DESC) Pageable pageable){
-//
-//        Page<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll(pageable);
-//        List<PacsStudytab> paging = pacsStudytab.getContent();
-//
-//        return paging;
-//    }
-
     @GetMapping("/search/PacsStudytab/{pid}")
     public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
 

@@ -51,10 +51,12 @@ function renderImages(receivedImages) {
                 }
             });
 
+            //마우스 버튼을 눌렀다 뗄 때
             canvas.addEventListener('mouseup', function() {
                 isDragging = false;
             });
 
+            //마우스가 캔버스를 벗어날 때
             canvas.addEventListener('mouseleave', function() {
                 isDragging = false;
             });
@@ -72,7 +74,45 @@ function getImage(form) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             receivedImages = JSON.parse(xhr.responseText);
-            renderImages(receivedImages); // 이미지 렌더링 함수 호출
+
+            receivedImages.forEach(function(imageData, index) {
+                const decodedData = atob(imageData);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                console.log("uint8Array:", uint8Array);
+                //const dicomData = dcmjs.data.DicomMessage.readFile(uint8Array);
+                const dicomData = dcmjs.DicomMessage.readFile(uint8Array);
+
+                console.log("dicomData:", dicomData);
+
+                const sopInstanceUid = dicomData.dict['x0020000d'].value[0];
+                console.log("SOP Instance UID:", sopInstanceUid);
+
+                var divElement = document.createElement("div");
+                divElement.id = "dicomImage" + index;
+
+                document.getElementById('img').appendChild(divElement);
+
+                var image = new Image();
+                image.src = "data:image/jpeg;base64," + imageData;
+
+                cornerstone.enable(divElement);
+
+                var metadata = cornerstoneWADOImageLoader.wadors.metaDataManager.get(sopInstanceUid,image);
+                console.log(metadata);
+
+                cornerstone.loadAndCacheImage(metadata).then(function (image) {
+                    console.log('Image loaded successfully:', image);
+                    cornerstone.displayImage(divElement, image);
+                }).catch(function(error) {
+                    console.error('Error loading and caching image:', error);
+                });0
+
+            });
+
         }
     };
     var data = {
@@ -80,3 +120,4 @@ function getImage(form) {
     };
     xhr.send(JSON.stringify(data));
 }
+
