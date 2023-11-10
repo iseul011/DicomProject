@@ -18,12 +18,15 @@
 
 
 <div class="container flex">
-    <div class="sideBar flex">
-        <div class="menuWrap flex">
-
+    <div class="sidebar flex flex-column flex-justify-space flex-align-center">
+        <div class="sideMenu-wrap flex">
+            <div class="sideMenu-btn flex flex-column flex-align-center" id="profile"></div>
+            <div class="sideMenu-btn flex flex-column flex-align-center" id="morePInfo"></div>
+            <div class="sideMenu-btn flex flex-column flex-align-center" id="advancedSearch"></div>
         </div>
-        <div class="settingWrap flex">
-
+        <div class="sideSetting-wrap flex">
+            <div class="sideMenu-btn flex flex-column flex-align-center" id="setting"></div>
+            <div class="sideMenu-btn flex flex-column flex-align-center" id="logout"></div>
         </div>
     </div>
     <div class="mainBox flex">

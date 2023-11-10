@@ -27,6 +27,7 @@ async function viewDicom() {
 
         for (const item of seriesTabList) {
             let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
+
             let response = await axios.get("/getDicomFile", {
                 params: {
                     directoryPath: directoryPath
@@ -36,7 +37,9 @@ async function viewDicom() {
 
             if (response.status === 200) {
                 let arrayBuffer = response.data;
+
                 const dataSet = await getDicomMetadata(arrayBuffer);
+
                 displayDicomImage(arrayBuffer, item.seriesinsuid);
             }
         }

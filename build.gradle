@@ -36,6 +36,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: '../dcm4che-5.31.0/lib')
+    implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'commons-cli:commons-cli:1.4'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'

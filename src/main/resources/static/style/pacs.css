@@ -4,6 +4,14 @@
     padding: 0;
     -webkit-text-size-adjust: none;
 }
+
+body{
+    background: rgb(57, 57, 57);
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+    color:white;
+}
 header {
     height: 60px;
 }
@@ -18,3 +26,41 @@ header > button > img {
     height: auto;
     margin: 18px 0 11px 40px;
 }
+
+.container{
+    width: 100%;
+    height: calc(100% - 90px);
+    display: flex;
+    align-items: stretch;
+}
+
+.sidebar {
+    background: rgb(36, 36, 36);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 30px;
+    margin: 0 0 30px 40px;
+    align-items: center;
+}
+
+.sideMenu-btn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+    margin: 28px 13px 0;
+    box-sizing: border-box;
+}
+
+.mainBox{
+    transition-duration: 2s;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: calc(100% - 30px);
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
