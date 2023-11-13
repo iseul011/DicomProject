@@ -27,6 +27,14 @@ html, body {
     background: #383838;
 }
 
+.container{
+    height: 960px;
+    width: 1920px;
+    display: flex;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+}
+
 .sideBar {
     background: rgb(36, 36, 36);
     color: white;
