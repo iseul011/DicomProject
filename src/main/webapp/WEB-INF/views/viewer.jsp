@@ -334,7 +334,7 @@
 
 
 </body>
-<script src="/script/cornerstoneTest.js"></script>
+<script src="/script/LJW.js"></script>
 </html>
 
 
