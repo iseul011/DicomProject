@@ -28,8 +28,8 @@ html, body {
 }
 
 .container{
-    height: 960px;
-    width: 1920px;
+    width: 100%;
+    height: calc(100% - 90px);
     display: flex;
     -webkit-box-align: stretch;
     align-items: stretch;
