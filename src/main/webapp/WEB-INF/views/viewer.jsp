@@ -4,13 +4,14 @@
 <head>
     <title>WebViewer</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-core/dist/cornerstone.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-math@0.1.10/dist/cornerstoneMath.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@6.0.10/dist/cornerstoneTools.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="/style/viewer.css" rel="stylesheet" type="text/css"/>
 
 </head>
@@ -320,11 +321,10 @@
                     </div>
                     <span>이미지레이아웃</span>
                 </button>
-
             </ul>
-
             <div class="contentBox">
                 <div class="wadoBox" id="dicomImageContainer">
+                </div>
 
             </div>
         </div>
@@ -334,8 +334,7 @@
 
 
 </body>
-<%--<script src="/script/cornerstoneTest.js"></script>--%>
-<script src="/script/LJW.js"></script>
+<script src="/script/cornerstoneTest.js"></script>
 </html>
 
 
