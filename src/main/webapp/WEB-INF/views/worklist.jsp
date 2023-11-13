@@ -147,8 +147,8 @@
                         <tr class="searchListHeadRow">
                             <th class="searchListHeadCheck"><input type="checkbox" value='selectall'
                                                                    onclick="chkAll(this)"></th>
-                            <th class="searchListHeadShort">환자 아이디</th>
-                            <th class="searchListHeadShort">환자 이름</th>
+                            <th class="searchListHeadShort" onclick="sortByPId()">환자 아이디</th>
+                            <th class="searchListHeadShort" >환자 이름</th>
                             <th class="searchListHeadShort">검사 장비</th>
                             <th class="searchListHeadLong">검사 설명</th>
                             <th class="searchListHeadShort">검사 일시</th>

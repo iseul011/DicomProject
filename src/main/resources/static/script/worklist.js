@@ -1,26 +1,24 @@
-    const clickCount = document.getElementById("search_submit");
-    const searchListBody = document.querySelector(".searchListBody");
-    clickCount.addEventListener('click', () => {
-        number = 0;
-        searchListBody.innerHTML = '';
+const clickCount = document.getElementById("search_submit");
+const searchListBody = document.querySelector(".searchListBody");
+clickCount.addEventListener('click', () => {
+    number = 0;
+    searchListBody.innerHTML = '';
 
-        loadData();
-    });
+    loadData();
+});
 
-    const clickPaging = document.querySelector(".clickPaging");
-    let number = 0;
+const clickPaging = document.querySelector(".clickPaging");
+let number = 0;
 
-    if(count ) {
-        clickPaging.addEventListener("click", () => {
-            searchListBody.innerHTML = '';
+clickPaging.addEventListener("click", () => {
+    searchListBody.innerHTML = '';
 
-            number += 10;
-            loadData();
-        });
-    }
+    number += 10;
+    loadData();
+})
 
 
-    function loadData() {
+function loadData() {
     const getPid = document.getElementById("input_patient_id");
     const getPname = document.getElementById("input_patient_name");
     const getReading_Status = document.querySelector(".reading_Status");
@@ -31,10 +29,10 @@
 
     let table = document.querySelector(".searchListBody");
     let rows = table.querySelectorAll("tr");
-    let count = parseInt(selectPaging().value, 10) + parseInt(number, 10);
+    number = parseInt(selectPaging().value, 10) + parseInt(number, 10);
 
     let change;
-    if(getPid.value != "" || getPname.value != "" || getReading_Status.value != "") {
+    if (getPid.value != "" || getPname.value != "" || getReading_Status.value != "") {
         const value =
             (getPid.value != "") ? `/v1/storage/search/PacsStudytab/${getPid.value}` :
                 (getPname.value != "") ? `/v1/storage/search/PacsStudytab/a/${getPname.value}` :
@@ -51,21 +49,21 @@
         .then(response => {
             const data = response.data;
 
-            if(data.length < count) {
-                count = data.length;
+            if (data.length < number) {
+                number = data.length;
             }
 
-            const totalCount = document.querySelector(".totalCount");
+            const totalCount = document.querySelector(".totalCases");
 
-            if(count != 0) {
-                totalCount.innerHTML=`<p>총 개수: ${count}</p>`;
+            if (number != 0) {
+                totalCount.innerHTML = `<p>총 검사건수: ${number}</p>`;
                 plusBtn();
             } else {
-                totalCount.innerHTML=`<p>총 개수: </p>`;
+                totalCount.innerHTML = `<p>총 개수: </p>`;
             }
 
             // foreach -> for
-            for(let i=0; i<count; i++) {
+            for (let i = 0; i < number; i++) {
                 let row = table.insertRow(0);
 
                 let chk = row.insertCell(0);
@@ -114,7 +112,7 @@
 
 function loadPrevious(pid, pname) {
     let table = document.querySelector(".previousListBody");
-    table.innerHTML='';
+    table.innerHTML = '';
     let rows = table.querySelectorAll("tr");
 
     for (let i = 1; i < rows.length; i++) {
@@ -178,7 +176,7 @@ function deleteData() {
     const selectedElementsCnt = selectedElements.length;
     const pid = new Array(selectedElementsCnt);
 
-    document.querySelectorAll('input[name="del"]:checked').forEach(function(v, i) {
+    document.querySelectorAll('input[name="del"]:checked').forEach(function (v, i) {
         pid[i] = v.value;
     });
 
@@ -206,7 +204,11 @@ function selectPaging() {
 
 function plusBtn() {
     const plusBtn = document.querySelector(".plusBtn");
-    plusBtn.innerHTML=`<button class="clickPaging">더 보기</button>`;
+    plusBtn.innerHTML = `<button class="clickPaging">더 보기</button>`;
+}
+
+function sort() {
+
 }
 
 // function paging(item) {

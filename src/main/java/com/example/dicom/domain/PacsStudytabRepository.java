@@ -29,6 +29,7 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
     // 써치
     List<PacsStudytab> findAllByPid(String pid); // 세부조회에도 씀
     List<PacsStudytab> findAllByPname(String pname);
+
     @Query(value = Reportstatus, nativeQuery = true)
     List<PacsStudytab> ReportstatusAll(String reportstatus);
     List<PacsStudytab> findAllByPidAndPname(String pid, String pname);

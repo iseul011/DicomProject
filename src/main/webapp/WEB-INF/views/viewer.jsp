@@ -11,7 +11,6 @@
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link href="/style/viewer.css" rel="stylesheet" type="text/css"/>
 
 </head>
@@ -334,7 +333,7 @@
 
 
 </body>
-<script src="/script/cornerstoneTest.js"></script>
+<script src="/script/LJW.js"></script>
 </html>
 
 

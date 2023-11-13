@@ -88,11 +88,20 @@ public class PacsRestController {
     }
     //여기가 써치 끝
 
-    //날짜 시작
-    @GetMapping("/search/PacsStudytab/oneAgo")
-    public List<PacsStudytab> oneAgo() {
 
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneAgo();
+    @GetMapping("/search/PacsSeriestab")
+    public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
+
+        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
+
+        return pacsSeriestab;
+    }
+
+    @GetMapping("/search/PacsStudytab")
+    public List<PacsStudytab> getPacsStudytab() {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
+
         return pacsStudytab;
     }
 
@@ -109,7 +118,17 @@ public class PacsRestController {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneWeekAgo();
         return pacsStudytab;
     }
+
     //날짜 끝
+
+
+    @GetMapping("/search/PacsStudytab/sort")
+    public List<PacsStudytab> getSortedPacsStudytab(@RequestParam String column, @RequestParam String order) {
+        Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, column);
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll(sort);
+        return pacsStudytab;
+    }
+
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {
