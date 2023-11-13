@@ -46,10 +46,6 @@ async function viewDicom() {
 
         // 모든 이미지 로드가 완료될 때까지 대기
         await Promise.all(promises);
-
-        // 돋보기 버튼을 생성하고 추가
-        const zoomButton = createZoomButton();
-        document.getElementById('dicomImageContainer').appendChild(zoomButton);
     } catch (error) {
         console.error(error);
     }
@@ -118,48 +114,48 @@ function getStudyKeyFromPath() {
     return pathArray[2];
 }
 
-let isDragging = false;
-let initialMousePosition = { x: 0, y: 0 };
-let isZoomEnabled = false;
+function zoomIn() {
+    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+    const viewport = cornerstone.getViewport(activeViewport);
+    viewport.scale += 0.01;
+    cornerstone.setViewport(activeViewport, viewport);
+}
 
-// 버튼 클릭 이벤트 리스너
-document.getElementById('zoomButton').addEventListener('click', () => {
-    isZoomEnabled = !isZoomEnabled;
-    // 버튼을 누를 때 초기 마우스 위치 업데이트
-    if (isZoomEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+function zoomOut() {
+    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+    const viewport = cornerstone.getViewport(activeViewport);
+    viewport.scale -= 0.01;
+    cornerstone.setViewport(activeViewport, viewport);
+}
+
+function invertImage() {
+    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+
+    // 이미지가 로드되었는지 확인
+    const imageLoaded = cornerstone.getEnabledElement(activeViewport).image;
+    if (!imageLoaded) {
+        console.error('Image not loaded.');
+        return;
     }
-});
 
-// 마우스 다운 이벤트 리스너 (드래그 시작)
-document.addEventListener('mousedown', (event) => {
-    if (isZoomEnabled) {
-        isDragging = true;
-        initialMousePosition = { x: event.clientX, y: event.clientY };
+    // 이미지 데이터 가져오기
+    const imageData = cornerstone.getPixels(activeViewport);
+
+    // pixelData가 있는지 확인
+    if (!imageData || !imageData.pixelData) {
+        console.error('Pixel data not available.');
+        return;
     }
-});
 
-// 마우스 업 이벤트 리스너 (드래그 종료)
-document.addEventListener('mouseup', () => {
-    isDragging = false;
-});
-
-// 마우스 이동 이벤트 리스너 (드래그 중)
-document.addEventListener('mousemove', (event) => {
-    if (isDragging && isZoomEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        const viewport = cornerstone.getViewport(activeViewport);
-
-        const deltaX = event.clientX - initialMousePosition.x;
-        const deltaY = event.clientY - initialMousePosition.y;
-
-        viewport.scale += (deltaX + deltaY) * 0.01;
-        cornerstone.setViewport(activeViewport, viewport);
-
-        initialMousePosition = { x: event.clientX, y: event.clientY };
+    // 각 픽셀에 대해 RGB 값을 반전
+    const pixelData = imageData.pixelData;
+    for (let i = 0; i < pixelData.length; i++) {
+        pixelData[i] = 255 - pixelData[i]; // 255에서 현재 픽셀 값 뺀 값으로 반전
     }
-});
+
+    // 이미지 데이터를 업데이트하여 새로 그림
+    cornerstone.updateImage(activeViewport);
+}
 
 // 메인 함수 호출
 viewDicom();
