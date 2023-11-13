@@ -89,7 +89,12 @@ public class PacsRestController {
         }
     }
 
-
+    @GetMapping("/search/PacsStudytab/sort")
+    public List<PacsStudytab> getSortedPacsStudytab(@RequestParam String column, @RequestParam String order) {
+        Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, column);
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll(sort);
+        return pacsStudytab;
+    }
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {

@@ -16,6 +16,7 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
 
     List<PacsStudytab> findAllByPname(String pname);
 
+
     @Query(value = Reportstatus, nativeQuery = true)
     List<PacsStudytab> ReportstatusAll(String reportstatus);
 
