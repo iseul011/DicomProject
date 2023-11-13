@@ -1,191 +1,92 @@
-
-async function getSeriesTab() {
-    try {
-        const pathArray = window.location.pathname.split('/');
-        const studykey = pathArray[2];
-
-        let response = await axios.get("/v1/storage/search/PacsSeriestab", {
-            params: {
-                studykey: studykey
-            }
-        });
-
-        if (response.status === 200) {
-            return response.data;
-        }
-    } catch (error) {
-        console.error(error);
-    }
+// DICOM 이미지 메타데이터 가져오기
+async function getDicomMetadata(arrayBuffer) {
+    const byteArray = new Uint8Array(arrayBuffer);
+    return dicomParser.parseDicom(byteArray);
 }
 
-async function getImagePath(studykey, serieskey) {
-    try {
-        let response = await axios.get("/getImagePath", {
-            params: {
-                studykey: studykey,
-                serieskey: serieskey,
-            }
-        });
+// DICOM 이미지 표시
+function displayDicomImage(arrayBuffer, seriesinsuid) {
+    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
+    const viewportElement = createViewportElement(seriesinsuid);
+    document.getElementById('dicomImageContainer').appendChild(viewportElement);
 
-        if (response.status === 200) {
-            return response.data;
-        }
-    } catch (error) {
-        console.error(error);
-    }
+    cornerstone.enable(viewportElement);
+    cornerstone.loadImage(imageId).then(image => {
+        cornerstone.displayImage(viewportElement, image);
+    });
 }
 
+// ViewDicom 메인 함수
+async function viewDicom() {
+    configureCornerstoneWADO();
 
-
-let currentIndex = 0;
-let receivedImages = [];
-let isMouseOverImage = false;
-
-async function getImage() {
     try {
-        let seriesTabList = await getSeriesTab();
+        const seriesTabList = await getSeriesTab();
 
         for (const item of seriesTabList) {
-            let directoryPath = await getImagePath(item.studykey, item.serieskey);
-            let response = await axios.get("/getFiles", {
-                params: {
-                    directoryPath: directoryPath
-                }
-            });
-
-            if (response.status === 200) {
-                receivedImages = response.data;
-                renderImage(receivedImages[currentIndex]);
-
-                let imgElement = document.createElement('img');
-                imgElement.src = "data:image/png;base64," + receivedImages[currentIndex];
-                imgElement.onload = function() {
-                    adjustBrightness();
-                };
-
-                imgElement.addEventListener('mouseover', function() {
-                    isMouseOverImage = true;
-                });
-
-                imgElement.addEventListener('mouseout', function() {
-                    isMouseOverImage = false;
-                });
-            }
+            const directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
+            const arrayBuffer = await getDicomFile(directoryPath);
+            const dataSet = await getDicomMetadata(arrayBuffer);
+            displayDicomImage(arrayBuffer, item.seriesinsuid);
         }
-
-        window.addEventListener('scroll', function(event) {
-            if (!isMouseOverImage) {
-                if (event.deltaY > 0 && currentIndex < receivedImages.length - 1) {
-                    currentIndex++;
-                    renderImage(receivedImages[currentIndex]);
-                } else if (event.deltaY < 0 && currentIndex > 0) {
-                    currentIndex--;
-                    renderImage(receivedImages[currentIndex]);
-                }
-                event.preventDefault();
-            }
-        });
     } catch (error) {
         console.error(error);
     }
 }
-document.getElementById('brightnessButton').addEventListener('click', function() {
-    adjustBrightness();
-});
 
-function adjustBrightness() {
-    let imgElements = document.querySelectorAll('#img img');
-
-    imgElements.forEach(imgElement => {
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
-
-        canvas.width = imgElement.width;
-        canvas.height = imgElement.height;
-        ctx.drawImage(imgElement, 0, 0);
-
-        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-        for (let i = 0; i < imageData.data.length; i += 4) {
-            imageData.data[i] += 50; // R
-            imageData.data[i + 1] += 50; // G
-            imageData.data[i + 2] += 50; // B
-        }
-
-        ctx.putImageData(imageData, 0, 0);
-
-        imgElement.src = canvas.toDataURL('image/png');
-    });
-
-
-    let canvasHovered = false;
-
-    document.getElementById('imageCanvas').addEventListener('mouseenter', function() {
-        canvasHovered = true;
-    });
-
-    document.getElementById('imageCanvas').addEventListener('mouseleave', function() {
-        canvasHovered = false;
-    });
-
-    window.addEventListener('scroll', function() {
-        if (canvasHovered) {
-            return;
-        }
-
-        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        let windowHeight = window.innerHeight;
-        let totalHeight = document.body.scrollHeight;
-
-        if (scrollTop + windowHeight >= totalHeight && currentIndex < receivedImages.length - 1) {
-            currentIndex++;
-            renderImage(receivedImages[currentIndex]);
-        }
-
-        if (scrollTop === 0 && currentIndex > 0) {
-            currentIndex--;
-            renderImage(receivedImages[currentIndex]);
-        }
-    });
-}
-function enableScrolling() {
-    let canvasHovered = false;
-
-    document.getElementById('imageCanvas').addEventListener('mouseenter', function() {
-        canvasHovered = true;
-    });
-
-    document.getElementById('imageCanvas').addEventListener('mouseleave', function() {
-        canvasHovered = false;
-    });
-
-    window.addEventListener('scroll', function() {
-        if (canvasHovered) {
-            return;
-        }
-
-        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-        let windowHeight = window.innerHeight;
-        let totalHeight = document.body.scrollHeight;
-
-        if (scrollTop + windowHeight >= totalHeight && currentIndex < receivedImages.length - 1) {
-            currentIndex++;
-            renderImage(receivedImages[currentIndex]);
-        }
-
-        if (scrollTop === 0 && currentIndex > 0) {
-            currentIndex--;
-            renderImage(receivedImages[currentIndex]);
-        }
-    });
+// CornerstoneWADOImageLoader 설정
+function configureCornerstoneWADO() {
+    cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+    cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 }
 
+// 시리즈 탭 정보 가져오기
+async function getSeriesTab() {
+    const studykey = getStudyKeyFromPath();
+    const response = await axios.get("/v1/storage/search/PacsSeriestab", {
+        params: {
+            studykey
+        }
+    });
 
-function renderImage(imageData) {
-    let imgElement = document.createElement('img');
-    imgElement.src = "data:image/png;base64," + imageData;
-    document.getElementById('img').innerHTML = '';
-    document.getElementById('img').appendChild(imgElement);
+    if (response.status === 200) {
+        return response.data;
+    }
 }
 
-getImage();
+// 이미지 경로 가져오기
+async function getImagePath(studykey, seriesinsuid) {
+    const response = await axios.get("/getImagePath", { params: { studykey, seriesinsuid } });
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+
+// 이미지 파일 가져오기
+async function getDicomFile(directoryPath) {
+    const response = await axios.get("/getDicomFile", { params: { directoryPath }, responseType: 'arraybuffer' });
+
+    if (response.status === 200) {
+        return response.data;
+    }
+}
+
+// Viewport 엘리먼트 생성
+function createViewportElement(seriesinsuid) {
+    const viewportElement = document.createElement('div');
+    viewportElement.classList.add('CSViewport');
+    viewportElement.style.width = '500px';
+    viewportElement.style.height = '500px';
+    viewportElement.id = `viewport-${seriesinsuid}`;
+    return viewportElement;
+}
+
+// 현재 페이지의 Study Key 가져오기
+function getStudyKeyFromPath() {
+    const pathArray = window.location.pathname.split('/');
+    return pathArray[2];
+}
+
+// 메인 함수 호출
+viewDicom();
