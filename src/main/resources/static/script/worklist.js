@@ -1,53 +1,36 @@
+    const clickCount = document.getElementById("search_submit");
+    const searchListBody = document.querySelector(".searchListBody");
+    clickCount.addEventListener('click', () => {
+        number = 0;
+        searchListBody.innerHTML = '';
 
-const searchList = document.querySelector(".searchList");
-let htmlInput = '<table class="searchList">' +
-    '                 <tr>\n' +
-    '                    <th><input type="checkbox" value=\'selectall\' onclick="chkAll(this)" /></th>\n' +
-    '                    <th>환자 아이디</th>\n' +
-    '                    <th>환자 이름</th>\n' +
-    '                    <th>검사 장비</th>\n' +
-    '                    <th>검사 설명</th>\n' +
-    '                    <th>검사 일시</th>\n' +
-    '                    <th>판독 상태</th>\n' +
-    '                    <th>시리즈</th>\n' +
-    '                    <th>이미지</th>\n' +
-    '                    <th>verify</th>\n' +
-    '                </tr></table>';
+        loadData();
+    });
 
-const clickCount = document.getElementById("clickCount");
-clickCount.addEventListener('click', () => {
-    number = 0;
+    const clickPaging = document.querySelector(".clickPaging");
+    let number = 0;
 
-    searchList.innerHTML = htmlInput;
+    if(count ) {
+        clickPaging.addEventListener("click", () => {
+            searchListBody.innerHTML = '';
 
-    loadData();
-});
-
-const clickPaging = document.getElementById("clickPaging");
-let number = 0;
-clickPaging.addEventListener("click", () => {
-
-    searchList.innerHTML = htmlInput;
+            number += 10;
+            loadData();
+        });
+    }
 
 
-    number += 8;
-    loadData();
-});
-
-function loadData() {
+    function loadData() {
     const getPid = document.getElementById("input_patient_id");
     const getPname = document.getElementById("input_patient_name");
-    const getReading_Status = document.getElementById("reading_Status");
+    const getReading_Status = document.querySelector(".reading_Status");
 
     console.log(getReading_Status.value);
     console.log(getPid.value);
     console.log(getPname.value);
-    // 무한 스크롤
-    // const listScroll = document.getElementById("listScroll");
 
     let table = document.querySelector(".searchListBody");
     let rows = table.querySelectorAll("tr");
-
     let count = parseInt(selectPaging().value, 10) + parseInt(number, 10);
 
     let change;
@@ -70,6 +53,15 @@ function loadData() {
 
             if(data.length < count) {
                 count = data.length;
+            }
+
+            const totalCount = document.querySelector(".totalCount");
+
+            if(count != 0) {
+                totalCount.innerHTML=`<p>총 개수: ${count}</p>`;
+                plusBtn();
+            } else {
+                totalCount.innerHTML=`<p>총 개수: </p>`;
             }
 
             // foreach -> for
@@ -114,8 +106,8 @@ function loadData() {
                 seriescnt.innerHTML = data[i].seriescnt;
                 imagecnt.innerHTML = data[i].imagecnt;
                 verify.innerHTML = data[i].verifyflag;
-            }
 
+            }
         });
 
 }
@@ -199,6 +191,11 @@ function selectPaging() {
 
     console.log(option.value);
     return option;
+}
+
+function plusBtn() {
+    const plusBtn = document.querySelector(".plusBtn");
+    plusBtn.innerHTML=`<button class="clickPaging">더 보기</button>`;
 }
 
 // function paging(item) {
