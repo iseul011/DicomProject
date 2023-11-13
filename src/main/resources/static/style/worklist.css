@@ -1,3 +1,9 @@
+thead {
+    color: inherit;
+    vertical-align: middle;
+    outline: 0;
+}
+
 .sideBox {
     background: rgb(36, 36, 36);
     color: white;
@@ -42,7 +48,9 @@
 }
 
 .header {
-    width: 100%;
+    color: rgb(255, 255, 255);
+    margin-top: 11px;
+    margin-left: 22px;
 }
 
 .searchWrap {
@@ -278,12 +286,7 @@
     cursor: pointer;
 }
 
-.searchListHeadRow {
-    color: inherit;
-    display: table-row;
-    vertical-align: middle;
-    outline: 0px;
-}
+
 
 .searchList thead tr th:nth-of-type(1) {
     background: rgb(36, 36, 36);
@@ -374,29 +377,29 @@
     width: 5%;
 }
 
-.searchListBody{
+.searchListBody {
     background: rgb(36, 36, 36);
     text-align: center;
     height: 100%;
     cursor: pointer;
 }
 
-.searchList tbody tr:nth-of-type(2n-1){
+.searchList tbody tr:nth-of-type(2n-1) {
     background: rgb(57, 57, 57);
 }
 
-.searchListBodyRow{
+.searchListBodyRow {
     color: inherit;
     display: table-row;
     vertical-align: middle;
     outline: 0px;
 }
 
-.searchList tbody tr td:nth-of-type(1){
+.searchList tbody tr td:nth-of-type(1) {
     background: rgb(36, 36, 36);
 }
 
-.searchList tbody tr td{
+.searchList tbody tr td {
     font-size: 14px;
     padding: 8px 5px;
     border: 1px solid rgb(36, 36, 36);
@@ -405,7 +408,7 @@
     word-break: break-all;
 }
 
-.searchListBodyColumnCenter{
+.searchListBodyColumnCenter {
     font-family: Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 0.875rem;
@@ -419,7 +422,7 @@
     color: rgba(0, 0, 0, 0.87);
 }
 
-.searchListBodyColumnLeft{
+.searchListBodyColumnLeft {
     font-family: Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 0.875rem;
@@ -431,4 +434,169 @@
     text-align: left;
     padding: 16px;
     color: rgba(0, 0, 0, 0.87);
+}
+
+.bottomList {
+    display: flex;
+    justify-content: space-around;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 12px 0px 0px;
+    height: 45%;
+}
+
+.previousBox {
+    display: block;
+    border-radius: 10px;
+    background: rgb(36, 36, 36);
+    width: 50%;
+    height: 100%;
+    color: white;
+}
+
+.patientStatusBox {
+    box-sizing: border-box;
+    display: flex;
+    flex-flow: wrap;
+    width: 100%;
+    margin-top: 14px;
+    margin-left: 42px;
+}
+
+.patientStatusWrap {
+    flex-basis: 50%;
+    -webkit-box-flex: 0;
+    flex-grow: 0;
+    max-width: 50%;
+}
+
+.patientStatusWrap::before {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    content: " ";
+    width: 3px;
+    height: 17px;
+    margin-right: 5px;
+    background: rgb(98, 18, 18);
+}
+
+.previousListBox {
+    margin-top: 14px;
+    margin-left: 32px;
+    width: calc(100% - 70px);
+    height: auto;
+    max-height: calc(100% - 110px);
+    overflow: auto;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.previousList{
+    table-layout: fixed;
+    word-break: break-all;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+}
+
+.previousList th{
+    text-align: center;
+    background: rgb(9, 9, 9);
+    padding: 8px 0px;
+    border: 1px solid rgb(36, 36, 36);
+    box-sizing: border-box;
+    font-size: 14px;
+    color: rgb(206, 206, 206);
+
+}
+
+.previousListHead{
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    letter-spacing: 0.01071em;
+    vertical-align: inherit;
+    border-bottom: 1px solid rgb(224, 224, 224);
+    text-align: left;
+    padding: 16px;
+    color: rgba(0, 0, 0, 0.87);
+    position: sticky;
+    top: 0px;
+    z-index: 2;
+    background-color: rgb(255, 255, 255);
+
+}
+.preNormal{
+    width: 13%;
+}
+
+.preLonger{
+    width: 25%;
+}
+
+.preShort{
+    width: 11%;
+}
+
+.preLong{
+    width: 18%;
+}
+
+.previousListBody {
+    background: rgb(36, 36, 36);
+    text-align: center;
+    height: 100%;
+    cursor: pointer;
+}
+
+.previousList tbody tr:nth-of-type(2n-1) {
+    background: rgb(57, 57, 57);
+}
+
+.previousList tbody tr td {
+    font-size: 14px;
+    padding: 8px 5px;
+    border: 1px solid rgb(36, 36, 36);
+    color: rgb(206, 206, 206);
+    box-sizing: border-box;
+    word-break: break-all;
+}
+
+.previousListBodyColumnCenter {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+    display: table-cell;
+    vertical-align: inherit;
+    border-bottom: 1px solid rgb(224, 224, 224);
+    text-align: center;
+    padding: 16px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.previousListBodyColumnLeft {
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.43;
+    letter-spacing: 0.01071em;
+    display: table-cell;
+    vertical-align: inherit;
+    border-bottom: 1px solid rgb(224, 224, 224);
+    text-align: left;
+    padding: 16px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.reportBox{
+    border-radius: 8px;
+    background: rgb(36, 36, 36);
+    margin: 0px 40px 0px 12px;
+    width: 50%;
+    height: 100%;
+    color: white;
 }

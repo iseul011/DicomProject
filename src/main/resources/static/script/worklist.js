@@ -84,7 +84,8 @@ function loadData() {
 }
 
 function loadPrevious(pid, pname) {
-    let table = document.querySelector(".previousList");
+    let table = document.querySelector(".previousListBody");
+    table.innerHTML='';
     let rows = table.querySelectorAll("tr");
 
     for (let i = 1; i < rows.length; i++) {
@@ -100,7 +101,7 @@ function loadPrevious(pid, pname) {
 
             data.forEach(function (item) {
 
-                let row = table.insertRow(1);
+                let row = table.insertRow(0);
                 let modality = row.insertCell(0);
                 let studydesc = row.insertCell(1);
                 let studydate = row.insertCell(2);
@@ -109,6 +110,16 @@ function loadPrevious(pid, pname) {
                 let imagecnt = row.insertCell(5);
                 let verify = row.insertCell(6);
 
+                row.className = "previousListBodyRow"
+                modality.className = "previousListBodyColumnCenter"
+                studydesc.className = "previousListBodyColumnLeft"
+                studydate.className = "previousListBodyColumnCenter"
+                reportstatus.className = "previousListBodyColumnCenter"
+                seriescnt.className = "previousListBodyColumnCenter"
+                imagecnt.className = "previousListBodyColumnCenter"
+                verify.className = "previousListBodyColumnCenter"
+
+                studydesc.innerHTML = item.studydesc;
                 modality.innerHTML = item.modality;
                 studydate.innerHTML = item.studydate;
                 reportstatus.innerHTML = item.reportstatus;
