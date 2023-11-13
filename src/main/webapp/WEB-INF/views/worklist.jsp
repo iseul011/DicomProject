@@ -145,7 +145,8 @@
                     <table class="searchList">
                         <thead class="searchListHead">
                         <tr class="searchListHeadRow">
-                            <th class="searchListHeadCheck"><input type="checkbox" value='selectall' onclick="chkAll(this)"></th>
+                            <th class="searchListHeadCheck"><input type="checkbox" value='selectall'
+                                                                   onclick="chkAll(this)"></th>
                             <th class="searchListHeadShort">환자 아이디</th>
                             <th class="searchListHeadShort">환자 이름</th>
                             <th class="searchListHeadShort">검사 장비</th>
@@ -164,30 +165,45 @@
                 <div class="plusBtn">
                 </div>
             </div>
-            <div class="previousBox">
-                <div class="header" id="previous_header">
-                    <h3>Previous</h3>
-                </div>
-                <div class="patientStatusWrap">
-                    <span>환자 아이디 :</span>
-                    <span id="patient_id"></span>
-                    <span>환자 이름 : </span>
-                    <span id="patient_name"></span>
-                </div>
-                <table class="previousList" border="1">
-                    <tr>
-                        <th>검사 장비</th>
-                        <th>검사 설명</th>
-                        <th>검사 일시</th>
-                        <th>판독 상태</th>
-                        <th>시리즈</th>
-                        <th>이미지</th>
-                        <th>verify</th>
-                    </tr>
-                </table>
-            </div>
-            <div class="reportBox">
+            <div class="bottomList">
+                <div class="previousBox">
+                    <div class="header" id="previous_header">
+                        <h3>Previous</h3>
+                    </div>
+                    <div class="patientStatusBox">
+                        <div class="patientStatusWrap">
+                            <span>환자 아이디 :</span>
+                            <span id="patient_id"></span>
+                        </div>
+                        <div class="patientStatusWrap">
+                            <span>환자 이름 : </span>
+                            <span id="patient_name"></span>
+                        </div>
+                    </div>
+                    <div class="previousListBox">
+                        <table class="previousList">
+                            <thead>
+                            <tr>
+                                <th class="previousListHead preNormal">검사 장비</th>
+                                <th class="previousListHead preLonger">검사 설명</th>
+                                <th class="previousListHead preShort">검사 일시</th>
+                                <th class="previousListHead preLong">판독 상태</th>
+                                <th class="previousListHead preShort">시리즈</th>
+                                <th class="previousListHead preShort">이미지</th>
+                                <th class="previousListHead preShort">verify</th>
+                            </tr>
+                            </thead>
+                            <tbody class="previousListBody">
 
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="reportBox">
+                    <div class="header">
+                        <h3>Report</h3>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

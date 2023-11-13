@@ -6,7 +6,7 @@ async function getDicomMetadata(arrayBuffer) {
 }
 
 function displayDicomImage(arrayBuffer, seriesinsuid) {
-    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
+    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], {type: 'application/dicom'}))}`;
     const viewportElement = document.createElement('div');
     viewportElement.classList.add('CSViewport');
     viewportElement.id = `viewport-${seriesinsuid}`; // Unique ID for each viewport
@@ -24,7 +24,6 @@ async function viewDicom() {
 
     try {
         let seriesTabList = await getSeriesTab();
-
         for (const item of seriesTabList) {
             let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
 
@@ -67,6 +66,7 @@ async function getSeriesTab() {
         console.error(error);
     }
 }
+
 async function getImagePath(studykey, seriesinsuid) {
 
     try {
