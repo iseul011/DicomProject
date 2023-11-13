@@ -62,6 +62,7 @@ public class PacsRestController {
     public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
 
         List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
+
         return pacsSeriestab;
     }
 
