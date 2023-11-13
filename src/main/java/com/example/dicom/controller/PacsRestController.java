@@ -21,6 +21,36 @@ public class PacsRestController {
     private final PacsImagetabRepository pacsImagetabRepository;
     private final PacsStudytabRepository pacsStudytabRepository;
 
+    @GetMapping("/search/PacsSeriestab")
+    public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
+
+        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
+        return pacsSeriestab;
+    }
+
+    @GetMapping("/search/PacsStudytab")
+    public List<PacsStudytab> getPacsStudytab() {
+
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
+
+        return pacsStudytab;
+    }
+
+    @GetMapping("/search/PacsImagetab/search")
+    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
+
+        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
+        return pacsImagetab;
+    }
+
+    @DeleteMapping("/delete")
+    public void Delete(@RequestBody List<String> pid) {
+
+        for (int i = 0; i < pid.size(); i++) {
+            pacsStudytabRepository.deleteByPid(pid.get(i));
+        }
+    }
+
     //여기서 부터 써치
     @GetMapping("/search/PacsStudytab/{pid}")
     public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
@@ -58,37 +88,28 @@ public class PacsRestController {
     }
     //여기가 써치 끝
 
-    @GetMapping("/search/PacsSeriestab")
-    public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
+    //날짜 시작
+    @GetMapping("/search/PacsStudytab/oneAgo")
+    public List<PacsStudytab> oneAgo() {
 
-        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
-        return pacsSeriestab;
-    }
-
-    @GetMapping("/search/PacsStudytab")
-    public List<PacsStudytab> getPacsStudytab() {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
-
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneAgo();
         return pacsStudytab;
     }
 
-    @GetMapping("/search/PacsImagetab/search")
-    public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
+    @GetMapping("/search/PacsStudytab/threeAgo")
+    public List<PacsStudytab> threeAgo() {
 
-        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
-        return pacsImagetab;
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeAgo();
+        return pacsStudytab;
     }
 
-    @DeleteMapping("/delete")
-    public void Delete(@RequestBody List<String> pid) {
+    @GetMapping("/search/PacsStudytab/oneWeekAgo")
+    public List<PacsStudytab> oneWeekAgo() {
 
-        for (int i = 0; i < pid.size(); i++) {
-            pacsStudytabRepository.deleteByPid(pid.get(i));
-        }
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneWeekAgo();
+        return pacsStudytab;
     }
-
-
+    //날짜 끝
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {
