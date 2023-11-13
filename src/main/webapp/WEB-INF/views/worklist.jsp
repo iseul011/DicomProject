@@ -27,7 +27,7 @@
                         <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"></path>
                     </svg>
                 </div>
-                <span class="thumbnailBox ">세부검색</span>
+                <span class="thumbnailBox">세부검색</span>
             </div>
         </div>
         <div class="sideSetting-wrap">
@@ -46,57 +46,6 @@
     </div>
 
     <div class="mainBox flex">
-        <div class="listBox flex">
-            <div class="searchBox">
-                <div class="header" id="search_header">
-                    <h3>검색</h3>
-                </div>
-                <div class="searchWrap">
-                    <div class="searchInner">
-                        <label for="input_patient_id" id="patient_id_label">
-                            환자 ID: <input type="text" id="input_patient_id"> <!--환자 ID-->
-                        </label>
-                    </div>
-                    <div class="searchInner">
-                        <label for="input_patient_name" id="patient_name_label">
-                            환자 이름: <input type="text" id="input_patient_name"> <!--환자 NAME-->
-                        </label>
-                    </div>
-                    <div class="searchInner">
-                        <select id="reading_Status">
-                            <option value="" selected>판독상태</option>
-                            <option value="3">읽지않음</option>
-                            <option value="4">열람중</option>
-                            <option value="5">예비판독</option>
-                            <option value="6">판독</option>
-                        </select>
-                    </div>
-                    <div class="searchIconWrap">
-                        <div class="searchIcon" id="search_allTime">
-                          
-    <div class="mainBox ">
-        <div class="sideBox">
-            <div class="sideBoxWrap advancedSearch">
-                <div class="calender">
-
-                </div>
-                <div class="date">
-
-
-                </div>
-                <div class="modality">
-
-                </div>
-                <div class="submitWrap">
-                    <input type="submit" value="조회">
-                    <input type="button" value="재설정">
-                </div>
-            </div>
-            <div class="sideBoxWrap morePInfo">
-
-            </div>
-        </div>
-      
         <div class="listBox">
             <div class="totalList">
                 <div class="searchBox">
@@ -129,7 +78,13 @@
                                 <div class="inputWrap">
                                     <div class="inputInner" id="reading_Status">
                                         <ul>
-
+                                            <select class="reading_Status">
+                                                <option value="" select>판독상태</option>
+                                                <option value="2">열람중</option>
+                                                <option value="3">읽지않음</option>
+                                                <option value="5">예비판독</option>
+                                                <option value="6">판독</option>
+                                            </select>
                                         </ul>
                                     </div>
                                 </div>
@@ -185,7 +140,7 @@
                         </div>
                     </div>
                 </div>
-              
+                <div class="totalCount"></div>
                 <div class="searchListBox" id="listScroll">
                     <table class="searchList">
                         <thead class="searchListHead">
@@ -203,12 +158,10 @@
                         </tr>
                         </thead>
                         <tbody class="searchListBody">
-
                         </tbody>
                     </table>
                 </div>
-                <div id="plusBtn">
-                    <button id="clickPaging">더보기 ▽</button>
+                <div class="plusBtn">
                 </div>
             </div>
             <div class="previousBox">
@@ -240,6 +193,5 @@
     </div>
 </div>
 <script src="/script/worklist.js"></script>
-</body>
 
 <%@ include file="include/footer.jsp" %>
