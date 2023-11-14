@@ -28,15 +28,7 @@ public class PacsRestController {
         return pacsSeriestab;
     }
 
-    @GetMapping("/search/PacsStudytab")
-    public List<PacsStudytab> getPacsStudytab() {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
-
-        return pacsStudytab;
-    }
-
-    @GetMapping("/search/PacsImagetab/search")
+    @GetMapping("/search/PacsImagetab")
     public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
         List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
         return pacsImagetab;
@@ -49,40 +41,17 @@ public class PacsRestController {
         }
     }
   
+    @GetMapping("/search/PacsStudytab")
+    public List<PacsStudytab> getPacsStudytab() {
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
+        return pacsStudytab;
+    }
 
-    //여기서 부터 써치
-//
-//    @GetMapping("/search/PacsStudytab/{pid}/{pname}")
-//    public List<PacsStudytab> getPacsStudytabSearch(@PathVariable String pid, @PathVariable String pname) {
-//
-//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPidAndPname(pid, pname);
-//        return pacsStudytab;
-//    }
-//
-//    @GetMapping("/search/PacsStudytab/{pid}/{pname}/{reportstatus}")
-//    public List<PacsStudytab> getPacsStudytabSearch2(@PathVariable String pid, @PathVariable String pname, @PathVariable String reportstatus) {
-//
-//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeFindAll(pid, pname, reportstatus);
-//        return pacsStudytab;
-//    }
-    //여기가 써치 끝
-
-//    @GetMapping("/search/PacsStudytab/threeAgo")
-//    public List<PacsStudytab> threeAgo() {
-//
-//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeAgo();
-//        return pacsStudytab;
-//    }
-//
-//    @GetMapping("/search/PacsStudytab/oneWeekAgo")
-//    public List<PacsStudytab> oneWeekAgo() {
-//
-//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneWeekAgo();
-//        return pacsStudytab;
-//    }
-
-    //날짜 끝
-
+    @GetMapping("/search/PacsStudytab/searchByPid")
+    public List<PacsStudytab> getPacsStudytabByPid(@RequestParam String pid) {
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
+        return pacsStudytab;
+    }
 
 
     @GetMapping("/search/PacsStudytab/searchList")

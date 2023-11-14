@@ -340,8 +340,8 @@ async function getSeriesTab() {
 
     try {
         const pathArray = window.location.pathname.split('/');
-        //const studykey = pathArray[2];
-        const studykey = 2;
+        const studykey = pathArray[2];
+        // const studykey =2 ;
 
         let response = await axios.get("/v1/storage/search/PacsSeriestab", {
             params: {
