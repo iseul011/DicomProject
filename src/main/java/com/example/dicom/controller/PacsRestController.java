@@ -51,17 +51,6 @@ public class PacsRestController {
   
 
     //여기서 부터 써치
-    @GetMapping("/search/PacsStudytab")
-    public List<PacsStudytab> getPacsStudytab() {
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
-        return pacsStudytab;
-    }
-
-    @GetMapping("/search/PacsStudytab/searchByPid")
-    public List<PacsStudytab> getPacsStudytabByPid(@RequestParam String pid) {
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
-        return pacsStudytab;
-    }
 //
 //    @GetMapping("/search/PacsStudytab/{pid}/{pname}")
 //    public List<PacsStudytab> getPacsStudytabSearch(@PathVariable String pid, @PathVariable String pname) {
@@ -78,19 +67,19 @@ public class PacsRestController {
 //    }
     //여기가 써치 끝
 
-    @GetMapping("/search/PacsStudytab/threeAgo")
-    public List<PacsStudytab> threeAgo() {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeAgo();
-        return pacsStudytab;
-    }
-
-    @GetMapping("/search/PacsStudytab/oneWeekAgo")
-    public List<PacsStudytab> oneWeekAgo() {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneWeekAgo();
-        return pacsStudytab;
-    }
+//    @GetMapping("/search/PacsStudytab/threeAgo")
+//    public List<PacsStudytab> threeAgo() {
+//
+//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeAgo();
+//        return pacsStudytab;
+//    }
+//
+//    @GetMapping("/search/PacsStudytab/oneWeekAgo")
+//    public List<PacsStudytab> oneWeekAgo() {
+//
+//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.oneWeekAgo();
+//        return pacsStudytab;
+//    }
 
     //날짜 끝
 
