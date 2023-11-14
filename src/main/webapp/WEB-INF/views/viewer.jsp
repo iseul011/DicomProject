@@ -93,17 +93,17 @@
                     <span>Default tool</span>
                 </button>
 
-                <button class="wwwc">
+                <button class="wwwc" id="wwwcButton">
                     <img src="/img/wwwc.1cc5a0ecda9fd93a085688cedaa8a78b.png">
                     <span>윈도우 레벨</span>
                 </button>
 
-                <button class="invert">
+                <button class="invert" id="invertButton">
                     <img src="/img/invert.ede51ece1c3d447e625c3191b6a2af9c.png">
                     <span>흑백 반전</span>
                 </button>
 
-                <button class="pan">
+                <button class="pan" id="moveButton">
                     <img src="/img/pan.47e8cd9f65cf64c8f2fb3d08c6f205ab.png">
                     <span>이동</span>
                 </button>
@@ -128,7 +128,7 @@
                     <span>플레이 클립</span>
                 </button>
                 <div>
-                    <button class="toolModalParent">
+                    <button class="toolModalParent" id="zoomButton">
                         <div>
                             <img src="/img/tools.2d1068915b14d4ae8a087ca1036b65b2.png" data-tool="8">
                             <svg viewBox="0 0 1030 638" width="10">
@@ -292,7 +292,7 @@
                     </button>
                 </div>
                 <div>
-                    <button class="toolModalParent">
+                    <button class="toolModalParent" id="resetButton">
                         <div><img src="/img/refresh.6a8fba2767a97749fd00e3e6f59935f3.png" data-tool="10">
                             <svg viewBox="0 0 1030 638" width="10">
                                 <path d="M1017 68L541 626q-11 12-26 12t-26-12L13 68Q-3 49 6 24.5T39 0h952q24 0 33 24.5t-7 43.5z" fill="#FFF"></path>
@@ -333,7 +333,7 @@
 
 
 </body>
-<script src="/script/LJW.js"></script>
+<script src="/script/test1.js"></script>
 </html>
 
 
