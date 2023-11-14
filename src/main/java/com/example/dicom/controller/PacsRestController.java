@@ -89,22 +89,6 @@ public class PacsRestController {
     //여기가 써치 끝
 
 
-    @GetMapping("/search/PacsSeriestab")
-    public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
-
-        List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
-
-        return pacsSeriestab;
-    }
-
-    @GetMapping("/search/PacsStudytab")
-    public List<PacsStudytab> getPacsStudytab() {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
-
-        return pacsStudytab;
-    }
-
     @GetMapping("/search/PacsStudytab/threeAgo")
     public List<PacsStudytab> threeAgo() {
 
