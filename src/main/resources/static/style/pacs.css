@@ -1,4 +1,4 @@
-*{
+* {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -16,7 +16,7 @@ header {
     }
 }
 
-header > button{
+header > button {
     background: rgb(56, 56, 56);
     border: none;
 }
@@ -34,7 +34,7 @@ html, body {
     background: #383838;
 }
 
-.container{
+.container {
     width: 100%;
     height: calc(100% - 90px);
     display: flex;
@@ -43,6 +43,8 @@ html, body {
 }
 
 .sideBar {
+    font-family: "Noto Sans", sans-serif;
+    font-size: 9px;
     background: rgb(36, 36, 36);
     color: white;
     display: flex;
@@ -66,8 +68,6 @@ html, body {
 }
 
 .sideBar .sideMenu-wrap div span.hospital {
-    font-family: "Noto Sans", serif;
-    font-size: 9px;
     font-weight: 400;
     line-height: 15px;
     text-align: center;
@@ -80,7 +80,6 @@ html, body {
     display: inline-block;
     fill: currentcolor;
     flex-shrink: 0;
-    transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     font-size: 1.5rem;
     color: rgb(160, 0, 0);
 }
@@ -95,8 +94,8 @@ html, body {
 
 .sideBar .sideMenu-wrap div span.thumbnailBox,
 .sideBar .sideMenu-wrap div span.toolBox,
-.sideBar .sideMenu-wrap div span.reportModal{
-    font-family: "Noto Sans", serif;
+.sideBar .sideMenu-wrap div span.reportModal {
+    font-family: "Noto Sans";
     font-size: 11px;
     font-weight: 700;
     line-height: 15px;

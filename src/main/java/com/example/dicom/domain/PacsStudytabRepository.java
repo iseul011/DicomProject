@@ -1,5 +1,6 @@
 package com.example.dicom.domain;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -7,6 +8,7 @@ import java.util.List;
 
 public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Integer> {
     String Reportstatus = "select * from STUDYTAB where reportstatus = ?";
+
     String threeFindAll = "select * from STUDYTAB where pname= ? or pid=? or reportstatus=?";
 
     String oneAgo = "SELECT *\n" +
@@ -19,34 +21,20 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
             " WHERE studydate >= TRUNC(SYSDATE) - 3\n" +
             "  AND studydate < TRUNC(SYSDATE)";
 
-    String oneWeekAgo = "SELECT *\n" +
-            " FROM STUDYTAB\n" +
-            " WHERE studydate >= TRUNC(SYSDATE) - 7\n" +
-            "  AND studydate < TRUNC(SYSDATE)";
+    List<PacsStudytab> findByPid(String pid, Sort sort);
 
-    List<PacsStudytab> findByStudykey(int studykey);
+    List<PacsStudytab> findByPname(String pname, Sort sort);
 
-    // 써치
-    List<PacsStudytab> findAllByPid(String pid); // 세부조회에도 씀
-    List<PacsStudytab> findAllByPname(String pname);
+    List<PacsStudytab> findByReportstatus(int reportstatus, Sort sort);
 
-    @Query(value = Reportstatus, nativeQuery = true)
-    List<PacsStudytab> ReportstatusAll(String reportstatus);
-    List<PacsStudytab> findAllByPidAndPname(String pid, String pname);
-    @Query(value = threeFindAll, nativeQuery = true)
-    List<PacsStudytab> threeFindAll(String pid, String pname, String reportstatus);
-    // 써치 끝
+    List<PacsStudytab> findByPidAndPname(String pid, String pname, Sort sort);
 
-    //날짜
-    @Query(value = oneAgo, nativeQuery = true)
-    List<PacsStudytab> oneAgo();
+    List<PacsStudytab> findByPidAndReportstatus(String pid, int reportstatus, Sort sort);
 
-    @Query(value = threeAgo, nativeQuery = true)
-    List<PacsStudytab> threeAgo();
+    List<PacsStudytab> findByPnameAndReportstatus(String pname, int reportstatus, Sort sort);
 
-    @Query(value = oneWeekAgo, nativeQuery = true)
-    List<PacsStudytab> oneWeekAgo();
-    //날짜 끝
+    List<PacsStudytab> findByPidAndPnameAndReportstatus(String pid, String pname, int reportstatus, Sort sort);
+
 
     void deleteByPid(String pid);
 
