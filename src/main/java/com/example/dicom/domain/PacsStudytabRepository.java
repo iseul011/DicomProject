@@ -1,5 +1,6 @@
 package com.example.dicom.domain;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -8,22 +9,24 @@ import java.util.List;
 public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Integer> {
 
     String Reportstatus = "select * from STUDYTAB where reportstatus = ?";
-    String threeFindAll = "select * from STUDYTAB where  pname= ? or pid=? or reportstatus=?";
 
     List<PacsStudytab> findByStudykey(int studykey);
 
     List<PacsStudytab> findAllByPid(String pid);
 
-    List<PacsStudytab> findAllByPname(String pname);
+    List<PacsStudytab> findByPid(String pid, Sort sort);
 
+    List<PacsStudytab> findByPname(String pname, Sort sort);
 
-    @Query(value = Reportstatus, nativeQuery = true)
-    List<PacsStudytab> ReportstatusAll(String reportstatus);
+    List<PacsStudytab> findByReportstatus(int reportstatus, Sort sort);
 
-    List<PacsStudytab> findAllByPidAndPname(String pid, String pname);
+    List<PacsStudytab> findByPidAndPname(String pid, String pname, Sort sort);
 
-    @Query(value = threeFindAll, nativeQuery = true)
-    List<PacsStudytab> threeFindAll(String pid, String pname, String reportstatus);
+    List<PacsStudytab> findByPidAndReportstatus(String pid, int reportstatus, Sort sort);
+
+    List<PacsStudytab> findByPnameAndReportstatus(String pname, int reportstatus, Sort sort);
+
+    List<PacsStudytab> findByPidAndPnameAndReportstatus(String pid, String pname, int reportstatus, Sort sort);
 
     void deleteByPid(String pid);
 

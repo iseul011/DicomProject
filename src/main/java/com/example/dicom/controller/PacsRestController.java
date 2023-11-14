@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
+import java.util.Objects;
 
 
 @RequestMapping({"/v1/storage"})
@@ -22,78 +23,92 @@ public class PacsRestController {
     private final PacsStudytabRepository pacsStudytabRepository;
 
     //여기서 부터 써치
-    @GetMapping("/search/PacsStudytab/{pid}")
-    public List<PacsStudytab> getPacsStudytabByPid(@PathVariable String pid) {
+    @GetMapping("/search/PacsStudytab")
+    public List<PacsStudytab> getPacsStudytab() {
+        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
+        return pacsStudytab;
+    }
 
+    @GetMapping("/search/PacsStudytab/searchByPid")
+    public List<PacsStudytab> getPacsStudytabByPid(@RequestParam String pid) {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
         return pacsStudytab;
     }
-
-    @GetMapping("/search/PacsStudytab/a/{pname}")
-    public List<PacsStudytab> getPacsStudytabByPname(@PathVariable String pname) {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPname(pname);
-        return pacsStudytab;
-    }
-
-    @GetMapping("/search/PacsStudytab/b/{reportstatus}")
-    public List<PacsStudytab> getPacsStudytabBy(@PathVariable String reportstatus) {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.ReportstatusAll(reportstatus);
-        return pacsStudytab;
-    }
-
-    @GetMapping("/search/PacsStudytab/{pid}/{pname}")
-    public List<PacsStudytab> getPacsStudytabSearch(@PathVariable String pid, @PathVariable String pname) {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPidAndPname(pid, pname);
-        return pacsStudytab;
-    }
-
-    @GetMapping("/search/PacsStudytab/{pid}/{pname}/{reportstatus}")
-    public List<PacsStudytab> getPacsStudytabSearch2(@PathVariable String pid, @PathVariable String pname, @PathVariable String reportstatus) {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeFindAll(pid, pname, reportstatus);
-        return pacsStudytab;
-    }
+//
+//    @GetMapping("/search/PacsStudytab/{pid}/{pname}")
+//    public List<PacsStudytab> getPacsStudytabSearch(@PathVariable String pid, @PathVariable String pname) {
+//
+//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPidAndPname(pid, pname);
+//        return pacsStudytab;
+//    }
+//
+//    @GetMapping("/search/PacsStudytab/{pid}/{pname}/{reportstatus}")
+//    public List<PacsStudytab> getPacsStudytabSearch2(@PathVariable String pid, @PathVariable String pname, @PathVariable String reportstatus) {
+//
+//        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.threeFindAll(pid, pname, reportstatus);
+//        return pacsStudytab;
+//    }
     //여기가 써치 끝
 
     @GetMapping("/search/PacsSeriestab")
     public List<PacsSeriestab> getPacsSeriestab(@RequestParam int studykey) {
-
         List<PacsSeriestab> pacsSeriestab = pacsSeriestabRepository.findAllByStudykey(studykey);
         return pacsSeriestab;
     }
 
-    @GetMapping("/search/PacsStudytab")
-    public List<PacsStudytab> getPacsStudytab() {
-
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
-
-        return pacsStudytab;
-    }
 
     @GetMapping("/search/PacsImagetab/search")
     public List<PacsImagetab> getPacsImagetab(@RequestParam int studykey, @RequestParam int serieskey) {
-
         List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
         return pacsImagetab;
     }
 
     @DeleteMapping("/delete")
     public void Delete(@RequestBody List<String> pid) {
-
         for (int i = 0; i < pid.size(); i++) {
             pacsStudytabRepository.deleteByPid(pid.get(i));
         }
     }
 
-    @GetMapping("/search/PacsStudytab/sort")
-    public List<PacsStudytab> getSortedPacsStudytab(@RequestParam String column, @RequestParam String order) {
-        Sort sort = Sort.by(order.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, column);
-        List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll(sort);
-        return pacsStudytab;
+    @GetMapping("/search/PacsStudytab/searchList")
+    public List<PacsStudytab> getSortedSearchPacsStudytab(
+            @RequestParam String column,
+            @RequestParam boolean order,
+            @RequestParam(required = false) String pidValue,
+            @RequestParam(required = false) String pNameValue,
+            @RequestParam int reportStatusValue) {
+
+        Sort sort = Sort.by(order ? Sort.Direction.DESC : Sort.Direction.ASC, column);
+
+        if (isEmpty(pidValue) && isEmpty(pNameValue)) {
+            return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
+        }
+
+        if (isEmpty(pidValue)) {
+            if (reportStatusValue == 0) {
+                return pacsStudytabRepository.findByPname(pNameValue, sort);
+            } else {
+                return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
+            }
+        }
+
+        if (isEmpty(pNameValue)) {
+            if (reportStatusValue == 0) {
+                return pacsStudytabRepository.findByPid(pidValue, sort);
+            } else {
+                return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
+            }
+        }
+
+        return (reportStatusValue == 0)
+                ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
+                : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
     }
+
+    private boolean isEmpty(String value) {
+        return value == null || value.isEmpty();
+    }
+
 
 //    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
 //    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {

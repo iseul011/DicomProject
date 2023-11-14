@@ -16,6 +16,10 @@ thead {
     margin-left: 12px;
 }
 
+.displayNone {
+    display: none;
+}
+
 /*.calender{*/
 /*    width: 100%;*/
 /*    max-width: 100%;*/
@@ -26,7 +30,7 @@ thead {
 /*    line-height: 1.125em;*/
 /*}*/
 
-.mainBox{
+.mainBox {
     transition-duration: 2s;
     display: flex;
     flex-direction: row;
@@ -59,8 +63,8 @@ thead {
 
 .header {
     color: rgb(255, 255, 255);
-    margin-top: 11px;
-    margin-left: 22px;
+    margin-top: 15px;
+    margin-left: 35px;
 }
 
 .searchWrap {
@@ -69,7 +73,7 @@ thead {
     position: relative;
     min-width: 0px;
     padding: 0px;
-    margin: 0px;
+    margin-bottom: 10px;
     border: 0px;
     vertical-align: top;
 }
@@ -87,6 +91,7 @@ thead {
     display: inline-block;
     margin-top: 15px;
     margin-left: 10px;
+    margin-right: 5px;
     content: "";
     width: 5px;
     height: 40px;
@@ -94,7 +99,7 @@ thead {
 }
 
 .inputBox:nth-of-type(1)::before {
-    margin-left: 32px;
+    margin-left: 40px;
 }
 
 .inputWrap {
@@ -110,9 +115,18 @@ thead {
     border-radius: 50px;
     width: 280px;
     margin-top: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.focused {
+    border: 2px solid rgb(25, 118, 210);
+    background-color: black;
 }
 
 .inputInner {
+    height: 100%;
+    width: 100%;
     font-family: Roboto, Helvetica, Arial, sans-serif;
     font-weight: 400;
     font-size: 1rem;
@@ -122,21 +136,35 @@ thead {
     box-sizing: border-box;
     cursor: text;
     display: inline-flex;
-    -webkit-box-align: center;
     align-items: center;
     position: relative;
     border-radius: 4px;
+    justify-content: center;
 }
 
+.inputInner input:focus {
+    background-color: black;
+}
 
-.iconFirst {
-    margin-left: 30px;
+.searchLabel {
+    width: 90%;
+    height: 100%;
+}
+
+.searchInput {
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    background-color: rgb(55, 55, 55);
+    border: none;
+    outline: none;
+    color: white;
 }
 
 .searchIcon {
     width: 3rem;
     height: 3rem;
-    margin-top: 11px;
+    margin-top: 8px;
     line-height: 3rem;
     font-size: 14px;
     white-space: nowrap;
@@ -149,6 +177,10 @@ thead {
     cursor: pointer;
 }
 
+.iconFirst {
+    margin-left: 30px;
+}
+
 .iconLast {
     background: rgb(98, 18, 18);
 }
@@ -159,10 +191,14 @@ thead {
     justify-content: space-between;
 }
 
-.totalCases{
+.totalCases {
     color: white;
-    margin-left: 20px;
+    margin-left: 40px;
     margin-top: 2px;
+}
+
+.listSetWrap {
+    margin-right: 40px;
 }
 
 .deleteButton {
@@ -175,7 +211,6 @@ thead {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
     outline: 0px;
-    margin: 0px 10px 0px 0px;
     cursor: pointer;
     user-select: none;
     vertical-align: middle;
@@ -185,10 +220,8 @@ thead {
     font-weight: 500;
     line-height: 1.75;
     letter-spacing: 0.02857em;
-    text-transform: uppercase;
     min-width: 64px;
     padding: 6px 8px;
-    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     border-radius: 15px;
     color: white;
     background-color: rgb(0, 0, 0);
@@ -218,10 +251,8 @@ thead {
     font-weight: 500;
     line-height: 1.75;
     letter-spacing: 0.02857em;
-    text-transform: uppercase;
     min-width: 64px;
     padding: 6px 8px;
-    transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     border-radius: 15px;
     color: white;
     background-color: black;
@@ -262,6 +293,21 @@ thead {
     height: 28px;
     font-size: 11px;
     border: 1px solid transparent;
+    justify-content: center;
+}
+
+.countLabel {
+    width: 60px;
+}
+
+.countSelect {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: black;
+    border: none;
+    outline: none;
+    color: white;
 }
 
 .searchListCountIcon {
@@ -274,7 +320,6 @@ thead {
     transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     color: rgb(160, 0, 0);
     font-size: 20px;
-    margin-right: 20px;
 }
 
 .searchListBox {
@@ -289,6 +334,10 @@ thead {
     height: 430px;
 }
 
+.searchListBox::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
 .searchList {
     width: 100%;
     table-layout: fixed;
@@ -301,7 +350,6 @@ thead {
 .searchListHead {
     cursor: pointer;
 }
-
 
 
 .searchList thead tr th:nth-of-type(1) {
@@ -444,12 +492,63 @@ thead {
     font-size: 0.875rem;
     line-height: 1.43;
     letter-spacing: 0.01071em;
-    display: table-cell;
     vertical-align: inherit;
     border-bottom: 1px solid rgb(224, 224, 224);
     text-align: left;
     padding: 16px;
     color: rgba(0, 0, 0, 0.87);
+}
+
+.moreCountButtonWrap {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+
+.moreCountButton {
+    display: inline-flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    outline: 0px;
+    margin: 0px 12px 0px 0px;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    appearance: none;
+    text-decoration: none;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.75;
+    letter-spacing: 0.02857em;
+    text-transform: uppercase;
+    min-width: 64px;
+    padding: 6px 8px;
+    border-radius: 15px;
+    color: white;
+    background-color: rgb(0, 0, 0);
+    width: 100px;
+    height: 28px;
+    font-size: 11px;
+    border: 1px solid transparent;
+}
+
+.moreCountButtonIcon {
+    user-select: none;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    fill: currentcolor;
+    flex-shrink: 0;
+    color: rgb(160, 0, 0);
+    font-size: 20px;
+    margin-left: 5px;
 }
 
 .bottomList {
@@ -476,7 +575,7 @@ thead {
     flex-flow: wrap;
     width: 100%;
     margin-top: 14px;
-    margin-left: 42px;
+    margin-left: 35px;
 }
 
 .patientStatusWrap {
@@ -507,7 +606,7 @@ thead {
     color: rgba(0, 0, 0, 0.87);
 }
 
-.previousList{
+.previousList {
     table-layout: fixed;
     word-break: break-all;
     width: 100%;
@@ -516,7 +615,7 @@ thead {
 
 }
 
-.previousList th{
+.previousList th {
     text-align: center;
     background: rgb(9, 9, 9);
     padding: 8px 0px;
@@ -527,7 +626,7 @@ thead {
 
 }
 
-.previousListHead{
+.previousListHead {
     font-family: Roboto, Helvetica, Arial, sans-serif;
     font-weight: 500;
     font-size: 0.875rem;
@@ -542,21 +641,28 @@ thead {
     top: 0px;
     z-index: 2;
     background-color: rgb(255, 255, 255);
-
 }
-.preNormal{
+
+.previousListBodyRow td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-height: 38px;
+}
+
+.preNormal {
     width: 13%;
 }
 
-.preLonger{
+.preLonger {
     width: 25%;
 }
 
-.preShort{
+.preShort {
     width: 11%;
 }
 
-.preLong{
+.preLong {
     width: 18%;
 }
 
@@ -600,7 +706,6 @@ thead {
     font-size: 0.875rem;
     line-height: 1.43;
     letter-spacing: 0.01071em;
-    display: table-cell;
     vertical-align: inherit;
     border-bottom: 1px solid rgb(224, 224, 224);
     text-align: left;
@@ -608,7 +713,7 @@ thead {
     color: rgba(0, 0, 0, 0.87);
 }
 
-.reportBox{
+.reportBox {
     border-radius: 8px;
     background: rgb(36, 36, 36);
     margin: 0px 40px 0px 12px;
