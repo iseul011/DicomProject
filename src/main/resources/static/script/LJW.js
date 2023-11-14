@@ -4,6 +4,214 @@ let stack = {
 };
 
 viewDicom();
+//도구 기능들 시작
+cornerstoneTools.init();
+cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
+let isZoomEnabled = false; // 변수를 선언하고 기본값으로 초기화
+let isDragging = false;
+let initialMousePosition = { x: 0, y: 0 };
+
+document.getElementById('zoomButton').addEventListener('click', () => {
+    isZoomEnabled = !isZoomEnabled;
+
+    if (isZoomEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+        console.log("뷰포트",activeViewport);
+    }
+});
+
+document.addEventListener('mousedown', (event) => {
+    if (isZoomEnabled) {
+        isDragging = true;
+        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+    }
+});
+
+document.addEventListener('mouseup', (event) => {
+    if (isZoomEnabled) {
+        const targetElement = event.target;
+        const clientX = event.clientX;
+        const clientY = event.clientY;
+
+        console.log(`Zoom Out at (${clientX}, ${clientY}) on ${targetElement.tagName}`);
+    }
+
+    isDragging = false;
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDragging && isZoomEnabled) {
+        const currentMousePosition = { x: event.clientX, y: event.clientY };
+
+        const deltaX = currentMousePosition.x - initialMousePosition.x;
+        const deltaY = currentMousePosition.y - initialMousePosition.y;
+
+        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        const viewport = cornerstone.getViewport(activeViewport);
+
+        viewport.translation.x -= deltaX * viewport.scale;
+        viewport.translation.y -= deltaY * viewport.scale;
+        viewport.scale += (deltaX + deltaY) * 0.001;
+
+        cornerstone.setViewport(activeViewport, viewport);
+
+        initialMousePosition = currentMousePosition;
+    }
+});
+
+
+
+
+
+let isWwwcEnabled = false;
+// let isDragging = false;
+// let initialMousePosition = { x: 0, y: 0 };
+let activeViewport;
+
+document.getElementById('wwwcButton').addEventListener('click', () => {
+    isWwwcEnabled = !isWwwcEnabled;
+
+    if (isWwwcEnabled) {
+        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 });
+    } else {
+        cornerstoneTools.setToolPassive('Wwwc');
+    }
+
+    console.log(`Wwwc Enabled: ${isWwwcEnabled}`);
+});
+
+document.addEventListener('mousedown', (event) => {
+    if (isWwwcEnabled) {
+        isDragging = true;
+        activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+
+        console.log('Dragging started');
+    }
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDragging && isWwwcEnabled) {
+        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+        const deltaX = currentMousePosition.x - initialMousePosition.x;
+        const deltaY = currentMousePosition.y - initialMousePosition.y;
+
+        const viewport = cornerstone.getViewport(activeViewport);
+
+        // Wwwc 도구 변경 로직을 여기에 추가
+        viewport.voi.windowWidth += deltaX * 1.9;
+        viewport.voi.windowCenter += deltaY * 1.9;
+
+        cornerstone.setViewport(activeViewport, viewport);
+
+        initialMousePosition = currentMousePosition;
+
+        console.log(`Wwwc Dragging: deltaX=${deltaX}, deltaY=${deltaY}`);
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    if (isWwwcEnabled) {
+        isDragging = false;
+        console.log('Dragging ended');
+    }
+});
+
+
+
+
+
+
+let isMoveEnabled = false;
+// let isDragging = false;
+// let initialMousePosition = { x: 0, y: 0 };
+document.getElementById('moveButton').addEventListener('click', () => {
+    isMoveEnabled = !isMoveEnabled;
+
+    if (isMoveEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+        dcmImage = cornerstone.getEnabledElement(activeViewport).image;
+    }
+});
+
+document.addEventListener('mousedown', (event) => {
+    if (isMoveEnabled) {
+        isDragging = true;
+        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+    }
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDragging && isMoveEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+        const viewport = cornerstone.getViewport(activeViewport);
+
+        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+
+        const deltaX = currentMousePosition.x - initialMousePosition.x;
+        const deltaY = currentMousePosition.y - initialMousePosition.y;
+
+        viewport.translation.x += deltaX;
+        viewport.translation.y += deltaY;
+
+        cornerstone.setViewport(activeViewport, viewport);
+
+        initialMousePosition = currentMousePosition;
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isMoveEnabled = false;
+});
+
+function resetImage() {
+    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+    cornerstone.reset(activeViewport);
+}
+
+document.addEventListener('contextmenu', (event) => {
+    event.preventDefault();
+    resetImage();
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        resetImage();
+    }
+});
+
+document.getElementById('resetButton').addEventListener('click', () => {
+    resetImage();
+});
+
+
+
+let isInvertEnabled = false;
+
+document.getElementById('invertButton').addEventListener('click', () => {
+    isInvertEnabled = !isInvertEnabled;
+
+    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
+    const viewport = cornerstone.getViewport(activeViewport);
+
+    if (isInvertEnabled) {
+        // 흑백 반전 활성화
+        viewport.invert = true;
+    } else {
+        // 흑백 반전 비활성화
+        viewport.invert = false;
+    }
+
+    cornerstone.setViewport(activeViewport, viewport);
+
+    console.log(`Invert Enabled: ${isInvertEnabled}`);
+});
+
+//끝
 
 function displayDicomImage(arrayBuffer, seriesinsuid) {
     let cont = 4;
@@ -102,24 +310,24 @@ async function viewDicom() {
             let item = seriesTabList[i];
 
             let directoryPath = await getImagePath(item.studykey, uniqueItems[i]);
-                //console.log(directoryPath[0])
-                let response = await axios.get("/getDicomFile", {
-                    params: {
-                        directoryPath: directoryPath[0]
-                    },
-                    responseType: 'arraybuffer'
-                });
+            //console.log(directoryPath[0])
+            let response = await axios.get("/getDicomFile", {
+                params: {
+                    directoryPath: directoryPath[0]
+                },
+                responseType: 'arraybuffer'
+            });
 
-                if (response.status === 200) {
-                    let arrayBuffer = response.data;
+            if (response.status === 200) {
+                let arrayBuffer = response.data;
 
-                    stack = {
-                        currentImageIdIndex: 0,
-                        imageIds: directoryPath,
-                    };
+                stack = {
+                    currentImageIdIndex: 0,
+                    imageIds: directoryPath,
+                };
 
-                    displayDicomImage(arrayBuffer, item.seriesinsuid);
-                }
+                displayDicomImage(arrayBuffer, item.seriesinsuid);
+            }
 
         }
 

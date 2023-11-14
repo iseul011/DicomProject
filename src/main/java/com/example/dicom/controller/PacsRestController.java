@@ -41,8 +41,6 @@ public class PacsRestController {
         }
     }
   
-
-    //여기서 부터 써치
     @GetMapping("/search/PacsStudytab")
     public List<PacsStudytab> getPacsStudytab() {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
@@ -54,6 +52,7 @@ public class PacsRestController {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
         return pacsStudytab;
     }
+
 
     @GetMapping("/search/PacsStudytab/searchList")
     public List<PacsStudytab> getSortedSearchPacsStudytab(
