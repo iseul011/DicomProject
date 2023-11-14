@@ -7,12 +7,19 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Integer> {
-
     String Reportstatus = "select * from STUDYTAB where reportstatus = ?";
 
-    List<PacsStudytab> findByStudykey(int studykey);
+    String threeFindAll = "select * from STUDYTAB where pname= ? or pid=? or reportstatus=?";
 
-    List<PacsStudytab> findAllByPid(String pid);
+    String oneAgo = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate >= TRUNC(SYSDATE) - 1\n" +
+            "  AND studydate < TRUNC(SYSDATE)";
+
+    String threeAgo = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate >= TRUNC(SYSDATE) - 3\n" +
+            "  AND studydate < TRUNC(SYSDATE)";
 
     List<PacsStudytab> findByPid(String pid, Sort sort);
 
@@ -27,6 +34,7 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
     List<PacsStudytab> findByPnameAndReportstatus(String pname, int reportstatus, Sort sort);
 
     List<PacsStudytab> findByPidAndPnameAndReportstatus(String pid, String pname, int reportstatus, Sort sort);
+
 
     void deleteByPid(String pid);
 
