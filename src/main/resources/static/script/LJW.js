@@ -214,16 +214,14 @@ document.getElementById('invertButton').addEventListener('click', () => {
 //끝
 
 function displayDicomImage(arrayBuffer, seriesinsuid) {
-    let cont = 4;
-    let IMAGEKEY = 1;
 
     const byteArray = new Uint8Array(arrayBuffer);
     const dataSet = dicomParser.parseDicom(byteArray);
-    console.log(dataSet)
-    if(IMAGEKEY === parseInt (dataSet.string('x00200013'))){
+
+
         const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
-        console.log(imageId)
-        stack.imageIds.push(imageId);
+        console.log(stack);
+        //stack.imageIds.push(imageId);
 
         const viewportElement = document.createElement('div');
         viewportElement.classList.add('CSViewport');
@@ -270,50 +268,33 @@ function displayDicomImage(arrayBuffer, seriesinsuid) {
         cornerstone.enable(viewportElement);
         cornerstone.loadImage(imageId).then(image => {
             cornerstone.displayImage(viewportElement, image);
-
-            const scrollWheelTool = cornerstoneTools.getToolForElement(viewportElement, 'StackScrollMouseWheel');
-            if (scrollWheelTool && scrollWheelTool.isEnabled()) {
-                cornerstoneTools.setToolActive('StackScrollMouseWheel', { element: viewportElement });
-                IMAGEKEY++;
-            }
-            cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
-            cornerstoneTools.addToolState(viewportElement, 'stack', stack);
         });
 
-    }
 }
 
 async function viewDicom() {
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
-    cornerstoneTools.init();
-    const StackScrollMouseWheelTool = cornerstoneTools.StackScrollMouseWheelTool;
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-
-    StackScrollMouseWheelTool.applyActiveStrategy = applyActiveStrategy;
-
     try {
 
         let seriesTabList = await getSeriesTab();
 
-        let items = [];
-
+        let cont = 4;
         for (let i = 0; i < seriesTabList.length; i++) {
-            items.push(seriesTabList[i].seriesnum);
-        }
 
-        // 중복된 숫자를 제거
-        let uniqueItems = [...new Set(items)];
-
-        for (let i = 0; i < uniqueItems.length; i++) {
             let item = seriesTabList[i];
 
-            let directoryPath = await getImagePath(item.studykey, uniqueItems[i]);
-            //console.log(directoryPath[0])
+            let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
+
+            stack = {
+                currentImageIdIndex: 0,
+                imageIds: directoryPath,
+            };
+
             let response = await axios.get("/getDicomFile", {
                 params: {
-                    directoryPath: directoryPath[0]
+                    directoryPath: stack.imageIds[stack.currentImageIdIndex]
                 },
                 responseType: 'arraybuffer'
             });
@@ -321,12 +302,9 @@ async function viewDicom() {
             if (response.status === 200) {
                 let arrayBuffer = response.data;
 
-                stack = {
-                    currentImageIdIndex: 0,
-                    imageIds: directoryPath,
-                };
-
-                displayDicomImage(arrayBuffer, item.seriesinsuid);
+                if(i<cont){
+                    displayDicomImage(arrayBuffer, item.seriesinsuid);
+                }
             }
 
         }
@@ -356,12 +334,12 @@ async function getSeriesTab() {
         console.error(error);
     }
 }
-async function getImagePath(studykey, seriesnum) {
+async function getImagePath(studykey, seriesinsuid) {
     try {
         let response = await axios.get("/getImagePath", {
             params: {
                 studykey: studykey,
-                seriesnum: seriesnum
+                seriesinsuid: seriesinsuid
             }
         });
 
@@ -372,18 +350,58 @@ async function getImagePath(studykey, seriesnum) {
         console.error(error);
     }
 }
-function applyActiveStrategy(evt, operationData) {
-
-    if (evt.deltaY > 0) {
-        // 다음 이미지로 전환
-        stack.currentImageIdIndex++;
-    } else if (evt.deltaY < 0) {
-        // 이전 이미지로 전환
-        stack.currentImageIdIndex--;
-    }
-
-    // 현재 이미지 인덱스가 이미지 아이디 배열의 범위를 벗어나지 않도록 처리
-    stack.currentImageIdIndex = Math.max(0, Math.min(stack.currentImageIdIndex, stack.imageIds.length - 1));
-
-}
-
+// async function applyActiveStrategy(evt, operationData) {
+//     if (evt.deltaY > 0) {
+//         // 마우스 휠을 아래로 움직일 때 다음 이미지로 전환
+//         stack.currentImageIdIndex++;
+//     } else if (evt.deltaY < 0) {
+//         // 마우스 휠을 위로 움직일 때 이전 이미지로 전환
+//         stack.currentImageIdIndex--;
+//     }
+//     console.log("마우스 휠 이벤트");
+//
+//     stack.currentImageIdIndex = Math.max(0, Math.min(stack.currentImageIdIndex, stack.imageIds.length - 1));
+//
+//     let response = await axios.get("/getDicomFile", {
+//         params: {
+//             directoryPath: stack.imageIds[stack.currentImageIdIndex]
+//         },
+//         responseType: 'arraybuffer'
+//     });
+//
+//     if (response.status === 200) {
+//         let arrayBuffer = response.data;
+//             displayDicomImage(arrayBuffer, item.seriesinsuid);
+//     }
+//
+// }
+//
+// Tools.StackScrollMouseWheelTool.applyActiveStrategy = async function (evt, operationData) {
+//     const deltaY = evt.deltaY;
+//
+//     if (deltaY !== 0) { // 이미지를 변경할 필요가 있는 경우에만 수행
+//         if (deltaY > 0) {
+//             // 마우스 휠을 아래로 움직일 때 다음 이미지로 전환
+//             stack.currentImageIdIndex++;
+//         } else if (deltaY < 0) {
+//             // 마우스 휠을 위로 움직일 때 이전 이미지로 전환
+//             stack.currentImageIdIndex--;
+//         }
+//
+//         // 현재 이미지 인덱스가 이미지 아이디 배열의 범위를 벗어나지 않도록 처리
+//         stack.currentImageIdIndex = Math.max(0, Math.min(stack.currentImageIdIndex, stack.imageIds.length - 1));
+//
+//         // 이미지 전환 후에 displayImage 함수를 호출하여 실제로 이미지를 표시
+//         let response = await axios.get("/getDicomFile", {
+//             params: {
+//                 directoryPath: stack.imageIds[stack.currentImageIdIndex]
+//             },
+//             responseType: 'arraybuffer'
+//         });
+//
+//         if (response.status === 200) {
+//             let arrayBuffer = response.data;
+//             displayDicomImage(arrayBuffer, item.seriesinsuid);
+//         }
+//     }
+// };

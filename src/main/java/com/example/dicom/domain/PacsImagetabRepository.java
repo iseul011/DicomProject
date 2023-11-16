@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PacsImagetabRepository extends JpaRepository<PacsImagetab, Integer> {
-    PacsImagetab findFirstByStudykeyAndSeriesnumber(int studykey,int seriesnumber);
+    PacsImagetab findFirstByStudykeyAndSeriesinsuid(int studykey,String seriesinsuid);
 
 
     List<PacsImagetab> findAllByStudykeyAndSerieskey(int studykey, int serieskey);
