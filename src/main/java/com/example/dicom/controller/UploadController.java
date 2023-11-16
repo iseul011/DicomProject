@@ -3,23 +3,15 @@ package com.example.dicom.controller;
 import com.example.dicom.domain.PacsImagetab;
 import com.example.dicom.domain.PacsImagetabRepository;
 import lombok.AllArgsConstructor;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.imageio.ImageIO;
-
-import org.dcm4che3.tool.dcm2jpg.Dcm2Jpg;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -29,31 +21,43 @@ import org.springframework.http.MediaType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
+
 
 @RestController
 @AllArgsConstructor
 public class UploadController {
     private final PacsImagetabRepository pacsImagetabRepository;
     @GetMapping("/getImagePath")
-    public List<String> getImagePaths(@RequestParam int studykey, @RequestParam int seriesnum) {
+    public List<String> getImagePaths(@RequestParam int studykey, @RequestParam String seriesinsuid) {
 
-        PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesnumber(studykey, seriesnum);
+        PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesinsuid(studykey, seriesinsuid);
 
-        String directoryPath ="Z:\\" + pacsImagetab.getPath();
+        String directoryPath = "Z:\\" + pacsImagetab.getPath();
 
         File directory = new File(directoryPath);
+
         File[] files = directory.listFiles();
 
         List<String> dcmFilePaths = new ArrayList<>();
 
         if (files != null) {
             for (File file : files) {
-                    dcmFilePaths.add(String.valueOf(file));
+                try (DicomInputStream dis = new DicomInputStream(file)) {
+                    Attributes attributes = dis.readDataset(-1, -1);
+                    String seriesInstanceUID = attributes.getString(Tag.SeriesInstanceUID);
+
+                        if (seriesinsuid.equals(seriesInstanceUID)) {
+                            dcmFilePaths.add(file.getAbsolutePath());
+                        }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         return dcmFilePaths;
+
     }
 
 
