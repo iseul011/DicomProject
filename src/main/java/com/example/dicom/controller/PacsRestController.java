@@ -96,36 +96,4 @@ public class PacsRestController {
         return value == null || value.isEmpty();
     }
 
-
-//    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-//    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {
-//
-//        if(resource.exists() == false) {
-//            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
-//        }
-//        String resourceName = resource.getFilename();
-//        String resourceOrigunalName = resourceName.substring(resourceName.indexOf("-") + 1);
-//        HttpHeaders headers = new HttpHeaders();
-//        try {
-//            String downloadName = null;
-//            if(userAgent.contains("Trident")) {
-//                log.info("IE broweser");
-//                downloadName = URLEncoder.encode(resourceOrigunalName, "UTF-8").replace("\\+", "");
-//            } else if(userAgent.contains("Edge")) {
-//                log.info("Edge browser");
-//                downloadName = URLEncoder.encode(resourceOrigunalName, "UTF-8");
-//                log.info("Edge name: " + downloadName);
-//            } else {
-//                log.info("CHrome broweser");
-//                downloadName = new String(resourceOrigunalName.getBytes("UTF-8"), "ISO-8859-1");
-//            }
-//
-//            headers.add("Content-Disposition",  "attachment; filename=" + downloadName);
-//        } catch (Exception e) {
-//            log.error(e);
-//        }
-//
-//        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-//    }
-
 }
