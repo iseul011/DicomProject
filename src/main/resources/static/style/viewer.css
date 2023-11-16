@@ -157,3 +157,6 @@
 .CSViewport span{
     display: block;
 }
+.CSViewport.selectedViewport {
+    border: 2px solid pink;
+}
