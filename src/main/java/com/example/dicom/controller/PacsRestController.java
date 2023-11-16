@@ -40,7 +40,7 @@ public class PacsRestController {
             pacsStudytabRepository.deleteByPid(pid.get(i));
         }
     }
-  
+
     @GetMapping("/search/PacsStudytab")
     public List<PacsStudytab> getPacsStudytab() {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
@@ -56,74 +56,44 @@ public class PacsRestController {
 
     @GetMapping("/search/PacsStudytab/searchList")
     public List<PacsStudytab> getSortedSearchPacsStudytab(
-            @RequestParam String column,
+            @RequestParam(required = false) String column,
             @RequestParam boolean order,
             @RequestParam(required = false) String pidValue,
             @RequestParam(required = false) String pNameValue,
             @RequestParam int reportStatusValue) {
+        if (column.isEmpty()) {
+            return pacsStudytabRepository.findAll();
+        } else {
+            Sort sort = Sort.by(order ? Sort.Direction.DESC : Sort.Direction.ASC, column);
 
-        Sort sort = Sort.by(order ? Sort.Direction.DESC : Sort.Direction.ASC, column);
-
-        if (isEmpty(pidValue) && isEmpty(pNameValue)) {
-            return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
-        }
-
-        if (isEmpty(pidValue)) {
-            if (reportStatusValue == 0) {
-                return pacsStudytabRepository.findByPname(pNameValue, sort);
-            } else {
-                return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
+            if (isEmpty(pidValue) && isEmpty(pNameValue)) {
+                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
             }
-        }
 
-        if (isEmpty(pNameValue)) {
-            if (reportStatusValue == 0) {
-                return pacsStudytabRepository.findByPid(pidValue, sort);
-            } else {
-                return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
+            if (isEmpty(pidValue)) {
+                if (reportStatusValue == 0) {
+                    return pacsStudytabRepository.findByPname(pNameValue, sort);
+                } else {
+                    return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
+                }
             }
-        }
 
-        return (reportStatusValue == 0)
-                ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
-                : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
+            if (isEmpty(pNameValue)) {
+                if (reportStatusValue == 0) {
+                    return pacsStudytabRepository.findByPid(pidValue, sort);
+                } else {
+                    return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
+                }
+            }
+
+            return (reportStatusValue == 0)
+                    ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
+                    : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
+        }
     }
 
     private boolean isEmpty(String value) {
         return value == null || value.isEmpty();
     }
-
-
-
-//    @GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-//    public ResponseEntity<Resource> downloadFile(@RequestHeader("user-Agent") String userAgent, String fileName) {
-//
-//        if(resource.exists() == false) {
-//            return new ResponseEntity<Resource>(HttpStatus.NOT_FOUND);
-//        }
-//        String resourceName = resource.getFilename();
-//        String resourceOrigunalName = resourceName.substring(resourceName.indexOf("-") + 1);
-//        HttpHeaders headers = new HttpHeaders();
-//        try {
-//            String downloadName = null;
-//            if(userAgent.contains("Trident")) {
-//                log.info("IE broweser");
-//                downloadName = URLEncoder.encode(resourceOrigunalName, "UTF-8").replace("\\+", "");
-//            } else if(userAgent.contains("Edge")) {
-//                log.info("Edge browser");
-//                downloadName = URLEncoder.encode(resourceOrigunalName, "UTF-8");
-//                log.info("Edge name: " + downloadName);
-//            } else {
-//                log.info("CHrome broweser");
-//                downloadName = new String(resourceOrigunalName.getBytes("UTF-8"), "ISO-8859-1");
-//            }
-//
-//            headers.add("Content-Disposition",  "attachment; filename=" + downloadName);
-//        } catch (Exception e) {
-//            log.error(e);
-//        }
-//
-//        return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-//    }
 
 }
