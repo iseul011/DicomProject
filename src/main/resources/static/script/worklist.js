@@ -2,12 +2,13 @@ const clickCount = document.getElementById("search_submit");
 const searchTable = document.querySelector(".searchListBody");
 
 let number = 0;
-let column = 'pid';
+let rowNumber = 0;
+let column = '';
 let order = true;
 let pidValue = null;
 let pNameValue = null;
 let reportStatusValue = 0;
-selectPaging();
+let searchListData;
 
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
@@ -17,14 +18,56 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
+    resetSearchTable()
+}
 
-    loadData()
+async function resetSearchTable() {
+    selectPaging();
+    await getSearchListData();
+    printTotalCount()
+    createMoreCountButton();
+    deleteMoreCountButton();
+}
+
+function selectPaging() {
+    rowNumber = 0;
+    let select = document.getElementById("selectPaging");
+    number = parseInt(select.options[select.selectedIndex].value);
+}
+
+async function getSearchListData() {
+    searchTable.innerHTML = '';
+
+    const response = await axios.get("/v1/storage/search/PacsStudytab/searchList", {
+        params: {
+            column: column,
+            order: order,
+            pidValue: pidValue,
+            pNameValue: pNameValue,
+            reportStatusValue: reportStatusValue
+        }
+    });
+
+    searchListData = response.data;
+
+    overCount();
+
+    for (let i = 0; i < number; i++) {
+        printSearchTable(searchListData[i]);
+    }
+}
+
+function printTotalCount() {
+    const totalCount = document.querySelector(".totalCases");
+
+    totalCount.innerHTML = `<p>총 검사 건수: ${number}</p>`;
+
 }
 
 function printSearchTable(data) {
     let reportStatusString = transReportStatus(data.reportstatus);
 
-    let row = searchTable.insertRow(0);
+    let row = searchTable.insertRow(rowNumber);
     let chk = row.insertCell(0);
     let pid = row.insertCell(1);
     let pname = row.insertCell(2);
@@ -40,7 +83,7 @@ function printSearchTable(data) {
         loadPrevious(data.pid, data.pname);
     });
 
-    let checkbox = `<input type="checkbox" class="checkbox" name="checkbox" value="${data.pid}"/>`;
+    let checkbox = `<input type="checkbox" class="checkbox" name="checkbox" value="${data.studykey}"/>`;
     row.className = "searchListBodyRow"
     chk.className = "searchListBodyColumnCenter"
     pid.className = "searchListBodyColumnLeft"
@@ -63,46 +106,42 @@ function printSearchTable(data) {
     seriescnt.innerHTML = data.seriescnt;
     imagecnt.innerHTML = data.imagecnt;
     verify.innerHTML = data.verifyflag;
-
-    createMoreCountButton();
 }
 
-function printTotalCount() {
-    const totalCount = document.querySelector(".totalCases");
+function createMoreCountButton() {
+    const moreCountButtonWrap = document.querySelector(".moreCountButtonWrap");
+    moreCountButtonWrap.innerHTML =
+        `<button class="moreCountButton" onclick="printMore()">더 보기
+            <svg class="moreCountButtonIcon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
+                <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
+            </svg>
+        </button>`;
+}
 
-    if (number !== 0) {
-        totalCount.innerHTML = `<p>총 검사 건수: ${number}</p>`;
-    } else {
-        totalCount.innerHTML = `<p>총 개수: </p>`;
+function deleteMoreCountButton() {
+    if (number === searchListData.length) {
+        const moreCountButtonWrap = document.querySelector(".moreCountButtonWrap");
+        moreCountButtonWrap.innerHTML = ``;
     }
 }
 
-function loadData() {
-    searchTable.innerHTML = '';
+function printMore() {
+    rowNumber += 10;
+    number += 10;
+    overCount();
+    for (let i = rowNumber; i < number; i++) {
+        printSearchTable(searchListData[i])
+    }
 
-    axios.get("/v1/storage/search/PacsStudytab/searchList", {
-        params: {
-            column: column,
-            order: order,
-            pidValue: pidValue,
-            pNameValue: pNameValue,
-            reportStatusValue: reportStatusValue
-        }
-    })
-        .then(response => {
-            const data = response.data;
-            if (data.length < number) {
-                number = data.length;
-            }
 
-            printTotalCount()
+    printTotalCount();
+    deleteMoreCountButton();
+}
 
-            // foreach -> for
-            for (let i = 0; i < number; i++) {
-                printSearchTable(data[i])
-            }
-        });
-
+function overCount() {
+    if (searchListData.length < number) {
+        number = searchListData.length;
+    }
 }
 
 function loadPrevious(pid, pname) {
@@ -161,7 +200,7 @@ function loadPrevious(pid, pname) {
         });
 }
 
-function chkAll(selectAll) {
+function chkAll() {
     const checkboxes = document.querySelectorAll(".checkbox");
 
     checkboxes.forEach((checkbox) => {
@@ -170,36 +209,14 @@ function chkAll(selectAll) {
 }
 
 
-function selectPaging() {
-    let select = document.getElementById("selectPaging");
-    number = parseInt(select.options[select.selectedIndex].value);
-}
-
-function createMoreCountButton() {
-    const moreCountButtonWrap = document.querySelector(".moreCountButtonWrap");
-    moreCountButtonWrap.innerHTML =
-        `<button class="moreCountButton" onclick="moreCount()">더 보기
-            <svg class="moreCountButtonIcon" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="ExpandMoreIcon">
-                <path d="M16.59 8.59 12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>
-            </svg>
-        </button>`;
-}
-
-function moreCount() {
-    number += 10;
-
-    loadData();
-}
-
 function sortTable(input) {
-    console.log(column, input)
     if (column === input) {
         order = !order;
     } else {
         column = input
         order = true
     }
-    loadData();
+    searchList();
 }
 
 function addFocusStyle(id) {
@@ -224,23 +241,95 @@ function removeFocusStyle(id) {
     }
 }
 
-function transReportStatus(reportStatus){
-    if(reportStatus === 2) {
+function transReportStatus(reportStatus) {
+    if (reportStatus === 2) {
         return "열람 중"
-    }
-    else if(reportStatus === 3){
+    } else if (reportStatus === 3) {
         return "읽지 않음"
-    }
-    else if(reportStatus === 4){
+    } else if (reportStatus === 4) {
         return "예비 판독"
-    }
-    else if(reportStatus === 5){
+    } else if (reportStatus === 5) {
         return "판독 완료"
     }
 }
 
-function searchInputFocused() {
+async function downloadDicomFiles() {
+    const selectedStudyKeys = getSelectedStudyKeys();
+    for (const studykey of selectedStudyKeys) {
+        let seriesTabList = await getSeriesTab(studykey);
 
+        let items = [];
+        for (let i = 0; i < seriesTabList.length; i++) {
+
+            items.push(seriesTabList[i].seriesnum);
+        }
+
+        let uniqueItems = [...new Set(items)];
+        // 중복된 숫자를 제거
+        for (let i = 0; i < uniqueItems.length; i++) {
+            let item = seriesTabList[i];
+            let directoryPaths = await getImagePath(item.studykey, uniqueItems[i]);
+            // 각 DICOM 파일에 대해 다운로드 링크를 생성하고 다운로드합니다.
+            directoryPaths.forEach(directoryPath => {
+                axios.get(`/getDicomDownloadPath`, {
+                    params: {
+                        directoryPath: encodeURIComponent(directoryPath)
+                    }
+                })
+                    .then(response => {
+                        const contentDisposition = response.headers.get('content-disposition');
+                        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                        const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile';
+                        // Blob을 다운로드하는 링크를 생성합니다.
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(new Blob([response.data]));
+                        link.download = fileName // 파일 이름으로 다운로드
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+            });
+
+        }
+    }
+}
+
+async function getSeriesTab(studykey) {
+    try {
+        const response = await axios.get("/v1/storage/search/PacsSeriestab", {
+            params: {
+                studykey: studykey // 여러 studykey를 콤마로 구분하여 전달
+            }
+        });
+
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function getImagePath(studykey, seriesnum) {
+    try {
+        let response = await axios.get("/getImagePath", {
+            params: {
+                studykey: studykey,
+                seriesnum: seriesnum
+            }
+        });
+
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function getSelectedStudyKeys() {
+    const selectedRows = document.querySelectorAll('.searchListBodyRow input[type="checkbox"]:checked');
+    return Array.from(selectedRows).map(row => row.value);
 }
 
 // function deleteData() {
@@ -266,19 +355,6 @@ function searchInputFocused() {
 //                 alert("리로드");
 //             }
 //         });
-// }
-
-// function paging(item) {
-//     let str = "";
-//
-//     str += `<table>`;
-//     str += `<tr>item.</tr>`;
-//     str += ``;
-//     str += ``;
-//     str += ``;
-//     str += ``;
-//     str += ``;
-//     str += `</table>`;
 // }
 
 // function download() {

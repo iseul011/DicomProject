@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.dcm4che3.io.DicomInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +18,8 @@ import javax.imageio.ImageIO;
 import org.dcm4che3.tool.dcm2jpg.Dcm2Jpg;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLDecoder;
 import java.util.*;
 
 import org.springframework.http.HttpHeaders;
@@ -35,12 +34,13 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UploadController {
     private final PacsImagetabRepository pacsImagetabRepository;
+
     @GetMapping("/getImagePath")
-    public List<String> getImagePaths(@RequestParam int studykey, @RequestParam int seriesnum) {
+    public List<String> getImagePath(@RequestParam int studykey, @RequestParam int seriesnum) {
 
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesnumber(studykey, seriesnum);
 
-        String directoryPath ="Z:\\" + pacsImagetab.getPath();
+        String directoryPath = "Z:\\" + pacsImagetab.getPath();
 
         File directory = new File(directoryPath);
         File[] files = directory.listFiles();
@@ -49,7 +49,7 @@ public class UploadController {
 
         if (files != null) {
             for (File file : files) {
-                    dcmFilePaths.add(String.valueOf(file));
+                dcmFilePaths.add(String.valueOf(file));
             }
         }
 
@@ -57,7 +57,7 @@ public class UploadController {
     }
 
 
-    @GetMapping("/getDicomFile")
+        @GetMapping("/getDicomFile")
     public ResponseEntity<byte[]> getDicom(@RequestParam String directoryPath) throws IOException {
         // 예시: DICOM 파일의 경로 설정
         //System.out.println("directoryPath : " + directoryPath);
@@ -77,6 +77,29 @@ public class UploadController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(fileContent);
+    }
+    @GetMapping("/getDicomDownloadPath")
+    public ResponseEntity<byte[]> getDicomDownloadPath(@RequestParam("directoryPath") String directoryPath) throws IOException {
+        try {
+            // URL 디코딩 수행
+            String decodedDirectoryPath = URLDecoder.decode(directoryPath, "UTF-8");
+
+            // 파일 경로를 생성하고 해당 파일의 내용을 바이트 배열로 읽어옴
+            Path path = Paths.get(decodedDirectoryPath);
+            byte[] data = Files.readAllBytes(path);
+
+            // 응답에 파일 내용과 헤더 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", path.getFileName().toString());
+            headers.setContentLength(data.length);
+
+            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+        } catch (UnsupportedEncodingException e) {
+            // URL 디코딩 중 예외 처리
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -146,7 +146,7 @@
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
-                        <button class="downloadButton" onclick="download()">다운로드
+                        <button class="downloadButton" onclick="downloadDicomFiles()">다운로드
                             <svg class="listSetIcon" focusable="false" aria-hidden="true"
                                  viewBox="0 0 24 24"
                                  data-testid="DownloadIcon">
