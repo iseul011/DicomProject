@@ -158,5 +158,5 @@
     display: block;
 }
 .CSViewport.selectedViewport {
-    border: 2px solid pink;
+    border: 6px solid pink;
 }

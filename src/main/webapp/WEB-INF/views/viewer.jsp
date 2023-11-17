@@ -333,7 +333,7 @@
 
 
 </body>
-<script src="/script/LJW.js"></script>
+<script src="/script/test1.js"></script>
 </html>
 
 
