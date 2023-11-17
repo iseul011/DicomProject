@@ -3,9 +3,7 @@ let stack = {
     imageIds: [],
 };
 
-// 도구 기능들 시작
 cornerstoneTools.init();
-let activeViewport;
 
 // Zoom 도구
 let isZoomEnabled = false;
@@ -15,44 +13,36 @@ let initialMousePositionZoom = { x: 0, y: 0 };
 document.getElementById('zoomButton').addEventListener('click', (event) => {
     isZoomEnabled = !isZoomEnabled;
 
-    if (isZoomEnabled && activeViewport) {
-        const activeViewportElement = cornerstone.getEnabledElement(activeViewport).element;
-        initialMousePositionZoom = cornerstone.pageToPixel(activeViewportElement, event.clientX, event.clientY);
-        console.log("뷰포트", activeViewport);
-    }
+
+        if (isZoomEnabled) {
+            cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
+        } else {
+            cornerstoneTools.setToolPassive('Zoom');
+        }
 });
 
 document.addEventListener('mousedown', (event) => {
     if (isZoomEnabled) {
         isDraggingZoom = true;
-        if (activeViewport) {
-            const activeViewportElement = cornerstone.getEnabledElement(activeViewport).element;
-            initialMousePositionZoom = cornerstone.pageToPixel(activeViewportElement, event.clientX, event.clientY);
-        }
+
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        initialMousePositionZoom = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
     }
 });
 
 document.addEventListener('mouseup', (event) => {
-    if (isZoomEnabled) {
-        const targetElement = event.target;
-        const clientX = event.clientX;
-        const clientY = event.clientY;
-
-        console.log(`Zoom Out at (${clientX}, ${clientY}) on ${targetElement.tagName}`);
-    }
 
     isDraggingZoom = false;
 });
 
 document.addEventListener('mousemove', (event) => {
     if (isDraggingZoom && isZoomEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
         const currentMousePosition = { x: event.clientX, y: event.clientY };
 
         const deltaX = currentMousePosition.x - initialMousePositionZoom.x;
         const deltaY = currentMousePosition.y - initialMousePositionZoom.y;
 
-        //const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
         const viewport = cornerstone.getViewport(activeViewport);
 
         viewport.translation.x -= deltaX * viewport.scale;
@@ -64,6 +54,7 @@ document.addEventListener('mousemove', (event) => {
         initialMousePositionZoom = currentMousePosition;
     }
 });
+
 
 // Wwwc 도구
 let isWwwcEnabled = false;
@@ -79,18 +70,17 @@ document.getElementById('wwwcButton').addEventListener('click', () => {
         cornerstoneTools.setToolPassive('Wwwc');
     }
 
-    console.log(`Wwwc Enabled: ${isWwwcEnabled}`);
+    console.log(`Wwwc 활성화: ${isWwwcEnabled}`);
 });
 
 document.addEventListener('mousedown', (event) => {
     if (isWwwcEnabled) {
         isDraggingWwwc = true;
 
-        //activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
         const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
         initialMousePositionWwwc = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
 
-        console.log('Wwwc Dragging started');
+        console.log('Wwwc 드래깅 시작');
     }
 });
 
@@ -110,14 +100,14 @@ document.addEventListener('mousemove', (event) => {
 
         initialMousePositionWwwc = currentMousePosition;
 
-        console.log(`Wwwc Dragging: deltaX=${deltaX}, deltaY=${deltaY}`);
+        console.log(`Wwwc 드래깅: deltaX=${deltaX}, deltaY=${deltaY}`);
     }
 });
 
 document.addEventListener('mouseup', () => {
     if (isWwwcEnabled) {
         isDraggingWwwc = false;
-        console.log('Wwwc Dragging ended');
+        console.log('Wwwc 드래깅 종료');
     }
 });
 
@@ -131,7 +121,6 @@ document.getElementById('moveButton').addEventListener('click', () => {
 
     if (isMoveEnabled) {
         const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        //const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
         initialMousePositionMove = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
     }
 });
@@ -144,13 +133,8 @@ document.addEventListener('mousedown', (event) => {
 
 document.addEventListener('mousemove', (event) => {
     if (isDraggingMove && isMoveEnabled) {
-        //const activeViewportId = getActiveViewportId(); // 함수를 통해 구현해야 함
-
-        // 해당 ID를 사용하여 뷰포트 엘리먼트 가져오기
         const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-
         const viewport = cornerstone.getViewport(activeViewport);
-
         const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
 
         const deltaX = currentMousePosition.x - initialMousePositionMove.x;
@@ -167,10 +151,9 @@ document.addEventListener('mouseup', () => {
     isDraggingMove = false;
 });
 
-// Reset 도구
+// 초기화 도구
 function resetImage() {
     const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-
     cornerstone.reset(activeViewport);
 }
 
@@ -195,38 +178,50 @@ let isInvertEnabled = false;
 document.getElementById('invertButton').addEventListener('click', () => {
     isInvertEnabled = !isInvertEnabled;
 
-    //const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
     const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
     const viewport = cornerstone.getViewport(activeViewport);
 
     if (isInvertEnabled) {
-        // 흑백 반전 활성화
         viewport.invert = true;
     } else {
-        // 흑백 반전 비활성화
         viewport.invert = false;
     }
 
     cornerstone.setViewport(activeViewport, viewport);
 
-    console.log(`Invert Enabled: ${isInvertEnabled}`);
+    console.log(`반전 활성화: ${isInvertEnabled}`);
 });
+
 // 클릭된 엘리먼트의 ID를 저장할 전역 변수 또는 다른 적절한 방법을 사용하여 전달
 let clickedElementId;
 
 // 클릭된 엘리먼트의 id를 활용하는 함수
 function handleClickedElement(elementId) {
-    // 이 함수에서 클릭된 엘리먼트의 id를 활용하여 필요한 동작 수행
-    // 예를 들어, 특정 id에 따라 다른 동작을 수행하는 등의 로직을 작성
-    console.log('Clicked Element ID:', elementId);
+    const activeViewport = cornerstone.getEnabledElement(document.getElementById(elementId));
 
+    if (!activeViewport) {
+        // 뷰포트가 비활성화 상태이므로 활성화
+        cornerstone.enable(document.getElementById(elementId));
+    }
+
+    // 이제 작업을 수행할 수 있음
+    console.log('Clicked Element ID:', elementId);
 
     // 여기서 추가로 필요한 로직을 작성
     // 클릭된 엘리먼트의 ID를 전역 변수에 저장
     clickedElementId = elementId;
+
+    // 빨간색 테두리 스타일을 제거
+    const allViewports = document.querySelectorAll('.CSViewport');
+    allViewports.forEach(viewport => {
+        viewport.classList.remove('selectedViewport');
+    });
+
+    // 클릭된 뷰포트에 빨간색 테두리 스타일 추가
+    if (activeViewport.element.classList.contains('CSViewport')) {
+        activeViewport.element.classList.add('selectedViewport');
+    }
 }
-// 마우스 클릭 이벤트에 대한 리스너 추가
-let selectedViewportId = null;
 
 document.addEventListener('click', (event) => {
     // 클릭된 지점의 엘리먼트를 가져옴
@@ -237,26 +232,12 @@ document.addEventListener('click', (event) => {
 
     // 가져온 id를 출력 또는 활용
     handleClickedElement(clickedElementId);
-
-    // 클릭된 뷰포트에 빨간색 테두리 스타일 추가
-    if (clickedElement.classList.contains('CSViewport')) {
-        if (selectedViewportId !== clickedElementId) {
-            // 이전에 선택된 뷰포트의 테두리 스타일을 제거
-            const selectedViewport = document.getElementById(selectedViewportId);
-            if (selectedViewport) {
-                selectedViewport.classList.remove('selectedViewport');
-            }
-
-            // 새로운 뷰포트에 테두리 스타일 추가
-            clickedElement.classList.add('selectedViewport');
-            selectedViewportId = clickedElementId;
-        }
-    }
 });
 
 // 뷰어 시작
 viewDicom();
 //끝
+
 
 function displayDicomImage(arrayBuffer, seriesinsuid) {
     let cont = 4;
@@ -330,7 +311,7 @@ function displayDicomImage(arrayBuffer, seriesinsuid) {
     }
 
 }
-// Viewport 초기화 및 도구 활성화
+// Viewport 초기화 및 도구 활성화 필요는 없음 일단 놔두기
 function activateToolsForViewport(viewportElement) {
     cornerstoneTools.setToolActive('Zoom', { element: viewportElement });
     cornerstoneTools.setToolActive('Wwwc', { element: viewportElement, mouseButtonMask: 1 });
@@ -364,7 +345,7 @@ async function viewDicom() {
         for (let i = 0; i < uniqueItems.length; i++) {
             let item = seriesTabList[i];
 
-            let directoryPath = await getImagePath(item.studykey, uniqueItems[i]);
+            let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
             //console.log(directoryPath[0])
             let response = await axios.get("/getDicomFile", {
                 params: {
@@ -411,12 +392,12 @@ async function getSeriesTab() {
         console.error(error);
     }
 }
-async function getImagePath(studykey, seriesnum) {
+async function getImagePath(studykey, seriesinsuid) {
     try {
         let response = await axios.get("/getImagePath", {
             params: {
                 studykey: studykey,
-                seriesnum: seriesnum
+                seriesinsuid: seriesinsuid
             }
         });
 
