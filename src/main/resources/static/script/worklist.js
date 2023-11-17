@@ -18,11 +18,11 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
-    resetSearchTable()
-}
-
-async function resetSearchTable() {
     selectPaging();
+    resetSearchTable();
+
+}
+async function resetSearchTable() {
     await getSearchListData();
     printTotalCount()
     createMoreCountButton();
@@ -67,7 +67,7 @@ function printTotalCount() {
 function printSearchTable(data) {
     let reportStatusString = transReportStatus(data.reportstatus);
 
-    let row = searchTable.insertRow(rowNumber);
+    let row = searchTable.insertRow(rowNumber++);
     let chk = row.insertCell(0);
     let pid = row.insertCell(1);
     let pname = row.insertCell(2);
@@ -126,7 +126,6 @@ function deleteMoreCountButton() {
 }
 
 function printMore() {
-    rowNumber += 10;
     number += 10;
     overCount();
     for (let i = rowNumber; i < number; i++) {
@@ -210,13 +209,14 @@ function chkAll() {
 
 
 function sortTable(input) {
+    rowNumber=0;
     if (column === input) {
         order = !order;
     } else {
         column = input
         order = true
     }
-    searchList();
+    resetSearchTable();
 }
 
 function addFocusStyle(id) {
