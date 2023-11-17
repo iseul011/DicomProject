@@ -6,16 +6,12 @@ import lombok.AllArgsConstructor;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import javax.imageio.ImageIO;
-import org.dcm4che3.tool.dcm2jpg.Dcm2Jpg;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLDecoder;
 import java.io.File;
@@ -37,7 +33,6 @@ public class UploadController {
 
     public List<String> getImagePaths(@RequestParam int studykey, @RequestParam String seriesinsuid) {
 
-
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesinsuid(studykey, seriesinsuid);
 
         String directoryPath = "Z:\\" + pacsImagetab.getPath();
@@ -50,7 +45,7 @@ public class UploadController {
 
         if (files != null) {
             for (File file : files) {
-              
+
                 try (DicomInputStream dis = new DicomInputStream(file)) {
                     Attributes attributes = dis.readDataset(-1, -1);
                     String seriesInstanceUID = attributes.getString(Tag.SeriesInstanceUID);
