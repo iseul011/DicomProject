@@ -333,7 +333,9 @@
 
 
 </body>
-<script src="/script/cornerstoneTest.js"></script>
+
+<script src="/script/test1.js"></script>
+
 </html>
 
 
