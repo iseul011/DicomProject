@@ -333,7 +333,7 @@
 
 
 </body>
-<script src="/script/LJW.js"></script>
+<script src="/script/cornerstoneTest.js"></script>
 </html>
 
 
