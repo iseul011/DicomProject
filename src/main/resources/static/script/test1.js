@@ -9,7 +9,7 @@ cornerstoneTools.init();
 let isZoomEnabled = false;
 let isDraggingZoom = false;
 let initialMousePositionZoom = { x: 0, y: 0 };
-
+let zoom = 0.001;
 document.getElementById('zoomButton').addEventListener('click', (event) => {
     isZoomEnabled = !isZoomEnabled;
 
