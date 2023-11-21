@@ -154,9 +154,21 @@
     right: 10px;
 }
 
-.CSViewport span{
+.CSViewport span {
     display: block;
 }
 .CSViewport.selectedViewport {
     border: 6px solid pink;
+}
+
+.thumbnail h3 {
+    margin: 10px 0;
+}
+.thumbnail::-webkit-scrollbar {
+    display: none;
+}
+
+.thumbnail .bm {
+    font-size: 12px;
+    margin-bottom: 5px;
 }

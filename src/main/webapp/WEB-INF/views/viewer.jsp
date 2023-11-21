@@ -28,12 +28,13 @@
             </div>
 
             <div class="MuiBox-root css-0">
-                <div class="icon">
+                <div class="icon" onclick="thumbnailBox()">
                     <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="AddToPhotosIcon">
                         <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"></path>
                     </svg>
                 </div>
-                <span class="thumbnailBox ">썸네일</span>
+                <span class="thumbnailBox">썸네일</span>
+
 
                 <div class="icon active">
                     <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="HandymanIcon">
@@ -69,7 +70,7 @@
         </div>
 
     </div>
-  
+
     <div class="mainBox">
         <div class="mainMenu">
             <ul class="viewerMenu">
@@ -321,20 +322,23 @@
                     <span>이미지레이아웃</span>
                 </button>
             </ul>
+
             <div class="contentBox">
-                <div class="wadoBox" id="dicomImageContainer">
+                <!-- 썸네일 -->
+                <div class="thumbnail">
                 </div>
 
+                <div class="wadoBox" id="dicomImageContainer">
+                </div>
             </div>
         </div>
+
     </div>
 </div>
 <%@ include file="include/footer.jsp" %>
 
-
+<script src="/script/viPhs.js"></script>
 </body>
-
-<script src="/script/test1.js"></script>
 
 </html>
 
