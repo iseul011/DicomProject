@@ -33,7 +33,11 @@ public class PacsRestController {
         List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
         return pacsImagetab;
     }
-
+    @GetMapping("/search/PacsImagetabs")
+    public List<PacsImagetab> getPacsImageTabsBySeriesUID(@RequestParam String seriesinsuid){
+        List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findBySeriesinsuid(seriesinsuid);
+        return pacsImagetab;
+    }
     @DeleteMapping("/delete")
     public void Delete(@RequestBody List<String> pid) {
         for (int i = 0; i < pid.size(); i++) {
