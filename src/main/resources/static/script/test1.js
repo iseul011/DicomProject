@@ -9,7 +9,7 @@ cornerstoneTools.init();
 let isZoomEnabled = false;
 let isDraggingZoom = false;
 let initialMousePositionZoom = { x: 0, y: 0 };
-
+let zoom = 0.001;
 document.getElementById('zoomButton').addEventListener('click', (event) => {
     isZoomEnabled = !isZoomEnabled;
 
@@ -30,20 +30,21 @@ document.addEventListener('mousedown', (event) => {
     }
 });
 
-document.addEventListener('mouseup', (event) => {
-
-    isDraggingZoom = false;
-});
-
 document.addEventListener('mousemove', (event) => {
     if (isDraggingZoom && isZoomEnabled) {
         const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        const viewport = cornerstone.getViewport(activeViewport);
         const currentMousePosition = { x: event.clientX, y: event.clientY };
 
+        // const deltaY = currentMousePosition.y - initialMousePositionZoom.y;
+        //
+        // // 클릭 지점을 중심으로 이미지 확대/축소
+        // const centerY = initialMousePositionZoom.y;
+        //
+        // viewport.translation.y += centerY * (1 - 1 / (1 + deltaY * 0.001));
+        // viewport.scale *= 1 / (1 + deltaY * zoom);
         const deltaX = currentMousePosition.x - initialMousePositionZoom.x;
         const deltaY = currentMousePosition.y - initialMousePositionZoom.y;
-
-        const viewport = cornerstone.getViewport(activeViewport);
 
         viewport.translation.x -= deltaX * viewport.scale;
         viewport.translation.y -= deltaY * viewport.scale;
@@ -53,6 +54,10 @@ document.addEventListener('mousemove', (event) => {
 
         initialMousePositionZoom = currentMousePosition;
     }
+});
+
+document.addEventListener('mouseup', () => {
+    isDraggingZoom = false;
 });
 
 
@@ -116,7 +121,7 @@ let isMoveEnabled = false;
 let isDraggingMove = false;
 let initialMousePositionMove = { x: 0, y: 0 };
 
-document.getElementById('moveButton').addEventListener('click', () => {
+document.getElementById('moveButton').addEventListener('click', (event) => {
     isMoveEnabled = !isMoveEnabled;
 
     if (isMoveEnabled) {
@@ -128,6 +133,8 @@ document.getElementById('moveButton').addEventListener('click', () => {
 document.addEventListener('mousedown', (event) => {
     if (isMoveEnabled) {
         isDraggingMove = true;
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        initialMousePositionMove = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
     }
 });
 
@@ -197,6 +204,7 @@ let clickedElementId;
 
 // 클릭된 엘리먼트의 id를 활용하는 함수
 function handleClickedElement(elementId) {
+    setTimeout(function() {
     const activeViewport = cornerstone.getEnabledElement(document.getElementById(elementId));
 
     if (!activeViewport) {
@@ -221,6 +229,7 @@ function handleClickedElement(elementId) {
     if (activeViewport.element.classList.contains('CSViewport')) {
         activeViewport.element.classList.add('selectedViewport');
     }
+}, 1000);
 }
 
 document.addEventListener('click', (event) => {
@@ -234,138 +243,132 @@ document.addEventListener('click', (event) => {
     handleClickedElement(clickedElementId);
 });
 
+
+
 // 뷰어 시작
 viewDicom();
 //끝
 
 
-function displayDicomImage(arrayBuffer, seriesinsuid) {
-    let cont = 4;
-    let IMAGEKEY = 1;
+function displayDicomImage(arrayBuffer, seriesinsuid,i) {
 
     const byteArray = new Uint8Array(arrayBuffer);
     const dataSet = dicomParser.parseDicom(byteArray);
-    console.log(dataSet)
-    if(IMAGEKEY === parseInt (dataSet.string('x00200013'))){
-        const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
-        console.log(imageId)
-        stack.imageIds.push(imageId);
 
-        const viewportElement = document.createElement('div');
-        viewportElement.classList.add('CSViewport');
-        viewportElement.id = `viewport-${seriesinsuid}`;
 
-        const topLeft = document.createElement('div');
-        topLeft.classList.add('topLeft');
+    const viewportElement = document.createElement('div');
+    viewportElement.classList.add('CSViewport');
+    viewportElement.id = `viewport-${seriesinsuid}`;
 
-        topLeft.innerHTML = `
-        <span>${dataSet.string('x00100020')}</span>
-        <span>${dataSet.string('x00100010')}</span>
-        <span>${dataSet.string('x00100030')}</span>
-        <span>${dataSet.string('x00200011')}</span>
-        <span>${dataSet.string('x00200013')}</span>
-        <span>${dataSet.string('x00080020')}</span>
-        <span>${dataSet.string('x00080030')}</span>
-    `;
+    const topLeft = document.createElement('div');
+    topLeft.classList.add('topLeft');
 
-        const topRight = document.createElement('div');
-        topRight.classList.add('topRight');
-        topRight.innerHTML = `
-        <span>${dataSet.string('x00080070')}</span>
-        <span>${dataSet.string('x00081090')}</span>
-    `;
+    topLeft.innerHTML = `
+            <span>${dataSet.string('x00100020')}</span>
+            <span>${dataSet.string('x00100010')}</span>
+            <span>${dataSet.string('x00100030')}</span>
+            <span>${dataSet.string('x00200011')}</span>
+            <span>${dataSet.string('x00200013')}</span>
+            <span>${dataSet.string('x00080020')}</span>
+            <span>${dataSet.string('x00080030')}</span>
+        `;
 
-        const bottomRight = document.createElement('div');
-        //<span>${dataSet.string('x00280010')} / ${dataSet.string('x00280011')}</span>
-        bottomRight.classList.add('bottomRight');
-        bottomRight.innerHTML = `
-        <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
-        <span>${dataSet.string('x00321032')}</span>
-    `;
+    const topRight = document.createElement('div');
+    topRight.classList.add('topRight');
+    topRight.innerHTML = `
+            <span>${dataSet.string('x00080070')}</span>
+            <span>${dataSet.string('x00081090')}</span>
+        `;
 
-        const parentDiv = document.createElement('div');
-        parentDiv.classList.add('parentDiv');
-        parentDiv.id = `parentDiv-${seriesinsuid}`; // 각 이미지에 대해 고유한 ID 부여
+    const bottomRight = document.createElement('div');
+    //<span>${dataSet.string('x00280010')} / ${dataSet.string('x00280011')}</span>
+    bottomRight.classList.add('bottomRight');
+    bottomRight.innerHTML = `
+            <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
+            <span>${dataSet.string('x00321032')}</span>
+        `;
 
-        viewportElement.appendChild(topLeft);
-        viewportElement.appendChild(topRight);
-        viewportElement.appendChild(bottomRight);
-        parentDiv.appendChild(viewportElement);
+    const parentDiv = document.createElement('div');
+    parentDiv.classList.add('parentDiv');
 
-        document.getElementById('dicomImageContainer').appendChild(parentDiv);
-        activateToolsForViewport(viewportElement);
-        cornerstone.enable(viewportElement);
-        cornerstone.loadImage(imageId).then(image => {
-            cornerstone.displayImage(viewportElement, image);
+    viewportElement.appendChild(topLeft);
+    viewportElement.appendChild(topRight);
+    viewportElement.appendChild(bottomRight);
+    parentDiv.appendChild(viewportElement);
 
-            const stackCopy = { ...stack }; // 스택을 복사하여 각 이미지에 대해 독립적인 스택을 생성
-            stackCopy.currentImageIdIndex = 0; // 각 이미지에서 첫 번째 이미지를 보여주기 위해 인덱스 초기화
+    document.getElementById('dicomImageContainer').appendChild(parentDiv);
 
-            cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
-            cornerstoneTools.addToolState(viewportElement, 'stack', stackCopy);
+    cornerstone.enable(viewportElement);
 
-            activateToolsForViewport(viewportElement);
+    console.log(stack[i].imageIds[stack.currentImageIdIndex]);
+    cornerstone.loadImage(stack[i].imageIds[0]).then(image => {
+        cornerstone.displayImage(viewportElement, image);
 
-            console.log(`Viewport Element ID: ${viewportElement.id}`);
-        });
-    }
+        // 스택 설정
+        cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
+        cornerstoneTools.addToolState(viewportElement, 'stack', stack);
+    });
+
+    console.log(cornerstoneTools);
+    // 마우스 휠 이벤트를 사용하여 다음 또는 이전 이미지로 전환
+    viewportElement.addEventListener('wheel', function (event) {
+        // 마우스 휠 방향에 따라 다음 또는 이전 이미지로 전환
+        if (event.deltaY > 0) {
+            // 다음 이미지로 전환
+            stackScrollDown(viewportElement);
+        } else {
+            // 이전 이미지로 전환
+            stackScrollUp(viewportElement);
+        }
+
+        // 이벤트 버블링 방지
+        event.preventDefault();
+
+    });
 
 }
-// Viewport 초기화 및 도구 활성화 필요는 없음 일단 놔두기
-function activateToolsForViewport(viewportElement) {
-    cornerstoneTools.setToolActive('Zoom', { element: viewportElement });
-    cornerstoneTools.setToolActive('Wwwc', { element: viewportElement, mouseButtonMask: 1 });
-    cornerstoneTools.setToolActive('Pan', { element: viewportElement });
-    cornerstoneTools.setToolActive('StackScrollMouseWheel', { element: viewportElement });
-    cornerstoneTools.setToolActive('Invert', { element: viewportElement });
-}
+
 async function viewDicom() {
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
-
-    cornerstoneTools.init();
-    const StackScrollMouseWheelTool = cornerstoneTools.StackScrollMouseWheelTool;
-    cornerstoneTools.addTool(StackScrollMouseWheelTool);
-
-    StackScrollMouseWheelTool.applyActiveStrategy = applyActiveStrategy;
 
     try {
 
         let seriesTabList = await getSeriesTab();
 
-        let items = [];
-
+        let cont = 4;
         for (let i = 0; i < seriesTabList.length; i++) {
-            items.push(seriesTabList[i].seriesnum);
-        }
-
-        // 중복된 숫자를 제거
-        let uniqueItems = [...new Set(items)];
-
-        for (let i = 0; i < uniqueItems.length; i++) {
             let item = seriesTabList[i];
-
             let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
-            //console.log(directoryPath[0])
-            let response = await axios.get("/getDicomFile", {
-                params: {
-                    directoryPath: directoryPath[0]
-                },
-                responseType: 'arraybuffer'
-            });
+            let arrayBuffer = null;
 
-            if (response.status === 200) {
-                let arrayBuffer = response.data;
+            stack[i] = {
+                currentImageIdIndex: 0,
+                imageIds: [],
+            };
 
-                stack = {
-                    currentImageIdIndex: 0,
-                    imageIds: directoryPath,
-                };
+            for (let j = 0; j < directoryPath.length; j++) {
+                let response = await axios.get("/getDicomFile", {
+                    params: {
+                        directoryPath: decodeURIComponent(directoryPath[j])
+                    },
+                    responseType: 'arraybuffer'
+                });
 
-                displayDicomImage(arrayBuffer, item.seriesinsuid);
+                if (response.status === 200) {
+                    arrayBuffer = response.data;
+                    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
+                    stack[i].imageIds.push(imageId);
+                    console.log(stack[i].imageIds[stack[i].currentImageIdIndex]);
+                }
+
+                if(i<cont && j === 0){
+                    displayDicomImage(arrayBuffer, item.seriesinsuid, i);
+                }
             }
 
         }
+
 
     } catch (error) {
         console.error(error);
@@ -408,17 +411,37 @@ async function getImagePath(studykey, seriesinsuid) {
         console.error(error);
     }
 }
-function applyActiveStrategy(evt, operationData) {
 
-    if (evt.deltaY > 0) {
-        // 다음 이미지로 전환
-        stack.currentImageIdIndex++;
-    } else if (evt.deltaY < 0) {
-        // 이전 이미지로 전환
-        stack.currentImageIdIndex--;
+function stackScrollDown(element) {
+    console.log("다운")
+    const stackToolData = cornerstoneTools.getToolState(element, 'stack');
+
+    if (stackToolData && stackToolData.data.length > 0) {
+        const stackData = stackToolData.data[0];
+
+        if (stackData.currentImageIdIndex >= 0) {
+            stackData.currentImageIdIndex++;
+            const nextImageId = stackData[1].imageIds[stackData.currentImageIdIndex];
+            cornerstone.loadImage(nextImageId).then(image => {
+                cornerstone.displayImage(element, image);
+            });
+        }
     }
+}
 
-    // 현재 이미지 인덱스가 이미지 아이디 배열의 범위를 벗어나지 않도록 처리
-    stack.currentImageIdIndex = Math.max(0, Math.min(stack.currentImageIdIndex, stack.imageIds.length - 1));
+function stackScrollUp(element) {
+    console.log("업")
+    const stackToolData = cornerstoneTools.getToolState(element, 'stack');
 
+    if (stackToolData && stackToolData.data.length > 0) {
+        const stackData = stackToolData.data[0];
+
+        if (stackData.currentImageIdIndex > 0) {
+            stackData.currentImageIdIndex--;
+            const prevImageId = stackData[1].imageIds[stackData.currentImageIdIndex];
+            cornerstone.loadImage(prevImageId).then(image => {
+                cornerstone.displayImage(element, image);
+            });
+        }
+    }
 }
