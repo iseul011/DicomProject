@@ -204,83 +204,7 @@ document.getElementById('invertButton').addEventListener('click', () => {
 
 //끝
 
-function displayDicomImage(arrayBuffer, i) {
 
-    const byteArray = new Uint8Array(arrayBuffer);
-    const dataSet = dicomParser.parseDicom(byteArray);
-
-
-    const viewportElement = document.createElement('div');
-    viewportElement.classList.add('CSViewport');
-    viewportElement.id = `viewport${i}`;
-
-    const topLeft = document.createElement('div');
-    topLeft.classList.add('topLeft');
-
-    topLeft.innerHTML = `
-            <span>${dataSet.string('x00100020')}</span>
-            <span>${dataSet.string('x00100010')}</span>
-            <span>${dataSet.string('x00100030')}</span>
-            <span>${dataSet.string('x00200011')}</span>
-            <span>${dataSet.string('x00200013')}</span>
-            <span>${dataSet.string('x00080020')}</span>
-            <span>${dataSet.string('x00080030')}</span>
-        `;
-
-    const topRight = document.createElement('div');
-    topRight.classList.add('topRight');
-    topRight.innerHTML = `
-            <span>${dataSet.string('x00080070')}</span>
-            <span>${dataSet.string('x00081090')}</span>
-        `;
-
-    const bottomRight = document.createElement('div');
-    //<span>${dataSet.string('x00280010')} / ${dataSet.string('x00280011')}</span>
-    bottomRight.classList.add('bottomRight');
-    bottomRight.innerHTML = `
-            <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
-            <span>${dataSet.string('x00321032')}</span>
-        `;
-
-    const parentDiv = document.createElement('div');
-    parentDiv.classList.add('parentDiv');
-
-    viewportElement.appendChild(topLeft);
-    viewportElement.appendChild(topRight);
-    viewportElement.appendChild(bottomRight);
-    parentDiv.appendChild(viewportElement);
-
-    document.getElementById('dicomImageContainer').appendChild(parentDiv);
-
-    cornerstone.enable(viewportElement);
-
-    console.log(stack[i].imageIds[stack.currentImageIdIndex]);
-    cornerstone.loadImage(stack[i].imageIds[0]).then(image => {
-        cornerstone.displayImage(viewportElement, image);
-
-        // 스택 설정
-        cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
-        cornerstoneTools.addToolState(viewportElement, 'stack', stack);
-    });
-
-    console.log(cornerstoneTools);
-    // 마우스 휠 이벤트를 사용하여 다음 또는 이전 이미지로 전환
-    viewportElement.addEventListener('wheel', function (event) {
-        // 마우스 휠 방향에 따라 다음 또는 이전 이미지로 전환
-        if (event.deltaY > 0) {
-            // 다음 이미지로 전환
-            stackScrollDown(viewportElement);
-        } else {
-            // 이전 이미지로 전환
-            stackScrollUp(viewportElement);
-        }
-
-        // 이벤트 버블링 방지
-        event.preventDefault();
-
-    });
-
-}
 
 async function overlayAiPresent(prContent, i) {
     if (prContent != null && prContent.TextObjectSequence) {
@@ -307,7 +231,95 @@ async function overlayAiPresent(prContent, i) {
         viewportElement.appendChild(overlayCanvas);
 
     }
+
+
+function displayDicomImage(i) {
+    const blobUrl = stack[i].imageIds[stack.currentImageIdIndex].replace('dicomweb:', '');
+
+    fetch(blobUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const arrayBuffer = event.target.result;
+
+                const byteArray = new Uint8Array(arrayBuffer);
+                const dataSet = dicomParser.parseDicom(byteArray);
+
+                // 데이터가 준비되면 처리 코드를 여기에 이동
+                const viewportElement = document.createElement('div');
+                viewportElement.classList.add('CSViewport');
+                viewportElement.id = i + `viewport-${stack[i].imageIds[stack.currentImageIdIndex]}`;
+
+                const topLeft = document.createElement('div');
+                topLeft.classList.add('topLeft');
+
+                topLeft.innerHTML = `
+                    <span>${dataSet.string('x00100020')}</span>
+                    <span>${dataSet.string('x00100010')}</span>
+                    <span>${dataSet.string('x00100030')}</span>
+                    <span>${dataSet.string('x00200011')}</span>
+                    <span class="imageNumber">${dataSet.string('x00200013')}</span>
+                    <span>${dataSet.string('x00080020')}</span>
+                    <span>${dataSet.string('x00080030')}</span>
+                `;
+
+                const topRight = document.createElement('div');
+                topRight.classList.add('topRight');
+                topRight.innerHTML = `
+                    <span>${dataSet.string('x00080070')}</span>
+                    <span>${dataSet.string('x00081090')}</span>
+                `;
+
+                const bottomRight = document.createElement('div');
+                //<span>${dataSet.string('x00280010')} / ${dataSet.string('x00280011')}</span>
+                bottomRight.classList.add('bottomRight');
+                bottomRight.innerHTML = `
+                    <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
+                    <span>${dataSet.string('x00321032')}</span>
+                `;
+
+                const parentDiv = document.createElement('div');
+                parentDiv.classList.add('parentDiv');
+
+                viewportElement.appendChild(topLeft);
+                viewportElement.appendChild(topRight);
+                viewportElement.appendChild(bottomRight);
+                parentDiv.appendChild(viewportElement);
+
+                document.getElementById('dicomImageContainer').appendChild(parentDiv);
+
+                cornerstone.enable(viewportElement);
+
+                cornerstone.loadImage(stack[i].imageIds[stack.currentImageIdIndex]).then(image => {
+                    cornerstone.displayImage(viewportElement, image);
+                });
+
+                // 마우스 휠 이벤트를 사용하여 다음 또는 이전 이미지로 전환
+                viewportElement.addEventListener('wheel', function (event) {
+                    // 스택 설정
+                    cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
+                    cornerstoneTools.addToolState(viewportElement, 'stack', stack);
+
+                    // 마우스 휠 방향에 따라 다음 또는 이전 이미지로 전환
+                    if (event.deltaY > 0) {
+                        // 다음 이미지로 전환
+                        stackScrollDown(viewportElement);
+                    } else {
+                        // 이전 이미지로 전환
+                        stackScrollUp(viewportElement);
+                    }
+
+                    // 이벤트 버블링 방지
+                    event.preventDefault();
+                });
+            };
+            reader.readAsArrayBuffer(blob);
+        })
+        .catch(error => console.error(error));
+
 }
+
 
 async function viewDicom() {
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
@@ -322,6 +334,25 @@ async function viewDicom() {
             let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
             let PRContentList = await getPRContentList(item.studykey, item.serieskey, item.imagecnt);
             let arrayBuffer = null;
+
+            function extractNumber(path) {
+                const match = path.match(/\.(\d+)\.\d+\.dcm$/);
+                return match ? parseInt(match[1]) : null;
+            }
+
+            directoryPath.sort((a, b) => {
+                const numberA = extractNumber(a);
+                const numberB = extractNumber(b);
+
+                // 숫자가 있는 경우에만 비교
+                if (numberA !== null && numberB !== null) {
+                    return numberA - numberB;
+                }
+
+                // 숫자가 없는 경우 문자열로 비교
+                return a.localeCompare(b);
+            });
+
 
             stack[i] = {
                 currentImageIdIndex: 0,
@@ -340,11 +371,11 @@ async function viewDicom() {
                     arrayBuffer = response.data;
                     const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], {type: 'application/dicom'}))}`;
                     stack[i].imageIds.push(imageId);
-                    console.log(stack[i].imageIds[stack[i].currentImageIdIndex]);
                 }
 
+
                 if (i < cont && j === 0) {
-                    displayDicomImage(arrayBuffer, i);
+                    displayDicomImage(i);
                     await overlayAiPresent(PRContentList[j], i);
                 }
             }
@@ -417,15 +448,29 @@ async function getPRContentList(studykey, serieskey, imagecnt) {
 }
 
 function stackScrollDown(element) {
+
+
     console.log("다운")
     const stackToolData = cornerstoneTools.getToolState(element, 'stack');
 
     if (stackToolData && stackToolData.data.length > 0) {
         const stackData = stackToolData.data[0];
+        let firstCharacter ;
+        const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
+        const csViewportParent = mouseOverElement.closest('.CSViewport');
 
-        if (stackData.currentImageIdIndex >= 0) {
+        if (csViewportParent) {
+                const id = csViewportParent.id;
+                if (id.length > 0) {
+                    firstCharacter = id.charAt(0);
+                }
+        }
+        const indexSpan = csViewportParent.querySelector('.imageNumber');
+        console.log(indexSpan)
+
+        if (stackData.currentImageIdIndex >= 0 && stackData.currentImageIdIndex < stackData[firstCharacter].imageIds.length - 1) {
             stackData.currentImageIdIndex++;
-            const nextImageId = stackData[1].imageIds[stackData.currentImageIdIndex];
+            const nextImageId = stackData[firstCharacter].imageIds[stackData.currentImageIdIndex];
             cornerstone.loadImage(nextImageId).then(image => {
                 cornerstone.displayImage(element, image);
             });
@@ -439,10 +484,21 @@ function stackScrollUp(element) {
 
     if (stackToolData && stackToolData.data.length > 0) {
         const stackData = stackToolData.data[0];
+        let firstCharacter ;
+        const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
+        const csViewportParent = mouseOverElement.closest('.CSViewport');
 
+        if (csViewportParent) {
+            const id = csViewportParent.id;
+            if (id.length > 0) {
+                firstCharacter = id.charAt(0);
+            }
+        }
+        const indexSpan = csViewportParent.querySelector('.imageNumber');
+        console.log(indexSpan)
         if (stackData.currentImageIdIndex > 0) {
             stackData.currentImageIdIndex--;
-            const prevImageId = stackData[1].imageIds[stackData.currentImageIdIndex];
+            const prevImageId = stackData[firstCharacter].imageIds[stackData.currentImageIdIndex];
             cornerstone.loadImage(prevImageId).then(image => {
                 cornerstone.displayImage(element, image);
             });

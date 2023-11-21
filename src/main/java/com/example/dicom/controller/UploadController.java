@@ -28,6 +28,8 @@ import org.springframework.http.MediaType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @RestController
@@ -66,10 +68,12 @@ public class UploadController {
                 }
             }
         }
-
+        //Collections.sort(dcmFilePaths);
+        //System.out.println("dcmFilePaths"+dcmFilePaths);
         return dcmFilePaths;
 
     }
+
 
 
     @GetMapping("/getDicomFile")
