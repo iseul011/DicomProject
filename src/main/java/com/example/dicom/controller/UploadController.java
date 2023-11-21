@@ -2,23 +2,29 @@ package com.example.dicom.controller;
 
 import com.example.dicom.domain.PacsImagetab;
 import com.example.dicom.domain.PacsImagetabRepository;
+import com.example.dicom.domain.PacsPresentationState;
+import com.example.dicom.domain.PacsPresentationStateRepository;
 import lombok.AllArgsConstructor;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
-import org.springframework.data.domain.Sort;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.io.*;
 import java.net.URLDecoder;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +36,7 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class UploadController {
     private final PacsImagetabRepository pacsImagetabRepository;
+    private final PacsPresentationStateRepository pacsPresentationStateRepository;
 
     @GetMapping("/getImagePath")
 
@@ -52,9 +59,9 @@ public class UploadController {
                     Attributes attributes = dis.readDataset(-1, -1);
                     String seriesInstanceUID = attributes.getString(Tag.SeriesInstanceUID);
 
-                        if (seriesinsuid.equals(seriesInstanceUID)) {
-                            dcmFilePaths.add(file.getAbsolutePath());
-                        }
+                    if (seriesinsuid.equals(seriesInstanceUID)) {
+                        dcmFilePaths.add(file.getAbsolutePath());
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -66,8 +73,6 @@ public class UploadController {
         return dcmFilePaths;
 
     }
-
-
 
 
 
@@ -92,6 +97,7 @@ public class UploadController {
                 .headers(headers)
                 .body(fileContent);
     }
+
     @GetMapping("/getDicomDownloadPath")
     public ResponseEntity<byte[]> getDicomDownloadPath(@RequestParam("directoryPath") String directoryPath) throws IOException {
         try {
@@ -116,6 +122,26 @@ public class UploadController {
         }
     }
 
+    @GetMapping("/getPRContentList")
+    public ResponseEntity<String> getPRContentList(@RequestParam int studykey, @RequestParam int serieskey, @RequestParam int imagecnt) {
+        JSONArray prContentList = new JSONArray();
+        String prModule = "GraphicAnnotationModule";
+        for (int i = 1; i <= imagecnt; i++) {
+            PacsPresentationState pacsPresentationState = pacsPresentationStateRepository
+                    .findAllByStudyKeyAndSeriesKeyAndImageKeyAndPrModule(studykey, serieskey, i, prModule);
+
+            if (pacsPresentationState != null) {
+                String prContent = pacsPresentationState.getPrContent();
+                if (prContent != null) {
+                    JSONObject prContentJson = new JSONObject(prContent);
+                    prContentList.put(prContentJson);
+                }
+            }
+        }
+
+        return new ResponseEntity<>(prContentList.toString(), HttpStatus.OK);
+
+    }
 }
 
 

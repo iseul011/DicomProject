@@ -3,13 +3,12 @@ let stack = {
     imageIds: [],
 };
 
-viewDicom();
 //도구 기능들 시작
 cornerstoneTools.init();
-cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
+cornerstoneTools.setToolActive('Zoom', {mouseButtonMask: 1});
 let isZoomEnabled = false; // 변수를 선언하고 기본값으로 초기화
 let isDragging = false;
-let initialMousePosition = { x: 0, y: 0 };
+let initialMousePosition = {x: 0, y: 0};
 
 document.getElementById('zoomButton').addEventListener('click', () => {
     isZoomEnabled = !isZoomEnabled;
@@ -17,7 +16,7 @@ document.getElementById('zoomButton').addEventListener('click', () => {
     if (isZoomEnabled) {
         const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
         initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-        console.log("뷰포트",activeViewport);
+        console.log("뷰포트", activeViewport);
     }
 });
 
@@ -43,7 +42,7 @@ document.addEventListener('mouseup', (event) => {
 
 document.addEventListener('mousemove', (event) => {
     if (isDragging && isZoomEnabled) {
-        const currentMousePosition = { x: event.clientX, y: event.clientY };
+        const currentMousePosition = {x: event.clientX, y: event.clientY};
 
         const deltaX = currentMousePosition.x - initialMousePosition.x;
         const deltaY = currentMousePosition.y - initialMousePosition.y;
@@ -62,9 +61,6 @@ document.addEventListener('mousemove', (event) => {
 });
 
 
-
-
-
 let isWwwcEnabled = false;
 // let isDragging = false;
 // let initialMousePosition = { x: 0, y: 0 };
@@ -74,7 +70,7 @@ document.getElementById('wwwcButton').addEventListener('click', () => {
     isWwwcEnabled = !isWwwcEnabled;
 
     if (isWwwcEnabled) {
-        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 });
+        cornerstoneTools.setToolActive('Wwwc', {mouseButtonMask: 1});
     } else {
         cornerstoneTools.setToolPassive('Wwwc');
     }
@@ -118,10 +114,6 @@ document.addEventListener('mouseup', () => {
         console.log('Dragging ended');
     }
 });
-
-
-
-
 
 
 let isMoveEnabled = false;
@@ -189,7 +181,6 @@ document.getElementById('resetButton').addEventListener('click', () => {
 });
 
 
-
 let isInvertEnabled = false;
 
 document.getElementById('invertButton').addEventListener('click', () => {
@@ -212,6 +203,35 @@ document.getElementById('invertButton').addEventListener('click', () => {
 });
 
 //끝
+
+
+
+async function overlayAiPresent(prContent, i) {
+    if (prContent != null && prContent.TextObjectSequence) {
+        const viewportElement = document.querySelector(`#viewport${i}`);
+        const overlayCanvas = document.createElement("canvas");
+        overlayCanvas.width = 512;
+        overlayCanvas.height = 512;
+        const overlayCtx = overlayCanvas.getContext('2d');
+
+        if (prContent.TextObjectSequence.length > 0) {
+            prContent.TextObjectSequence.forEach(function (textObject) {
+                overlayCtx.fillStyle = 'white';
+                overlayCtx.font = '16px Arial';
+                overlayCtx.textAlign = 'center';
+
+                var x = (textObject.BoundingBoxBottomRightHandCorner.Column + textObject.BoundingBoxTopLeftHandCorner.Column) / 2;
+                var y = (textObject.BoundingBoxBottomRightHandCorner.Row + textObject.BoundingBoxTopLeftHandCorner.Row) / 2;
+                var text = textObject.UnformattedTextValue;
+
+                overlayCtx.fillText(text, x, y);
+            });
+        }
+
+        viewportElement.appendChild(overlayCanvas);
+
+    }
+
 
 function displayDicomImage(i) {
     const blobUrl = stack[i].imageIds[stack.currentImageIdIndex].replace('dicomweb:', '');
@@ -297,6 +317,7 @@ function displayDicomImage(i) {
             reader.readAsArrayBuffer(blob);
         })
         .catch(error => console.error(error));
+
 }
 
 
@@ -305,14 +326,14 @@ async function viewDicom() {
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
     try {
-
         let seriesTabList = await getSeriesTab();
 
         let cont = 4;
         for (let i = 0; i < seriesTabList.length; i++) {
             let item = seriesTabList[i];
             let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
-            let arrayBuffer;
+            let PRContentList = await getPRContentList(item.studykey, item.serieskey, item.imagecnt);
+            let arrayBuffer = null;
 
             function extractNumber(path) {
                 const match = path.match(/\.(\d+)\.\d+\.dcm$/);
@@ -332,6 +353,7 @@ async function viewDicom() {
                 return a.localeCompare(b);
             });
 
+
             stack[i] = {
                 currentImageIdIndex: 0,
                 imageIds: [],
@@ -347,15 +369,16 @@ async function viewDicom() {
 
                 if (response.status === 200) {
                     arrayBuffer = response.data;
-                    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
+                    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], {type: 'application/dicom'}))}`;
                     stack[i].imageIds.push(imageId);
                 }
 
-                if(i<cont && j === 0){
+
+                if (i < cont && j === 0) {
                     displayDicomImage(i);
+                    await overlayAiPresent(PRContentList[j], i);
                 }
             }
-
         }
     } catch (error) {
         console.error(error);
@@ -382,6 +405,7 @@ async function getSeriesTab() {
         console.error(error);
     }
 }
+
 async function getImagePath(studykey, seriesinsuid) {
     try {
         let response = await axios.get("/getImagePath", {
@@ -396,6 +420,30 @@ async function getImagePath(studykey, seriesinsuid) {
         }
     } catch (error) {
         console.error(error);
+    }
+}
+
+async function getPRContentList(studykey, serieskey, imagecnt) {
+    try {
+        let response = await axios.get("/getPRContentList", {
+            params: {
+                studykey: studykey,
+                serieskey: serieskey,
+                imagecnt: imagecnt
+            }
+        });
+
+        if (response.status === 200) {
+            if (response.data != null) {
+                return response.data;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+    } catch (error) {
+        return [];
     }
 }
 
@@ -457,3 +505,5 @@ function stackScrollUp(element) {
         }
     }
 }
+
+viewDicom();

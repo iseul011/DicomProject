@@ -133,16 +133,15 @@
                             <div class="searchIcon" id="search_oneWeek">
                                 1주일
                             </div>
-                            <div class="searchIcon" id="search_reset">
-                                재설정
-                            </div>
-                            <div class="searchIcon iconLast" id="search_submit" onclick="searchList()">
+                            <div class="searchIcon searchButton" id="search_submit" onclick="searchList()">
                                 검색
+                            </div>
+                            <div class="searchIcon resetButton" id="search_reset">
+                                재설정
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
