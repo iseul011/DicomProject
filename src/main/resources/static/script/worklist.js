@@ -258,23 +258,18 @@ async function downloadDicomFiles() {
     for (const studykey of selectedStudyKeys) {
         let seriesTabList = await getSeriesTab(studykey);
 
-        let items = [];
         for (let i = 0; i < seriesTabList.length; i++) {
-
-            items.push(seriesTabList[i].seriesnum);
-        }
-
-        let uniqueItems = [...new Set(items)];
-        // 중복된 숫자를 제거
-        for (let i = 0; i < uniqueItems.length; i++) {
             let item = seriesTabList[i];
-            let directoryPaths = await getImagePath(item.studykey, uniqueItems[i]);
+            let directoryPaths = await getImagePath(item.studykey, item.seriesinsuid);
             // 각 DICOM 파일에 대해 다운로드 링크를 생성하고 다운로드합니다.
             directoryPaths.forEach(directoryPath => {
-                axios.get(`/getDicomDownloadPath`, {
+                axios({
+                    method: 'get',
+                    url: `/getDicomDownloadPath`,
                     params: {
                         directoryPath: encodeURIComponent(directoryPath)
-                    }
+                    },
+                    responseType: 'arraybuffer'
                 })
                     .then(response => {
                         const contentDisposition = response.headers.get('content-disposition');
@@ -282,17 +277,18 @@ async function downloadDicomFiles() {
                         const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile';
                         // Blob을 다운로드하는 링크를 생성합니다.
                         var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(new Blob([response.data]));
+                        var blob = new Blob([response.data], { type: 'application/dicom' });
+                        link.href = window.URL.createObjectURL(blob);
                         link.download = fileName // 파일 이름으로 다운로드
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
                     });
             });
-
         }
     }
 }
+
 
 async function getSeriesTab(studykey) {
     try {
@@ -310,12 +306,12 @@ async function getSeriesTab(studykey) {
     }
 }
 
-async function getImagePath(studykey, seriesnum) {
+async function getImagePath(studykey, seriesinsuid) {
     try {
         let response = await axios.get("/getImagePath", {
             params: {
                 studykey: studykey,
-                seriesnum: seriesnum
+                seriesinsuid: seriesinsuid
             }
         });
 

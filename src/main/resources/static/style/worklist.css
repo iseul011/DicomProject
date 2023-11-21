@@ -180,8 +180,11 @@ thead {
 .iconFirst {
     margin-left: 30px;
 }
+.resetButton{
+    background-color: black;
+}
 
-.iconLast {
+.searchButton {
     background: rgb(98, 18, 18);
 }
 
