@@ -334,7 +334,7 @@
 
 </body>
 
-<script src="/script/test1.js"></script>
+<script src="/script/LJW.js"></script>
 
 </html>
 
