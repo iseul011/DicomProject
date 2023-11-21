@@ -22,6 +22,8 @@ import org.springframework.http.MediaType;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @RestController
@@ -59,13 +61,17 @@ public class UploadController {
                 }
             }
         }
-
+        //Collections.sort(dcmFilePaths);
+        //System.out.println("dcmFilePaths"+dcmFilePaths);
         return dcmFilePaths;
 
     }
 
 
-        @GetMapping("/getDicomFile")
+
+
+
+    @GetMapping("/getDicomFile")
     public ResponseEntity<byte[]> getDicom(@RequestParam String directoryPath) throws IOException {
         // 예시: DICOM 파일의 경로 설정
         //System.out.println("directoryPath : " + directoryPath);
