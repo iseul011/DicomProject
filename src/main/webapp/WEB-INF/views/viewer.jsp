@@ -302,7 +302,7 @@
                         <span>재설정</span>
                     </button>
                 </div>
-                <button>
+                <button id="toggleButton">
                     <div>
                         <img src="/img/changeSeriesLayout.6c2935a8c5a52c722e1055e79e316d58.png">
                         <svg viewBox="0 0 1030 638" width="10">
@@ -337,7 +337,6 @@
 </div>
 <%@ include file="include/footer.jsp" %>
 
-//<script src="/script/viPhs.js"></script>
 <script src="/script/LJW.js"></script>
 </body>
 
