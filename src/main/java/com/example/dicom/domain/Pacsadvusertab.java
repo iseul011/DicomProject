@@ -2,8 +2,11 @@ package com.example.dicom.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Table(
@@ -21,7 +24,7 @@ public class Pacsadvusertab {
     private int pwwrongcount;
     private String username;
     private int usepwdchange;
-    private int usepwdexpire;
+    private Integer usepwdexpire;
     private String pwdexpiredate;
     private Integer pwdexpirealertday;
     private Integer accountsuspended;
@@ -37,6 +40,5 @@ public class Pacsadvusertab {
     private int hospitalid;
     private String licensenumber;
     private byte[] usersign;
-
 
 }
