@@ -75,10 +75,9 @@ function printSearchTable(data) {
     let studydesc = row.insertCell(4);
     let studydate = row.insertCell(5);
     let reportstatus = row.insertCell(6);
-    let AIScore = row.insertCell(7);
-    let seriescnt = row.insertCell(8);
-    let imagecnt = row.insertCell(9);
-    let verify = row.insertCell(10);
+    let seriescnt = row.insertCell(7);
+    let imagecnt = row.insertCell(8);
+    let verify = row.insertCell(9);
 
     row.addEventListener('click', function () {
         loadPrevious(data.pid, data.pname);
@@ -93,7 +92,6 @@ function printSearchTable(data) {
     studydesc.className = "searchListBodyColumnLeft"
     studydate.className = "searchListBodyColumnCenter"
     reportstatus.className = "searchListBodyColumnCenter"
-    AIScore.className = "searchListBodyColumnCenter"
     seriescnt.className = "searchListBodyColumnCenter"
     imagecnt.className = "searchListBodyColumnCenter"
     verify.className = "searchListBodyColumnCenter"
@@ -105,7 +103,6 @@ function printSearchTable(data) {
     studydesc.innerHTML = data.studydesc;
     studydate.innerHTML = data.studydate;
     reportstatus.innerHTML = reportStatusString;
-    AIScore.innerHTML = data.ai_score;
     seriescnt.innerHTML = data.seriescnt;
     imagecnt.innerHTML = data.imagecnt;
     verify.innerHTML = data.verifyflag;
@@ -264,7 +261,6 @@ async function downloadDicomFiles() {
         for (let i = 0; i < seriesTabList.length; i++) {
             let item = seriesTabList[i];
             let directoryPaths = await getImagePath(item.studykey, item.seriesinsuid);
-            // 각 DICOM 파일에 대해 다운로드 링크를 생성하고 다운로드합니다.
             directoryPaths.forEach(directoryPath => {
                 axios({
                     method: 'get',
@@ -278,11 +274,10 @@ async function downloadDicomFiles() {
                         const contentDisposition = response.headers.get('content-disposition');
                         const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
                         const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile';
-                        // Blob을 다운로드하는 링크를 생성합니다.
                         var link = document.createElement('a');
                         var blob = new Blob([response.data], { type: 'application/dicom' });
                         link.href = window.URL.createObjectURL(blob);
-                        link.download = fileName // 파일 이름으로 다운로드
+                        link.download = fileName
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
@@ -330,4 +325,3 @@ function getSelectedStudyKeys() {
     const selectedRows = document.querySelectorAll('.searchListBodyRow input[type="checkbox"]:checked');
     return Array.from(selectedRows).map(row => row.value);
 }
-

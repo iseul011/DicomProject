@@ -205,7 +205,6 @@ document.getElementById('invertButton').addEventListener('click', () => {
 //끝
 
 
-
 async function overlayAiPresent(prContent, i) {
     if (prContent != null && prContent.TextObjectSequence) {
         const viewportElement = document.querySelector(`#viewport${i}`);
@@ -229,9 +228,8 @@ async function overlayAiPresent(prContent, i) {
         }
 
         viewportElement.appendChild(overlayCanvas);
-
     }
-
+}
 
 function displayDicomImage(i) {
     const blobUrl = stack[i].imageIds[stack.currentImageIdIndex].replace('dicomweb:', '');
@@ -455,15 +453,15 @@ function stackScrollDown(element) {
 
     if (stackToolData && stackToolData.data.length > 0) {
         const stackData = stackToolData.data[0];
-        let firstCharacter ;
+        let firstCharacter;
         const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
         const csViewportParent = mouseOverElement.closest('.CSViewport');
 
         if (csViewportParent) {
-                const id = csViewportParent.id;
-                if (id.length > 0) {
-                    firstCharacter = id.charAt(0);
-                }
+            const id = csViewportParent.id;
+            if (id.length > 0) {
+                firstCharacter = id.charAt(0);
+            }
         }
         const indexSpan = csViewportParent.querySelector('.imageNumber');
         console.log(indexSpan)
@@ -484,7 +482,7 @@ function stackScrollUp(element) {
 
     if (stackToolData && stackToolData.data.length > 0) {
         const stackData = stackToolData.data[0];
-        let firstCharacter ;
+        let firstCharacter;
         const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
         const csViewportParent = mouseOverElement.closest('.CSViewport');
 
