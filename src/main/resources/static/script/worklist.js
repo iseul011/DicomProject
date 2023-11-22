@@ -331,3 +331,41 @@ function getSelectedStudyKeys() {
     return Array.from(selectedRows).map(row => row.value);
 }
 
+function logout() {
+    location.reload();
+}
+// function deleteData() {
+//     const chk = 'input[name="del"]:checked';
+//     const selectedElements = document.querySelectorAll(chk);
+//
+//     const selectedElementsCnt = selectedElements.length;
+//     const pid = new Array(selectedElementsCnt);
+//
+//     document.querySelectorAll('input[name="del"]:checked').forEach(function (v, i) {
+//         pid[i] = v.value;
+//     });
+//
+//     axios.post(`/v1/storage/delete`, pid, {
+//         headers: {
+//             "Content-Type": "application/json"
+//         }
+//     })
+//         .then(response => {
+//             if (confirm("삭제 하시겠습니까?")) {
+//                 alert("삭제 완료");
+//             } else {
+//                 alert("리로드");
+//             }
+//         });
+// }
+
+// function download() {
+//     const chk = 'input[name="del"]:checked';
+//     const selectedElements = document.querySelectorAll(chk);
+//
+//     const selectedElementsCnt = selectedElements.length;
+//     const pid = new Array(selectedElementsCnt);
+//
+// }
+
+

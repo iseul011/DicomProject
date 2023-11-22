@@ -182,6 +182,9 @@
     margin-bottom: 5px;
 }
 
+.displayNone {
+    display: none;
+}
 
 .cornerstone-canvas{
     vertical-align: top;
@@ -221,5 +224,3 @@
     border: 0.1px solid slategray;
     float: left;
 }
-
-

@@ -5,158 +5,127 @@ let stack = {
 
 cornerstoneTools.init();
 
-// Zoom 도구
-let isZoomEnabled = false;
-let isDraggingZoom = false;
-let initialMousePositionZoom = { x: 0, y: 0 };
-let zoom = 0.001;
-document.getElementById('zoomButton').addEventListener('click', (event) => {
-    isZoomEnabled = !isZoomEnabled;
+//각도 기능
+let angleToolActive = false;
+function setupAngleTool() {
+    const AngleTool = cornerstoneTools.AngleTool;
 
-
-        if (isZoomEnabled) {
-            cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
-        } else {
-            cornerstoneTools.setToolPassive('Zoom');
-        }
-});
-
-document.addEventListener('mousedown', (event) => {
-    if (isZoomEnabled) {
-        isDraggingZoom = true;
-
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        initialMousePositionZoom = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-    }
-});
-
-document.addEventListener('mousemove', (event) => {
-    if (isDraggingZoom && isZoomEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        const viewport = cornerstone.getViewport(activeViewport);
-        const currentMousePosition = { x: event.clientX, y: event.clientY };
-
-        // const deltaY = currentMousePosition.y - initialMousePositionZoom.y;
-        //
-        // // 클릭 지점을 중심으로 이미지 확대/축소
-        // const centerY = initialMousePositionZoom.y;
-        //
-        // viewport.translation.y += centerY * (1 - 1 / (1 + deltaY * 0.001));
-        // viewport.scale *= 1 / (1 + deltaY * zoom);
-        const deltaX = currentMousePosition.x - initialMousePositionZoom.x;
-        const deltaY = currentMousePosition.y - initialMousePositionZoom.y;
-
-        viewport.translation.x -= deltaX * viewport.scale;
-        viewport.translation.y -= deltaY * viewport.scale;
-        viewport.scale += (deltaX + deltaY) * 0.001;
-
-        cornerstone.setViewport(activeViewport, viewport);
-
-        initialMousePositionZoom = currentMousePosition;
-    }
-});
-
-document.addEventListener('mouseup', () => {
-    isDraggingZoom = false;
-});
-
-
-// Wwwc 도구
-let isWwwcEnabled = false;
-let isDraggingWwwc = false;
-let initialMousePositionWwwc = { x: 0, y: 0 };
-
-document.getElementById('wwwcButton').addEventListener('click', () => {
-    isWwwcEnabled = !isWwwcEnabled;
-
-    if (isWwwcEnabled) {
-        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 });
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!angleToolActive) {
+        cornerstoneTools.addTool(AngleTool);
+        cornerstoneTools.setToolActive('Angle', { mouseButtonMask: 1 });
+        angleToolActive = true;
     } else {
-        cornerstoneTools.setToolPassive('Wwwc');
+        cornerstoneTools.setToolDisabled('Angle');
+        angleToolActive = false;
     }
+    toolModalChildren.classList.add('displayNone');
+}
+//마커 기능
+let textMarkerToolActive = false;
+function setupTextMarkerTool() {
+    const TextMarkerTool = cornerstoneTools.TextMarkerTool;
 
-    console.log(`Wwwc 활성화: ${isWwwcEnabled}`);
-});
+    const configuration = {
+        markers: ['이지훈짱', '이지훈최고', '이지훈대박', '이지훈머박', '이지훈짱짱'],
+        current: '이지훈짱',
+        ascending: true,
+        loop: true,
+    };
 
-document.addEventListener('mousedown', (event) => {
-    if (isWwwcEnabled) {
-        isDraggingWwwc = true;
-
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        initialMousePositionWwwc = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-
-        console.log('Wwwc 드래깅 시작');
+    if (!textMarkerToolActive) {
+        cornerstoneTools.addTool(TextMarkerTool, { configuration });
+        cornerstoneTools.setToolActive('TextMarker', { mouseButtonMask: 1 });
+        textMarkerToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('TextMarker');
+        textMarkerToolActive = false;
     }
-});
+    toolModalChildren.classList.add('displayNone');
+}
+//윈도우 레벨
+let wwwcToolActive = false;
+function toggleWwwcTool() {
+    const WwwcTool = cornerstoneTools.WwwcTool;
 
-document.addEventListener('mousemove', (event) => {
-    if (isDraggingWwwc && isWwwcEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-        const deltaX = currentMousePosition.x - initialMousePositionWwwc.x;
-        const deltaY = currentMousePosition.y - initialMousePositionWwwc.y;
-
-        const viewport = cornerstone.getViewport(activeViewport);
-
-        viewport.voi.windowWidth += deltaX * 1.9;
-        viewport.voi.windowCenter += deltaY * 1.9;
-
-        cornerstone.setViewport(activeViewport, viewport);
-
-        initialMousePositionWwwc = currentMousePosition;
-
-        console.log(`Wwwc 드래깅: deltaX=${deltaX}, deltaY=${deltaY}`);
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!wwwcToolActive) {
+        cornerstoneTools.addTool(WwwcTool);
+        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 });
+        wwwcToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('Wwwc');
+        wwwcToolActive = false;
     }
-});
+    toolModalChildren.classList.add('displayNone');
+}
+//이동
+let panToolActive = false;
+function togglePanTool() {
+    const PanTool = cornerstoneTools.PanTool;
 
-document.addEventListener('mouseup', () => {
-    if (isWwwcEnabled) {
-        isDraggingWwwc = false;
-        console.log('Wwwc 드래깅 종료');
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!panToolActive) {
+        cornerstoneTools.addTool(PanTool);
+        cornerstoneTools.setToolActive('Pan', { mouseButtonMask: 1 });
+        panToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('Pan');
+        panToolActive = false;
     }
-});
+    toolModalChildren.classList.add('displayNone');
+}
+//지정
+function toggleOrientationMarkersTool(){
+    const OrientationMarkersTool = cornerstoneTools.OrientationMarkersTool;
 
-// Move 도구
-let isMoveEnabled = false;
-let isDraggingMove = false;
-let initialMousePositionMove = { x: 0, y: 0 };
+    cornerstoneTools.addTool(OrientationMarkersTool)
+    cornerstoneTools.setToolActive('OrientationMarkers', { mouseButtonMask: 1 })
+}
 
-document.getElementById('moveButton').addEventListener('click', (event) => {
-    isMoveEnabled = !isMoveEnabled;
+//줌 기능
+let zoomToolActive = false;
+function toggleZoomTool() {
+    const ZoomTool = cornerstoneTools.ZoomTool;
 
-    if (isMoveEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        initialMousePositionMove = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!zoomToolActive) {
+        cornerstoneTools.addTool(ZoomTool, {
+            // Optional configuration
+            configuration: {
+                invert: false,
+                preventZoomOutsideImage: false,
+                minScale: 0.1,
+                maxScale: 20.0,
+            }
+        });
+        cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
+        zoomToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('Zoom');
+        zoomToolActive = false;
     }
-});
+    toolModalChildren.classList.add('displayNone');
+}
+//돋보기 기능
+let magnifyToolActive = false;
+function toggleMagnifyTool() {
+    const MagnifyTool = cornerstoneTools.MagnifyTool;
 
-document.addEventListener('mousedown', (event) => {
-    if (isMoveEnabled) {
-        isDraggingMove = true;
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        initialMousePositionMove = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!magnifyToolActive) {
+        cornerstoneTools.addTool(MagnifyTool);
+        cornerstoneTools.setToolActive('Magnify', { mouseButtonMask: 1 });
+        magnifyToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('Magnify');
+        magnifyToolActive = false;
     }
-});
+    toolModalChildren.classList.add('displayNone');
+}
+//지정
+//toggleOrientationMarkersTool();
 
-document.addEventListener('mousemove', (event) => {
-    if (isDraggingMove && isMoveEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
-        const viewport = cornerstone.getViewport(activeViewport);
-        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-
-        const deltaX = currentMousePosition.x - initialMousePositionMove.x;
-        const deltaY = currentMousePosition.y - initialMousePositionMove.y;
-
-        viewport.translation.x += deltaX;
-        viewport.translation.y += deltaY;
-
-        cornerstone.setViewport(activeViewport, viewport);
-    }
-});
-
-document.addEventListener('mouseup', () => {
-    isDraggingMove = false;
-});
 
 // 초기화 도구
 function resetImage() {
@@ -187,7 +156,6 @@ document.getElementById('invertButton').addEventListener('click', () => {
 
     const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
     const viewport = cornerstone.getViewport(activeViewport);
-
     if (isInvertEnabled) {
         viewport.invert = true;
     } else {
@@ -243,6 +211,26 @@ document.addEventListener('click', (event) => {
     handleClickedElement(clickedElementId);
 });
 
+//도구 버튼
+var toolModalChildren = document.getElementById('toolModalChildren');
+function toggleToolModal() {
+    toolModalChildren.classList.toggle('displayNone');
+}
+window.addEventListener('click', function (e) {
+    if (!e.target.closest('.toolModalParent')) {
+        toolModalChildren.classList.add('displayNone');
+    }
+});
+
+var toolModalChildren2 = document.getElementById('toolModalChildren2');
+function toggleToolModal2() {
+    toolModalChildren2.classList.toggle('displayNone');
+}
+window.addEventListener('click', function (e) {
+    if (!e.target.closest('.toolModalParent2')) {
+        toolModalChildren2.classList.add('displayNone');
+    }
+});
 
 
 // 뷰어 시작

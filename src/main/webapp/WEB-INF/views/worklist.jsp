@@ -1,6 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>WebViewer</title>
@@ -20,7 +20,9 @@
                      viewBox="0 0 24 24" data-testid="AccountCircleIcon">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88C7.55 15.8 9.68 15 12 15s4.45.8 6.14 2.12C16.43 19.18 14.03 20 12 20z"></path>
                 </svg>
-                <span class="hospital">DICOM</span>
+                <span class="hospital">
+                    <sec:authentication property="name"/>
+                </span>
             </div>
             <div class="MuiBox-root css-0">
                 <div class="icon MuiBox-root css-0">
@@ -41,10 +43,12 @@
             </div>
 
             <div class="sideMenu-btn" id="logout">
+                <a href="/logout">
                 <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true"
                      viewBox="0 0 24 24" data-testid="LogoutIcon">
                     <path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
                 </svg>
+                </a>
             </div>
         </div>
     </div>
