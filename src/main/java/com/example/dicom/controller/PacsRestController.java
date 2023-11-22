@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +42,7 @@ public class PacsRestController {
     @DeleteMapping("/delete")
     public void Delete(@RequestBody List<String> pid) {
         for (int i = 0; i < pid.size(); i++) {
-            pacsStudytabRepository.deleteByPid(pid.get(i));
+            pacsStudytabRepository.deleteByStudykey(pid.get(i));
         }
     }
 
@@ -56,7 +57,6 @@ public class PacsRestController {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAllByPid(pid);
         return pacsStudytab;
     }
-
 
     @GetMapping("/search/PacsStudytab/searchList")
     public List<PacsStudytab> getSortedSearchPacsStudytab(
@@ -100,4 +100,31 @@ public class PacsRestController {
         return value == null || value.isEmpty();
     }
 
+
+    @GetMapping("/search/PacsStudytab/findSearch")
+    public List<PacsStudytab> getSortedDetailSearchStudytab(
+            @RequestParam(required = false) String equipment,
+            @RequestParam String optionNum,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+
+        System.out.println("equipment: " + equipment);
+        System.out.println("optionNum: " + optionNum);
+        System.out.println("startDate: " + startDate);
+        System.out.println("endDate: " + endDate);
+
+        if(startDate != null && endDate != null && equipment != null && optionNum != null) {
+            return pacsStudytabRepository.dateAllFindEquipmentOptionNum(equipment, optionNum, startDate, endDate);
+        } else if(startDate != null && endDate != null && equipment != null) {
+            return pacsStudytabRepository.dateAllFindEquipment(equipment, startDate, endDate);
+        } else if(startDate != null && endDate != null) {
+            return pacsStudytabRepository.dateAllFind(startDate, endDate);
+        }
+
+        return null;
+    }
+
+
 }
+
+
