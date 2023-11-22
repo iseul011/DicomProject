@@ -337,7 +337,12 @@
 </div>
 <%@ include file="include/footer.jsp" %>
 
-<script src="/script/LJW.js"></script>
+
+<%--<script src="/script/viPhs.js"></script>--%>
+<!-- <script src="/script/cornerstoneTest.js"></script> -->
+
+<!-- <script src="/script/LJW.js"></script> -->
+
 </body>
 
 

@@ -205,7 +205,6 @@ document.getElementById('invertButton').addEventListener('click', () => {
 //끝
 
 
-
 async function overlayAiPresent(prContent, i) {
     if (prContent != null && prContent.TextObjectSequence) {
         const viewportElement = document.querySelector(`#viewport${i}`);
@@ -229,7 +228,6 @@ async function overlayAiPresent(prContent, i) {
         }
 
         viewportElement.appendChild(overlayCanvas);
-
     }
 }
 
@@ -242,6 +240,7 @@ async function overlayAiPresent(prContent, i) {
             document.getElementById('dicomImageContainer').appendChild(parentDiv);
             return;
         }
+
 
         const blobUrl = stack[i].imageIds[stack.currentImageIdIndex].replace('dicomweb:', '');
 
@@ -517,6 +516,7 @@ function stackScrollDown(element) {
 
 function stackScrollUp(element) {
         const stackToolData = cornerstoneTools.getToolState(element, 'stack');
+
 
         if (stackToolData && stackToolData.data.length > 0) {
             const stackData = stackToolData.data[0];
