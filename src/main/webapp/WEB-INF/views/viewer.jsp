@@ -94,7 +94,7 @@
                     <span>Default tool</span>
                 </button>
 
-                <button class="wwwc" id="wwwcButton">
+                <button class="wwwc" onclick="toggleWwwcTool()">
                     <img src="/img/wwwc.1cc5a0ecda9fd93a085688cedaa8a78b.png">
                     <span>윈도우 레벨</span>
                 </button>
@@ -104,7 +104,7 @@
                     <span>흑백 반전</span>
                 </button>
 
-                <button class="pan" id="moveButton">
+                <button class="pan" onclick="togglePanTool()">
                     <img src="/img/pan.47e8cd9f65cf64c8f2fb3d08c6f205ab.png">
                     <span>이동</span>
                 </button>
@@ -129,7 +129,7 @@
                     <span>플레이 클립</span>
                 </button>
                 <div>
-                    <button class="toolModalParent" id="zoomButton">
+                    <button class="toolModalParent" onclick="toggleToolModal()">
                         <div>
                             <img src="/img/tools.2d1068915b14d4ae8a087ca1036b65b2.png" data-tool="8">
                             <svg viewBox="0 0 1030 638" width="10">
@@ -137,51 +137,51 @@
                             </svg>
                         </div>
                         <span>도구</span>
-                        <div class="toolModalChildren displayNone">
+                        <div id="toolModalChildren" class="toolModalChildren displayNone">
                             <div>
-                                <div data-tool="magnify" class="currentTool magnify" data-parent="tools">
+                                <div data-tool="magnify" class="currentTool magnify" data-parent="tools" onclick="toggleMagnifyTool()">
                                     <img src="/img/magnify.233d000e41a3ad1cf9707d94950e6158.png" data-tool="magnify" data-parent="tools">
                                     <span data-tool="magnify" data-parent="tools">돋보기</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="zoom" class="currentTool zoom" data-parent="tools">
+                                <div data-tool="zoom" class="currentTool zoom" data-parent="tools" onclick="toggleZoomTool()">
                                     <img src="/img/zoom.b259899b24b710fa9f31e433cc5b4e7e.png" data-tool="zoom" data-parent="tools">
                                     <span data-tool="zoom" data-parent="tools">확대/축소</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="rotate" class="currentTool rotate" data-parent="tools">
+                                <div data-tool="rotate" class="currentTool rotate" data-parent="tools" >
                                     <img src="/img/rotate.94c480f210401d6f6adabcf17115d1e5.png" data-tool="rotate" data-parent="tools">
                                     <span data-tool="rotate" data-parent="tools">회전</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="rightRotate" class="currentTool rightRotate" data-parent="tools">
+                                <div data-tool="rightRotate" class="currentTool rightRotate" data-parent="tools" >
                                     <img src="/img/rightRotate.053a9e994df6b6be59bb0c3d702741e6.png" data-tool="rightRotate" data-parent="tools">
                                     <span data-tool="rightRotate" data-parent="tools">오른쪽 회전</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="leftRotate" class="currentTool leftRotate" data-parent="tools">
+                                <div data-tool="leftRotate" class="currentTool leftRotate" data-parent="tools" >
                                     <img src="/img/leftRotate.8a64a37656bf3e1a3eba2c1d82b98c7d.png" data-tool="leftRotate" data-parent="tools">
                                     <span data-tool="leftRotate" data-parent="tools">왼쪽 회전</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="horizontalFlip" class="currentTool horizontalFlip" data-parent="tools">
+                                <div data-tool="horizontalFlip" class="currentTool horizontalFlip" data-parent="tools" >
                                     <img src="/img/hFlip.80d6a0b3bd0b788f42da409f5d115877.png" data-tool="horizontalFlip" data-parent="tools">
                                     <span data-tool="horizontalFlip" data-parent="tools">수평 뒤집기</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="verticalFlip" class="currentTool verticalFlip" data-parent="tools">
+                                <div data-tool="verticalFlip" class="currentTool verticalFlip" data-parent="tools" >
                                     <img src="/img/vFlip.1a75c203d6207c94829eb64a96bf952b.png" data-tool="verticalFlip" data-parent="tools">
                                     <span data-tool="verticalFlip" data-parent="tools">수직 대칭 이동</span>
                                 </div>
@@ -204,7 +204,7 @@
                     </button>
                 </div>
                 <div>
-                    <button class="toolModalParent">
+                    <button class="toolModalParent" onclick="toggleToolModal()">
                         <div>
                             <img src="/img/annotation.19ee74cd3ecff2134a423009b58463aa.png" data-tool="9">
                             <svg viewBox="0 0 1030 638" width="10">
@@ -212,7 +212,7 @@
                             </svg>
                         </div>
                         <span>주석</span>
-                        <div class="toolModalChildren displayNone">
+                        <div id="toolModalChildren2" class="toolModalChildren displayNone">
                             <div>
                                 <div data-tool="angle" class="currentTool angle" data-parent="annotation">
                                     <img src="/img/angle.1e52dac1b36046ae8e3b17f7212d09e3.png" data-tool="angle" data-parent="annotation">
@@ -277,7 +277,7 @@
                             </div>
 
                             <div>
-                                <div data-tool="TextMarker" class="currentTool textMarker" data-parent="annotation">
+                                <div data-tool="TextMarker" class="currentTool textMarker" data-parent="annotation" onclick="setupTextMarkerTool()">
                                     <img src="/img/textMarker.c203289c93466e8a10569367935d8b07.png" data-tool="TextMarker" data-parent="annotation">
                                     <span data-tool="TextMarker" data-parent="annotation">텍스트 마커</span>
                                 </div>
@@ -312,7 +312,7 @@
                     <span>Series</span>
                 </button>
 
-                <button class="disable">
+                <button class="disable" onclick="toggleMagnifyTool()">
                     <div>
                         <img src="/img/changeSeriesLayout.6c2935a8c5a52c722e1055e79e316d58.png">
                         <svg viewBox="0 0 1030 638" width="10">
@@ -337,8 +337,7 @@
 </div>
 <%@ include file="include/footer.jsp" %>
 
-//<script src="/script/viPhs.js"></script>
-<script src="/script/LJW.js"></script>
+<script src="/script/test1.js"></script>
 </body>
 
 

@@ -327,7 +327,9 @@ function getSelectedStudyKeys() {
     const selectedRows = document.querySelectorAll('.searchListBodyRow input[type="checkbox"]:checked');
     return Array.from(selectedRows).map(row => row.value);
 }
-
+function logout() {
+    location.reload();
+}
 // function deleteData() {
 //     const chk = 'input[name="del"]:checked';
 //     const selectedElements = document.querySelectorAll(chk);
