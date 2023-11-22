@@ -3,253 +3,164 @@ let stack = {
     imageIds: [],
 };
 
-viewDicom();
-//도구 기능들 시작
-cornerstoneTools.init();
-cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 1 });
-let isZoomEnabled = false; // 변수를 선언하고 기본값으로 초기화
-let isDragging = false;
-let initialMousePosition = { x: 0, y: 0 };
+async function overlayAiPresent(i) {
+    let stackData = stack[i];
+    let prContent = stackData.PRContentList[stackData.currentImageIdIndex];
+    let maxX = 512;
+    let maxY = 512;
 
-document.getElementById('zoomButton').addEventListener('click', () => {
-    isZoomEnabled = !isZoomEnabled;
+    const viewportElement = document.querySelector(`#viewport${i}`);
+    let canvas = viewportElement.querySelector('.cornerstone-canvas');
+    let overlayCanvas = viewportElement.querySelector('.overlay');
 
-    if (isZoomEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-        console.log("뷰포트",activeViewport);
-    }
-});
-
-document.addEventListener('mousedown', (event) => {
-    if (isZoomEnabled) {
-        isDragging = true;
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-    }
-});
-
-document.addEventListener('mouseup', (event) => {
-    if (isZoomEnabled) {
-        const targetElement = event.target;
-        const clientX = event.clientX;
-        const clientY = event.clientY;
-
-        console.log(`Zoom Out at (${clientX}, ${clientY}) on ${targetElement.tagName}`);
+    if (!overlayCanvas) {
+        overlayCanvas = document.createElement("canvas");
+        overlayCanvas.className = "overlay"
+        overlayCanvas.width = Math.min(canvas.width, canvas.height);
+        overlayCanvas.height = Math.min(canvas.width, canvas.height);
+        viewportElement.appendChild(overlayCanvas);
     }
 
-    isDragging = false;
-});
+    const overlayCtx = overlayCanvas.getContext('2d');
+    overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
 
-document.addEventListener('mousemove', (event) => {
-    if (isDragging && isZoomEnabled) {
-        const currentMousePosition = { x: event.clientX, y: event.clientY };
+    if (prContent != null && prContent.TextObjectSequence) {
+        if (prContent.TextObjectSequence.length > 0) {
+            prContent.TextObjectSequence.forEach(function (textObject) {
+                maxX = Math.max(maxX, textObject.BoundingBoxBottomRightHandCorner.Column);
+                maxY = Math.max(maxY, textObject.BoundingBoxBottomRightHandCorner.Row);
+            });
+            prContent.TextObjectSequence.forEach(function (textObject) {
+                overlayCtx.fillStyle = 'red';
+                overlayCtx.font = '10px Arial';
 
-        const deltaX = currentMousePosition.x - initialMousePosition.x;
-        const deltaY = currentMousePosition.y - initialMousePosition.y;
+                overlayCtx.textAlign = 'center';
+                overlayCtx.textBaseline = 'middle';
 
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        const viewport = cornerstone.getViewport(activeViewport);
+                let x = (textObject.BoundingBoxBottomRightHandCorner.Column + textObject.BoundingBoxTopLeftHandCorner.Column) / 2 * (overlayCanvas.width / maxX);
+                let y = (textObject.BoundingBoxBottomRightHandCorner.Row + textObject.BoundingBoxTopLeftHandCorner.Row) / 2 * (overlayCanvas.height / maxY);
+                var text = textObject.UnformattedTextValue;
 
-        viewport.translation.x -= deltaX * viewport.scale;
-        viewport.translation.y -= deltaY * viewport.scale;
-        viewport.scale += (deltaX + deltaY) * 0.001;
-
-        cornerstone.setViewport(activeViewport, viewport);
-
-        initialMousePosition = currentMousePosition;
-    }
-});
-
-
-
-
-
-let isWwwcEnabled = false;
-// let isDragging = false;
-// let initialMousePosition = { x: 0, y: 0 };
-let activeViewport;
-
-document.getElementById('wwwcButton').addEventListener('click', () => {
-    isWwwcEnabled = !isWwwcEnabled;
-
-    if (isWwwcEnabled) {
-        cornerstoneTools.setToolActive('Wwwc', { mouseButtonMask: 1 });
-    } else {
-        cornerstoneTools.setToolPassive('Wwwc');
+                overlayCtx.fillText(text, x, y);
+            });
+        }
     }
 
-    console.log(`Wwwc Enabled: ${isWwwcEnabled}`);
-});
+    // polyline 그리기
+    if (prContent != null && prContent.GraphicObjectSequence) {
+        prContent.GraphicObjectSequence.forEach(function (graphicObject) {
+            if (graphicObject.GraphicType === 'POLYLINE') {
+                overlayCtx.beginPath();
 
-document.addEventListener('mousedown', (event) => {
-    if (isWwwcEnabled) {
-        isDragging = true;
-        activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+                graphicObject.GraphicData.forEach(function (point, index) {
+                    const x = point.Column * (overlayCanvas.width / maxX);
+                    const y = point.Row * (overlayCanvas.height / maxY);
 
-        console.log('Dragging started');
+                    if (index === 0) {
+                        overlayCtx.moveTo(x, y);
+                    } else {
+                        overlayCtx.lineTo(x, y);
+                    }
+                });
+
+                // 닫힌 도형이면 마지막 점과 첫 번째 점을 연결
+                if (graphicObject.ClosedForPresentation === 'CLOSED') {
+                    overlayCtx.closePath();
+                }
+
+                overlayCtx.fillStyle = "#ff0000";
+
+                overlayCtx.fill();
+            }
+        });
     }
-});
-
-document.addEventListener('mousemove', (event) => {
-    if (isDragging && isWwwcEnabled) {
-        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-        const deltaX = currentMousePosition.x - initialMousePosition.x;
-        const deltaY = currentMousePosition.y - initialMousePosition.y;
-
-        const viewport = cornerstone.getViewport(activeViewport);
-
-        // Wwwc 도구 변경 로직을 여기에 추가
-        viewport.voi.windowWidth += deltaX * 1.9;
-        viewport.voi.windowCenter += deltaY * 1.9;
-
-        cornerstone.setViewport(activeViewport, viewport);
-
-        initialMousePosition = currentMousePosition;
-
-        console.log(`Wwwc Dragging: deltaX=${deltaX}, deltaY=${deltaY}`);
-    }
-});
-
-document.addEventListener('mouseup', () => {
-    if (isWwwcEnabled) {
-        isDragging = false;
-        console.log('Dragging ended');
-    }
-});
 
 
-
-
-
-
-let isMoveEnabled = false;
-// let isDragging = false;
-// let initialMousePosition = { x: 0, y: 0 };
-document.getElementById('moveButton').addEventListener('click', () => {
-    isMoveEnabled = !isMoveEnabled;
-
-    if (isMoveEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-        dcmImage = cornerstone.getEnabledElement(activeViewport).image;
-    }
-});
-
-document.addEventListener('mousedown', (event) => {
-    if (isMoveEnabled) {
-        isDragging = true;
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        initialMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-    }
-});
-
-document.addEventListener('mousemove', (event) => {
-    if (isDragging && isMoveEnabled) {
-        const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-        const viewport = cornerstone.getViewport(activeViewport);
-
-        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
-
-        const deltaX = currentMousePosition.x - initialMousePosition.x;
-        const deltaY = currentMousePosition.y - initialMousePosition.y;
-
-        viewport.translation.x += deltaX;
-        viewport.translation.y += deltaY;
-
-        cornerstone.setViewport(activeViewport, viewport);
-
-        initialMousePosition = currentMousePosition;
-    }
-});
-
-document.addEventListener('mouseup', () => {
-    isMoveEnabled = false;
-});
-
-function resetImage() {
-    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-    cornerstone.reset(activeViewport);
 }
 
-document.addEventListener('contextmenu', (event) => {
-    event.preventDefault();
-    resetImage();
-});
 
-document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        resetImage();
+async function displayDicomImage(i) {
+    try {
+        const blobUrl = stack[i].imageIds[stack.currentImageIdIndex].replace('dicomweb:', '');
+        const response = await fetch(blobUrl);
+        const blob = await response.blob();
+        const arrayBuffer = await readBlobAsArrayBuffer(blob);
+
+        const byteArray = new Uint8Array(arrayBuffer);
+        const dataSet = dicomParser.parseDicom(byteArray);
+
+        // Create viewportElement
+        const viewportElement = createViewportElement(i, dataSet);
+
+        // Enable cornerstone for the created viewportElement
+        cornerstone.enable(viewportElement);
+
+        // Load and display the image in the viewportElement
+        const image = await cornerstone.loadImage(stack[i].imageIds[stack.currentImageIdIndex]);
+        cornerstone.displayImage(viewportElement, image);
+
+        // Add wheel event listener for switching images
+        viewportElement.addEventListener('wheel', function (event) {
+            cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
+            cornerstoneTools.addToolState(viewportElement, 'stack', stack);
+
+            if (event.deltaY > 0) {
+                stackScrollDown(viewportElement);
+            } else {
+                stackScrollUp(viewportElement);
+            }
+
+            event.preventDefault();
+        });
+    } catch (error) {
+        console.error(error);
     }
-});
+}
 
-document.getElementById('resetButton').addEventListener('click', () => {
-    resetImage();
-});
+function readBlobAsArrayBuffer(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            resolve(event.target.result);
+        };
+        reader.onerror = function (error) {
+            reject(error);
+        };
+        reader.readAsArrayBuffer(blob);
+    });
+}
 
-
-
-let isInvertEnabled = false;
-
-document.getElementById('invertButton').addEventListener('click', () => {
-    isInvertEnabled = !isInvertEnabled;
-
-    const activeViewport = cornerstone.getEnabledElement(document.querySelector('.CSViewport')).element;
-    const viewport = cornerstone.getViewport(activeViewport);
-
-    if (isInvertEnabled) {
-        // 흑백 반전 활성화
-        viewport.invert = true;
-    } else {
-        // 흑백 반전 비활성화
-        viewport.invert = false;
-    }
-
-    cornerstone.setViewport(activeViewport, viewport);
-
-    console.log(`Invert Enabled: ${isInvertEnabled}`);
-});
-
-//끝
-
-function displayDicomImage(arrayBuffer, seriesinsuid,i) {
-
-    const byteArray = new Uint8Array(arrayBuffer);
-    const dataSet = dicomParser.parseDicom(byteArray);
-
-
+function createViewportElement(i, dataSet) {
     const viewportElement = document.createElement('div');
     viewportElement.classList.add('CSViewport');
-    viewportElement.id = `viewport-${seriesinsuid}`;
+    viewportElement.id = `viewport${i}`;
 
+    // Create child elements and append them to viewportElement
     const topLeft = document.createElement('div');
     topLeft.classList.add('topLeft');
-
     topLeft.innerHTML = `
-            <span>${dataSet.string('x00100020')}</span>
-            <span>${dataSet.string('x00100010')}</span>
-            <span>${dataSet.string('x00100030')}</span>
-            <span>${dataSet.string('x00200011')}</span>
-            <span>${dataSet.string('x00200013')}</span>
-            <span>${dataSet.string('x00080020')}</span>
-            <span>${dataSet.string('x00080030')}</span>
-        `;
+        <span>${dataSet.string('x00100020')}</span>
+        <span>${dataSet.string('x00100010')}</span>
+        <span>${dataSet.string('x00100030')}</span>
+        <span>${dataSet.string('x00200011')}</span>
+        <span class="imageNumber">${dataSet.string('x00200013')}</span>
+        <span>${dataSet.string('x00080020')}</span>
+        <span>${dataSet.string('x00080030')}</span>
+    `;
 
     const topRight = document.createElement('div');
     topRight.classList.add('topRight');
     topRight.innerHTML = `
-            <span>${dataSet.string('x00080070')}</span>
-            <span>${dataSet.string('x00081090')}</span>
-        `;
+        <span>${dataSet.string('x00080070')}</span>
+        <span>${dataSet.string('x00081090')}</span>
+    `;
 
     const bottomRight = document.createElement('div');
-    //<span>${dataSet.string('x00280010')} / ${dataSet.string('x00280011')}</span>
     bottomRight.classList.add('bottomRight');
     bottomRight.innerHTML = `
-            <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
-            <span>${dataSet.string('x00321032')}</span>
-        `;
+        <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
+        <span>${dataSet.string('x00321032')}</span>
+    `;
 
     const parentDiv = document.createElement('div');
     parentDiv.classList.add('parentDiv');
@@ -261,53 +172,47 @@ function displayDicomImage(arrayBuffer, seriesinsuid,i) {
 
     document.getElementById('dicomImageContainer').appendChild(parentDiv);
 
-    cornerstone.enable(viewportElement);
-
-    console.log(stack[i].imageIds[stack.currentImageIdIndex]);
-    cornerstone.loadImage(stack[i].imageIds[0]).then(image => {
-        cornerstone.displayImage(viewportElement, image);
-
-        // 스택 설정
-        cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
-        cornerstoneTools.addToolState(viewportElement, 'stack', stack);
-    });
-
-    console.log(cornerstoneTools);
-    // 마우스 휠 이벤트를 사용하여 다음 또는 이전 이미지로 전환
-    viewportElement.addEventListener('wheel', function (event) {
-        // 마우스 휠 방향에 따라 다음 또는 이전 이미지로 전환
-        if (event.deltaY > 0) {
-            // 다음 이미지로 전환
-            stackScrollDown(viewportElement);
-        } else {
-            // 이전 이미지로 전환
-            stackScrollUp(viewportElement);
-        }
-
-        // 이벤트 버블링 방지
-        event.preventDefault();
-
-    });
-
+    return viewportElement;
 }
+
 
 async function viewDicom() {
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
     try {
-
         let seriesTabList = await getSeriesTab();
 
         let cont = 4;
         for (let i = 0; i < seriesTabList.length; i++) {
             let item = seriesTabList[i];
             let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
+            let PRContentList = await getPRContentList(item.studykey, item.serieskey, item.imagecnt);
             let arrayBuffer = null;
+
+            function extractNumber(path) {
+                const match = path.match(/\.(\d+)\.\d+\.dcm$/);
+                return match ? parseInt(match[1]) : null;
+            }
+
+            directoryPath.sort((a, b) => {
+                const numberA = extractNumber(a);
+                const numberB = extractNumber(b);
+
+                // 숫자가 있는 경우에만 비교
+                if (numberA !== null && numberB !== null) {
+                    return numberA - numberB;
+                }
+
+                // 숫자가 없는 경우 문자열로 비교
+                return a.localeCompare(b);
+            });
+
 
             stack[i] = {
                 currentImageIdIndex: 0,
                 imageIds: [],
+                PRContentList: PRContentList,
             };
 
             for (let j = 0; j < directoryPath.length; j++) {
@@ -320,19 +225,16 @@ async function viewDicom() {
 
                 if (response.status === 200) {
                     arrayBuffer = response.data;
-                    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], { type: 'application/dicom' }))}`;
+                    const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], {type: 'application/dicom'}))}`;
                     stack[i].imageIds.push(imageId);
-                    console.log(stack[i].imageIds[stack[i].currentImageIdIndex]);
                 }
 
-                if(i<cont && j === 0){
-                    displayDicomImage(arrayBuffer, item.seriesinsuid, i);
-                }
             }
-
+            if (i < cont && stack[i].imageIds.length > 0) {
+                await displayDicomImage(i);
+                await overlayAiPresent(i);
+            }
         }
-
-
     } catch (error) {
         console.error(error);
     }
@@ -358,6 +260,7 @@ async function getSeriesTab() {
         console.error(error);
     }
 }
+
 async function getImagePath(studykey, seriesinsuid) {
     try {
         let response = await axios.get("/getImagePath", {
@@ -375,18 +278,57 @@ async function getImagePath(studykey, seriesinsuid) {
     }
 }
 
+async function getPRContentList(studykey, serieskey, imagecnt) {
+    try {
+        let response = await axios.get("/getPRContentList", {
+            params: {
+                studykey: studykey,
+                serieskey: serieskey,
+                imagecnt: imagecnt
+            }
+        });
+
+        if (response.status === 200) {
+            if (response.data != null) {
+                return response.data;
+            } else {
+                return [];
+            }
+        } else {
+            return [];
+        }
+    } catch (error) {
+        return [];
+    }
+}
+
 function stackScrollDown(element) {
+
     console.log("다운")
     const stackToolData = cornerstoneTools.getToolState(element, 'stack');
 
     if (stackToolData && stackToolData.data.length > 0) {
         const stackData = stackToolData.data[0];
+        let firstCharacter;
+        const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
+        const csViewportParent = mouseOverElement.closest('.CSViewport');
 
-        if (stackData.currentImageIdIndex >= 0) {
+        if (csViewportParent) {
+            const id = csViewportParent.id;
+            if (id.length > 0) {
+                firstCharacter = id.charAt(id.length - 1);
+            }
+        }
+        const indexSpan = csViewportParent.querySelector('.imageNumber');
+        console.log(indexSpan)
+
+        if (stackData.currentImageIdIndex >= 0 && stackData.currentImageIdIndex < stackData[firstCharacter].imageIds.length - 1) {
             stackData.currentImageIdIndex++;
-            const nextImageId = stackData[1].imageIds[stackData.currentImageIdIndex];
+            stack[firstCharacter].currentImageIdIndex++;
+            const nextImageId = stackData[firstCharacter].imageIds[stackData.currentImageIdIndex];
             cornerstone.loadImage(nextImageId).then(image => {
                 cornerstone.displayImage(element, image);
+                overlayAiPresent(firstCharacter);
             });
         }
     }
@@ -398,13 +340,28 @@ function stackScrollUp(element) {
 
     if (stackToolData && stackToolData.data.length > 0) {
         const stackData = stackToolData.data[0];
+        let firstCharacter;
+        const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
+        const csViewportParent = mouseOverElement.closest('.CSViewport');
 
+        if (csViewportParent) {
+            const id = csViewportParent.id;
+            if (id.length > 0) {
+                firstCharacter = id.charAt(id.length - 1);
+            }
+        }
+        const indexSpan = csViewportParent.querySelector('.imageNumber');
+        console.log(indexSpan)
         if (stackData.currentImageIdIndex > 0) {
             stackData.currentImageIdIndex--;
-            const prevImageId = stackData[1].imageIds[stackData.currentImageIdIndex];
+            stack[firstCharacter].currentImageIdIndex--;
+            const prevImageId = stackData[firstCharacter].imageIds[stackData.currentImageIdIndex];
             cornerstone.loadImage(prevImageId).then(image => {
                 cornerstone.displayImage(element, image);
+                overlayAiPresent(firstCharacter);
             });
         }
     }
 }
+
+viewDicom();

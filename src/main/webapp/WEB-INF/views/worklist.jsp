@@ -54,7 +54,7 @@
     </div>
 
     <div class="mainBox flex">
-        <div class="sideBox">
+        <div class="sideBox displayNone">
             <div class="sideBoxWrap advancedSearch displayNone">
                 <div class="calender">
 
@@ -190,6 +190,7 @@
                             <th class="searchListHeadLong">검사 설명</th>
                             <th class="searchListHeadShort" onclick="sortTable('studydate')">검사 일시</th>
                             <th class="searchListHeadShort" onclick="sortTable('reportstatus')">판독 상태</th>
+                            <th class="searchListHeadShort">AI점수</th>
                             <th class="searchListHeadShorter">시리즈</th>
                             <th class="searchListHeadShorter">이미지</th>
                             <th class="searchListHeadShorter">verify</th>
@@ -202,7 +203,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bottomList">
+            <div class="bottomList displayNone">
                 <div class="previousBox">
                     <div class="header" id="previous_header">
                         <h3>Previous</h3>

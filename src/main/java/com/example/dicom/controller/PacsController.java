@@ -18,6 +18,11 @@ public class PacsController {
         return "login";
     }
 
+    @GetMapping("/woPhs")
+    public String woPhs() {
+        return "/woPhs";
+    }
+
     @GetMapping("/worklist")
     public String worklist() {
         return "/worklist";
@@ -32,5 +37,6 @@ public class PacsController {
     public String loadOtherPage(@PathVariable String studykey, @PathVariable String studyinsuid, @PathVariable String pid) {
         return "/viewer";
     }
+
 }
 

@@ -9,7 +9,7 @@
 <%@ include file="include/header.jsp" %>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://unpkg.com/cornerstone-core"></script>
-<link href="/style/wophs.css" rel="stylesheet" type="text/css"/>
+<link href="/style/worklist.css" rel="stylesheet" type="text/css"/>
 
 
 <div class="container">

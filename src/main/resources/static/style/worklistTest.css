@@ -5,12 +5,18 @@ thead {
 }
 
 .sideBox {
-
+    background: #90BEAB;
+    color: #FFFFE4;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+    height: 100%;
+    padding: 5px;
+    margin-left: 12px;
 }
 
-.displayNone {
-    display: none;
-}
+
 
 /*.calender{*/
 /*    width: 100%;*/
@@ -172,8 +178,11 @@ thead {
 .iconFirst {
     margin-left: 30px;
 }
+.resetButton{
+    background-color: black;
+}
 
-.iconLast {
+.searchButton {
     background: rgb(98, 18, 18);
 }
 
@@ -323,7 +332,7 @@ thead {
     table-layout: fixed;
     box-shadow: none !important;
     margin: 16px 32px;
-    height: 430px;
+    height: 600px;
 }
 
 .searchListBox::-webkit-scrollbar {
@@ -712,4 +721,8 @@ thead {
     width: 50%;
     height: 100%;
     color: white;
+}
+
+.displayNone {
+    display: none;
 }

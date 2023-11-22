@@ -44,6 +44,10 @@ public class UploadController {
 
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesinsuid(studykey, seriesinsuid);
 
+        if (pacsImagetab == null) {
+            return Collections.emptyList();
+        }
+
         String directoryPath = "Z:\\" + pacsImagetab.getPath();
 
         File directory = new File(directoryPath);
@@ -73,7 +77,6 @@ public class UploadController {
         return dcmFilePaths;
 
     }
-
 
 
     @GetMapping("/getDicomFile")
