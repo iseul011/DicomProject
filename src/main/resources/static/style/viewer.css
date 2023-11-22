@@ -127,14 +127,17 @@
     width: 100%;
     height: 100%;
     border: 3px solid rgb(56, 56, 56);
+    position: relative;
+    color: white;
 }
 
 .CSViewport{
     display: flex;
     width: 100%;
     height: 100%;
-    position: relative;
-    color: white;
+    margin: auto;
+    overflow: hidden;
+    position: absolute;
 }
 
 .CSViewport .topLeft{
@@ -179,6 +182,7 @@
     margin-bottom: 5px;
 }
 
+
 .cornerstone-canvas{
     vertical-align: top;
     z-index: 1;
@@ -191,3 +195,31 @@
     transform: translate(-50%, -50%);
     z-index: 2;
 }
+
+.thumbnail img {
+    margin-top: 10px;
+}
+
+.togleBox {
+    margin: 4px 5px 4px 0;
+    width: 133px;
+    height: 133px;
+    border: 0.5px solid white;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 999999;
+    background: black;
+    top: 95%;
+    left: 0;
+}
+
+.table {
+    margin: 2px;
+    width: 22px;
+    height: 22px;
+    border: 0.1px solid slategray;
+    float: left;
+}
+
+
