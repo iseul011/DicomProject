@@ -331,7 +331,6 @@ async function viewDicom() {
     StackScrollMouseWheelTool.applyActiveStrategy = applyActiveStrategy;
 
     try {
-
         let seriesTabList = await getSeriesTab();
 
         let items = [];
@@ -420,7 +419,6 @@ function applyActiveStrategy(evt, operationData) {
 
     // 현재 이미지 인덱스가 이미지 아이디 배열의 범위를 벗어나지 않도록 처리
     stack.currentImageIdIndex = Math.max(0, Math.min(stack.currentImageIdIndex, stack.imageIds.length - 1));
-
 }
 
 //---- 썸네일 ----//
@@ -434,7 +432,7 @@ async function thumbnailBox() {
         thumbnail.innerHTML += '<h3>썸네일</h3>';
         thumbnail.innerHTML += '<hr/>';
 
-        let seriesTabList = await getSeriesTab();
+        // 던저줄 이미지 정보
 
 
         // 이미지 가져오기
@@ -442,8 +440,8 @@ async function thumbnailBox() {
 
         seriesTabs.forEach((seriesTab, index) => {
             const seriesNumber = index + 1;
-            const thumbnailImage = seriesTab.querySelector('canvas').toDataURL(); // canvas를 이미지로 변환
-            thumbnail.innerHTML += `<img src="${thumbnailImage}" onclick="handleThumbnailClick()" style="width: 100%; margin-bottom: 10px;"/>`;
+            const thumbnailImage = seriesTab.querySelector('canvas').toDataURL();
+            thumbnail.innerHTML += `<img src="${thumbnailImage}" onclick="handleThumbnailClick(seriesinsuid)" style="width: 100%; margin-bottom: 10px;"/>`;
             thumbnail.innerHTML += `<div class="bm">시리즈 ${seriesNumber}</div>`;
         });
     }
@@ -461,12 +459,17 @@ async function thumbnailBox() {
     isDivVisible = !isDivVisible;
 }
 
-async function handleThumbnailClick(seriesinsuid) {
+async function bigImge(arrayBuffer, seriesinsuid) {
+
+
+}
+
+async function handleThumbnailClick(studykey, seriesinsuid) {
     try {
         // 시리즈에 해당하는 이미지 가져오기
         let response = await axios.get("/getImagePath", {
             params: {
-                studykey: selectedStudyKey, //해당 변수가 어디에 선언되어 있는지에 따라 수정이 필요할 수 있습니다.
+                studykey: studykey, //해당 변수가 어디에 선언되어 있는지에 따라 수정이 필요할 수 있습니다.
                 seriesinsuid: seriesinsuid
             }
         });
@@ -484,7 +487,7 @@ async function handleThumbnailClick(seriesinsuid) {
 
             if (imageResponse.status === 200) {
                 const arrayBuffer = imageResponse.data;
-                displayDicomImage(arrayBuffer, seriesinsuid);
+                bigImge(arrayBuffer, seriesinsuid);
             }
         }
     } catch (error) {

@@ -1,7 +1,6 @@
 const clickCount = document.getElementById("search_submit");
 const searchTable = document.querySelector(".searchListBody");
 
-
 let number = 0;
 let rowNumber = 0;
 let column = '';
@@ -12,7 +11,12 @@ let reportStatusValue = 0;
 let searchListData;
 
 //상세 조회
+const sideBox = document.querySelector(".sideBox");
 let isDivVisible = false;
+let stDate = '';
+let edDate = '';
+let eq = '';
+let op = '';
 
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
@@ -54,6 +58,7 @@ async function getSearchListData() {
 
     searchListData = response.data;
 
+    console.log(searchListData);
     overCount();
 
     for (let i = 0; i < number; i++) {
@@ -135,7 +140,6 @@ function printMore() {
     for (let i = rowNumber; i < number; i++) {
         printSearchTable(searchListData[i])
     }
-
 
     printTotalCount();
     deleteMoreCountButton();
@@ -338,13 +342,107 @@ function getSelectedStudyKeys() {
 }
 
 //상세 조회
+
+async function searchDate() {
+    searchTable.innerHTML = '';
+
+    const startDate = document.querySelector(".startDate");
+    const endDate = document.querySelector(".endDate");
+    const equipment = document.querySelector(".equipment");
+    const optionNum = document.querySelector(".optionNum");
+
+    stDate = startDate.value.replace('-', '').replace('-', '');
+    edDate = endDate.value.replace('-', '').replace('-', '');
+    eq = equipment.value;
+    op = optionNum.value;
+
+    console.log(stDate);
+    console.log(edDate);
+    console.log(eq);
+    console.log(op);
+
+    const response = await axios.get("/v1/storage/search/PacsStudytab/findSearch", {
+        params: {
+            startDate : stDate,
+            endDate : edDate,
+            equipment : eq,
+            optionNum : op
+        }
+    });
+
+    searchListData = response.data;
+    console.log(searchListData);
+
+    overCount();
+
+    for (let i = 0; i < number; i++) {
+        printSearchTable(searchListData[i]);
+    }
+
+    selectPaging();
+    resetSearchTable();
+}
+
+async function resetDate() {
+
+}
+
 async function detailView() {
-    const sideBox = document.querySelector(".sideBox");
 
     if(isDivVisible) {
         sideBox.innerHTML = '';
     } else {
-        sideBox.innerHTML = '';
+        sideBox.innerHTML += '';
+        sideBox.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
+                              <input class="startDate" type="date"/> To
+                              <input class="endDate" type="date" /></br>`;
+        sideBox.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
+                             <select class="equipment">
+                                 <option value="">선택해주세요</option>
+                                 <option value="AS">AS</option>
+                                 <option value="AU">AU</option>
+                                 <option value="BI">BI</option>
+                                 <option value="CD">CD</option>
+                                 <option value="CF">CF</option>
+                                 <option value="CP">CP</option>
+                                 <option value="CR">CR</option>
+                                 <option value="CS">CS</option>
+                                 <option value="CT">CT</option>
+                                 <option value="DD">DD</option>
+                                 <option value="DF">DF</option>
+                                 <option value="DG">DG</option>
+                                 <option value="DM">DM</option>
+                                 <option value="DR">DR</option>
+                                 <option value="DS">DS</option>
+                                 <option value="DX">DX</option>
+                                 <option value="EC">EC</option>
+                                 <option value="ES">ES</option>
+                                 <option value="FA">FA</option>
+                                 <option value="FS">FS</option>
+                                 <option value="LS">LS</option>
+                                 <option value="LP">LP</option>
+                                 <option value="MA">MA</option>
+                                 <option value="MR">MR</option>
+                                 <option value="MS">MS</option>
+                                 <option value="NM">NM</option>
+                                 <option value="OT">OT</option>
+                                 <option value="PT">PT</option>
+                                 <option value="RF">RF</option>
+                                 <option value="RG">RG</option>
+                                 <option value="TG">TG</option>
+                                 <option value="US">US</option>
+                                 <option value="VF">VF</option>
+                                 <option value="XA">XA</option>
+                             </select></br>`;
+        sideBox.innerHTML += `<span class="imoticon"></span> Verify <br>
+                              <select class="optionNum">
+                                 <option value="">선택해주세요</option>
+                                 <option value="0">Not Requested</option>
+                                 <option value="1">Request Completed</option>
+                              </select></br>`;
+        sideBox.innerHTML += `<button class="searchDate" onclick="searchDate()">조회</button>`;
+        sideBox.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
+
     }
 
     //스타일 추가
@@ -352,13 +450,16 @@ async function detailView() {
     sideBox.style.color = isDivVisible ? "" : "white";
     sideBox.style.borderRadius = isDivVisible ? "" : "10px";
     sideBox.style.flexDirection = isDivVisible ? "" : "column";
-    sideBox.style.minWidth = isDivVisible ? "" : "250px";
+    sideBox.style.width = isDivVisible ? "" : "300px";
     sideBox.style.height = isDivVisible ? "" : "100%";
     sideBox.style.padding = isDivVisible ? "" : "5px";
     sideBox.style.marginLeft = isDivVisible ? "" : "12px";
+    sideBox.style.fontSize = isDivVisible ? "" : "14px";
 
     isDivVisible = !isDivVisible;
 }
+
+
 
 // function deleteData() {
 //     const chk = 'input[name="del"]:checked';

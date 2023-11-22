@@ -176,6 +176,11 @@
     margin-bottom: 5px;
 }
 
+
+.thumbnail img {
+    margin-top: 10px;
+}
+
 .togleBox {
     margin: 4px 5px 4px 0;
     width: 133px;
@@ -197,3 +202,4 @@
     border: 0.1px solid slategray;
     float: left;
 }
+
