@@ -18,6 +18,14 @@ let edDate = '';
 let eq = '';
 let op = '';
 
+//날짜 조회
+let allDate;
+let oneDate;
+let threeDate;
+let sevenDate;
+
+
+
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
     const getPName = document.getElementById("input_patient_name");
@@ -26,10 +34,11 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
+
     selectPaging();
     resetSearchTable();
-
 }
+
 async function resetSearchTable() {
     await getSearchListData();
     printTotalCount()
@@ -70,7 +79,6 @@ function printTotalCount() {
     const totalCount = document.querySelector(".totalCases");
 
     totalCount.innerHTML = `<p>총 검사 건수: ${number}</p>`;
-
 }
 
 function printSearchTable(data) {
@@ -341,8 +349,8 @@ function getSelectedStudyKeys() {
     return Array.from(selectedRows).map(row => row.value);
 }
 
-//상세 조회
 
+//상세 조회
 async function searchDate() {
     searchTable.innerHTML = '';
 
@@ -366,7 +374,7 @@ async function searchDate() {
             startDate : stDate,
             endDate : edDate,
             equipment : eq,
-            optionNum : op
+            optionNum : op,
         }
     });
 
@@ -384,7 +392,19 @@ async function searchDate() {
 }
 
 async function resetDate() {
+    if (isDivVisible) {
 
+        // 입력된 값이 있는 input 요소들을 초기화
+        const startDateInput = document.querySelector(".startDate");
+        const endDateInput = document.querySelector(".endDate");
+        const equipmentSelect = document.querySelector(".equipment");
+        const optionNumSelect = document.querySelector(".optionNum");
+
+        startDateInput.value = '';
+        endDateInput.value = '';
+        equipmentSelect.value = '';
+        optionNumSelect.value = '';
+    }
 }
 
 async function detailView() {
@@ -392,7 +412,10 @@ async function detailView() {
     if(isDivVisible) {
         sideBox.innerHTML = '';
     } else {
+        //켈린더 추가
         sideBox.innerHTML += '';
+
+        // 조회할 정보 추가
         sideBox.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
                               <input class="startDate" type="date"/> To
                               <input class="endDate" type="date" /></br>`;
@@ -440,7 +463,7 @@ async function detailView() {
                                  <option value="0">Not Requested</option>
                                  <option value="1">Request Completed</option>
                               </select></br>`;
-        sideBox.innerHTML += `<button class="searchDate" onclick="searchDate()">조회</button>`;
+        sideBox.innerHTML += `<button class="searchDetail" onclick="searchDate()">조회</button>`;
         sideBox.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
 
     }
@@ -459,6 +482,9 @@ async function detailView() {
     isDivVisible = !isDivVisible;
 }
 
+
+
+//켈린더 생성
 
 
 // function deleteData() {
