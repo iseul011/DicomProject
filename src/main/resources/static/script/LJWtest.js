@@ -6,6 +6,18 @@ let stack = {
 //도구 기능들 시작
 cornerstoneTools.init();
 
+function createParentDiv(){
+    for(let i = 0; i<25;i++){
+        const parentDiv = document.createElement('div');
+        parentDiv.classList.add('parentDiv');
+        if(i>4){
+            parentDiv.classList.add('displayNone');
+        }
+        parentDiv.id = "parentDiv"+i;
+        parentDiv.setAttribute('data-value',i);
+        document.getElementById('dicomImageContainer').appendChild(parentDiv);
+    }
+}
 
 async function overlayAiPresent(prContent, i) {
     if (prContent != null && prContent.TextObjectSequence) {
@@ -35,23 +47,13 @@ async function overlayAiPresent(prContent, i) {
 
 
 
-async function displayDicomImage(i,seriesTabList,dicomFile) {
-
-        if (i>=seriesTabList) {
-            const parentDiv = document.createElement('div');
-            parentDiv.classList.add('parentDiv');
-            parentDiv.style.display = 'none';
-            console.log(i);
-            parentDiv.setAttribute('data-value',i);
-            document.getElementById('dicomImageContainer').appendChild(parentDiv);
-            return;
-        }
-
+async function displayDicomImage(i,dicomFile) {
         const blobUrl = dicomFile.replace('dicomweb:', '');
 
         fetch(blobUrl)
             .then(response => response.blob())
             .then(blob => {
+
                 const reader = new FileReader();
                 reader.onload = function (event) {
                     const arrayBuffer = event.target.result;
@@ -91,14 +93,7 @@ async function displayDicomImage(i,seriesTabList,dicomFile) {
                     <span>${Math.floor(dataSet.string('x00281051'))} / ${Math.floor(dataSet.string('x00281050'))}</span>
                     <span>${dataSet.string('x00321032')}</span>
                 `;
-
-                    const parentDiv = document.createElement('div');
-                    parentDiv.classList.add('parentDiv');
-                    parentDiv.setAttribute('data-value',i);
-                    if(i > 3){
-                        parentDiv.style.display = 'none';
-                    }
-
+                    const parentDiv = document.getElementById("parentDiv"+i)
                     viewportElement.appendChild(topLeft);
                     viewportElement.appendChild(topRight);
                     viewportElement.appendChild(bottomRight);
@@ -140,8 +135,7 @@ async function viewDicom() {
     try {
         let seriesTabList = await getSeriesTab();
 
-        for (let i = 0; i < 25; i++) {
-            if(i<seriesTabList.length){
+        for (let i = 0; i < seriesTabList.length; i++) {
                 let item = seriesTabList[i];
                 let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
                 function extractNumber(path) {
@@ -170,9 +164,9 @@ async function viewDicom() {
                 let dicomFile = await getDicomFile(i);
                 console.log(i)
                 await displayDicomImage(i,seriesTabList.length,dicomFile);
-
-            }else {
-                await  displayDicomImage(i,seriesTabList.length);
+                            if (i < cont && stack[i].imageIds.length > 0) {
+                await displayDicomImage(i);
+                await overlayAiPresent(i);
             }
         }
     } catch (error) {
@@ -333,6 +327,7 @@ function stackUpDown(element,firstCharacter,csViewportParent){
                     //const nextImageId = stack[firstCharacter].imageIds[stackData.currentImageIdIndex];
                     cornerstone.loadImage(dicomUrl).then(image => {
                         cornerstone.displayImage(element, image);
+                        overlayAiPresent(firstCharacter);
                     });
                 };
                 reader.readAsArrayBuffer(blob);
@@ -469,5 +464,5 @@ function gridLayout(row, column) {
     });
 }
 
-
+createParentDiv();
 viewDicom();
