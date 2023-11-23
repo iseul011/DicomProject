@@ -113,17 +113,34 @@ public class PacsRestController {
         System.out.println("startDate: " + startDate);
         System.out.println("endDate: " + endDate);
 
-        if(startDate != null && endDate != null && equipment != null && optionNum != null) {
+        if(startDate != "" && endDate != "" && equipment != "" && optionNum != "") {
             return pacsStudytabRepository.dateAllFindEquipmentOptionNum(equipment, optionNum, startDate, endDate);
-        } else if(startDate != null && endDate != null && equipment != null) {
+        } else if(startDate != "" && endDate != "" && equipment != "") {
             return pacsStudytabRepository.dateAllFindEquipment(equipment, startDate, endDate);
-        } else if(startDate != null && endDate != null) {
+        } else if(startDate != "" && endDate != "") {
             return pacsStudytabRepository.dateAllFind(startDate, endDate);
         }
 
         return null;
     }
 
+    @GetMapping("/search/PacsStudytab/clickSearch")
+    public List<PacsStudytab> getClickSearchStudytab(@RequestParam(required = false) String DateString) {
+
+        System.out.println("DateString: " + DateString);
+
+        if(DateString.equals("allDate")) {
+            return pacsStudytabRepository.dateFindAll();
+        } else if(DateString.equals("oneDate")) {
+            return pacsStudytabRepository.dateFindoneAgo();
+        } else if(DateString.equals("threeDate")) {
+            return pacsStudytabRepository.dateFindThreeAgo();
+        } else if(DateString.equals("sevenDate")) {
+            return pacsStudytabRepository.dateFindSevenAgo();
+        }
+
+        return null;
+    }
 
 }
 

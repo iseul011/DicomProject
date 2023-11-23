@@ -11,7 +11,6 @@
 <script src="https://unpkg.com/cornerstone-core"></script>
 <link href="/style/worklist.css" rel="stylesheet" type="text/css"/>
 
-
 <div class="container">
     <div class="sideBar">
         <div class="sideMenu-wrap">

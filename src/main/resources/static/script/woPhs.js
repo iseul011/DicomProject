@@ -18,6 +18,14 @@ let edDate = '';
 let eq = '';
 let op = '';
 
+//날짜 조회
+let allDate;
+let oneDate;
+let threeDate;
+let sevenDate;
+
+
+
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
     const getPName = document.getElementById("input_patient_name");
@@ -26,10 +34,11 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
+
     selectPaging();
     resetSearchTable();
-
 }
+
 async function resetSearchTable() {
     await getSearchListData();
     printTotalCount()
@@ -70,7 +79,6 @@ function printTotalCount() {
     const totalCount = document.querySelector(".totalCases");
 
     totalCount.innerHTML = `<p>총 검사 건수: ${number}</p>`;
-
 }
 
 function printSearchTable(data) {
@@ -342,10 +350,7 @@ function getSelectedStudyKeys() {
 }
 
 //상세 조회
-
-async function searchDate() {
-    searchTable.innerHTML = '';
-
+function searchDetailList() {
     const startDate = document.querySelector(".startDate");
     const endDate = document.querySelector(".endDate");
     const equipment = document.querySelector(".equipment");
@@ -361,12 +366,26 @@ async function searchDate() {
     console.log(eq);
     console.log(op);
 
+    selectPaging();
+    resetDetailSearchTable();
+}
+
+async function resetDetailSearchTable() {
+    await searchDate();
+    printTotalCount()
+    createMoreCountButton();
+    deleteMoreCountButton();
+}
+
+async function searchDate() {
+    searchTable.innerHTML = '';
+
     const response = await axios.get("/v1/storage/search/PacsStudytab/findSearch", {
         params: {
             startDate : stDate,
             endDate : edDate,
             equipment : eq,
-            optionNum : op
+            optionNum : op,
         }
     });
 
@@ -379,12 +398,22 @@ async function searchDate() {
         printSearchTable(searchListData[i]);
     }
 
-    selectPaging();
-    resetSearchTable();
 }
 
+//상세조회 데이터 리셋
 async function resetDate() {
+    if (isDivVisible) {
+        // 입력된 값이 있는 input 요소들을 초기화
+        const startDateInput = document.querySelector(".startDate");
+        const endDateInput = document.querySelector(".endDate");
+        const equipmentSelect = document.querySelector(".equipment");
+        const optionNumSelect = document.querySelector(".optionNum");
 
+        startDateInput.value = '';
+        endDateInput.value = '';
+        equipmentSelect.value = '';
+        optionNumSelect.value = '';
+    }
 }
 
 async function detailView() {
@@ -392,7 +421,8 @@ async function detailView() {
     if(isDivVisible) {
         sideBox.innerHTML = '';
     } else {
-        sideBox.innerHTML += '';
+
+        // 조회할 정보 추가
         sideBox.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
                               <input class="startDate" type="date"/> To
                               <input class="endDate" type="date" /></br>`;
@@ -440,7 +470,7 @@ async function detailView() {
                                  <option value="0">Not Requested</option>
                                  <option value="1">Request Completed</option>
                               </select></br>`;
-        sideBox.innerHTML += `<button class="searchDate" onclick="searchDate()">조회</button>`;
+        sideBox.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
         sideBox.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
 
     }
@@ -459,7 +489,62 @@ async function detailView() {
     isDivVisible = !isDivVisible;
 }
 
+// 날짜 조회
+const search_allTime = document.getElementById("search_allTime");
+const search_oneDay = document.getElementById("search_oneDay");
+const search_threeDay = document.getElementById("search_threeDay");
+const search_oneWeek = document.getElementById("search_oneWeek");
 
+search_allTime.addEventListener("click", () => {
+    allDate = 'allDate';
+    clickDateList(allDate);
+});
+search_oneDay.addEventListener("click", () => {
+    oneDate = 'oneDate';
+    clickDateList(oneDate);
+});
+search_threeDay.addEventListener("click", () => {
+    threeDate = 'threeDate';
+    clickDateList(threeDate);
+});
+search_oneWeek.addEventListener("click", () => {
+    sevenDate = 'sevenDate';
+    clickDateList(sevenDate);
+});
+
+function clickDateList(date) {
+    selectPaging();
+    resetClickDateTable(date);
+}
+
+async function resetClickDateTable(date) {
+    await DateClick(date);
+    printTotalCount()
+    createMoreCountButton();
+    deleteMoreCountButton();
+}
+
+async function DateClick(date) {
+    searchTable.innerHTML = '';
+
+    console.log("date: " + date);
+
+    const response = await axios.get("/v1/storage/search/PacsStudytab/clickSearch", {
+        params: {
+            DateString : date
+        }
+    });
+
+    searchListData = response.data;
+    console.log(searchListData);
+
+    overCount();
+
+    for (let i = 0; i < number; i++) {
+        printSearchTable(searchListData[i]);
+    }
+
+}
 
 // function deleteData() {
 //     const chk = 'input[name="del"]:checked';
