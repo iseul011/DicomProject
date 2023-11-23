@@ -33,18 +33,21 @@ async function overlayAiPresent(prContent, i) {
     }
 }
 
-    function displayDicomImage(i,seriesTabList) {
+
+
+async function displayDicomImage(i,seriesTabList,dicomFile) {
+
         if (i>=seriesTabList) {
             const parentDiv = document.createElement('div');
             parentDiv.classList.add('parentDiv');
             parentDiv.style.display = 'none';
+            console.log(i);
             parentDiv.setAttribute('data-value',i);
             document.getElementById('dicomImageContainer').appendChild(parentDiv);
             return;
         }
 
-
-        const blobUrl = stack[i].imageIds[stack.currentImageIdIndex].replace('dicomweb:', '');
+        const blobUrl = dicomFile.replace('dicomweb:', '');
 
         fetch(blobUrl)
             .then(response => response.blob())
@@ -105,26 +108,21 @@ async function overlayAiPresent(prContent, i) {
 
                     cornerstone.enable(viewportElement);
 
-                    cornerstone.loadImage(stack[i].imageIds[stack.currentImageIdIndex]).then(image => {
+                    cornerstone.loadImage(dicomFile).then(image => {
                         cornerstone.displayImage(viewportElement, image);
                     });
 
                     // 마우스 휠 이벤트를 사용하여 다음 또는 이전 이미지로 전환
                     viewportElement.addEventListener('wheel', function (event) {
-                        // 스택 설정
                         cornerstoneTools.addStackStateManager(viewportElement, ['stack']);
                         cornerstoneTools.addToolState(viewportElement, 'stack', stack);
 
-                        // 마우스 휠 방향에 따라 다음 또는 이전 이미지로 전환
                         if (event.deltaY > 0) {
-                            // 다음 이미지로 전환
                             stackScrollDown(viewportElement);
                         } else {
-                            // 이전 이미지로 전환
                             stackScrollUp(viewportElement);
                         }
 
-                        // 이벤트 버블링 방지
                         event.preventDefault();
                     });
                 };
@@ -135,71 +133,67 @@ async function overlayAiPresent(prContent, i) {
     }
 
 
-    async function viewDicom() {
-        cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
-        cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
+async function viewDicom() {
+    cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+    cornerstoneWADOImageLoader.external.dicomParser = dicomParser;
 
-        try {
-            let seriesTabList = await getSeriesTab();
+    try {
+        let seriesTabList = await getSeriesTab();
 
-            for (let i = 0; i < 25; i++) {
-                if(i<seriesTabList.length){
-                    let item = seriesTabList[i];
-                    let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
-                    let PRContentList = await getPRContentList(item.studykey, item.serieskey, item.imagecnt);
-                    let arrayBuffer;
+        for (let i = 0; i < 25; i++) {
+            if(i<seriesTabList.length){
+                let item = seriesTabList[i];
+                let directoryPath = await getImagePath(item.studykey, item.seriesinsuid);
+                function extractNumber(path) {
+                    const match = path.match(/\.(\d+)\.\d+\.dcm$/);
+                    return match ? parseInt(match[1]) : null;
+                }
 
-                    function extractNumber(path) {
-                        const match = path.match(/\.(\d+)\.\d+\.dcm$/);
-                        return match ? parseInt(match[1]) : null;
+                directoryPath.sort((a, b) => {
+                    const numberA = extractNumber(a);
+                    const numberB = extractNumber(b);
+
+                    // 숫자가 있는 경우에만 비교
+                    if (numberA !== null && numberB !== null) {
+                        return numberA - numberB;
                     }
 
-                    directoryPath.sort((a, b) => {
-                        const numberA = extractNumber(a);
-                        const numberB = extractNumber(b);
+                    // 숫자가 없는 경우 문자열로 비교
+                    return a.localeCompare(b);
+                });
 
-                        // 숫자가 있는 경우에만 비교
-                        if (numberA !== null && numberB !== null) {
-                            return numberA - numberB;
-                        }
+                stack[i] = {
+                    currentImageIdIndex: 0,
+                    imageIds: [directoryPath],
+                };
 
-                        // 숫자가 없는 경우 문자열로 비교
-                        return a.localeCompare(b);
-                    });
+                let dicomFile = await getDicomFile(i);
+                console.log(i)
+                await displayDicomImage(i,seriesTabList.length,dicomFile);
 
-                    stack[i] = {
-                        currentImageIdIndex: 0,
-                        imageIds: [],
-                    };
-
-                    for (let j = 0; j < directoryPath.length; j++) {
-                        let response = await axios.get("/getDicomFile", {
-                            params: {
-                                directoryPath: decodeURIComponent(directoryPath[j])
-                            },
-                            responseType: 'arraybuffer'
-                        });
-
-                        if (response.status === 200) {
-                            arrayBuffer = response.data;
-                            const imageId = `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], {type: 'application/dicom'}))}`;
-                            stack[i].imageIds.push(imageId);
-                        }
-
-
-                        if (i < seriesTabList.length && j === 0) {
-                            displayDicomImage(i,seriesTabList.length);
-                            await overlayAiPresent(PRContentList[j], i);
-                        }
-                }
-
-                }else {
-                    displayDicomImage(i,seriesTabList.length);
-                }
+            }else {
+                await  displayDicomImage(i,seriesTabList.length);
             }
-        } catch (error) {
-            console.error(error);
         }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+    //dcm 파일을 바이트 배열로 변환
+    async function getDicomFile(i){
+        let response = await axios.get("/getDicomFile", {
+            params: {
+                directoryPath: decodeURIComponent(stack[i].imageIds[0][stack.currentImageIdIndex])
+            },
+            responseType: 'arraybuffer'
+        });
+
+        if (response.status === 200) {
+            arrayBuffer = response.data;
+            return `dicomweb:${URL.createObjectURL(new Blob([arrayBuffer], {type: 'application/dicom'}))}`;
+        }
+
     }
 
     async function getSeriesTab() {
@@ -265,7 +259,6 @@ async function overlayAiPresent(prContent, i) {
     }
 
 function stackScrollDown(element) {
-
     const stackToolData = cornerstoneTools.getToolState(element, 'stack');
 
     if (stackToolData && stackToolData.data.length > 0) {
@@ -281,37 +274,9 @@ function stackScrollDown(element) {
             }
         }
 
-        if (stackData.currentImageIdIndex >= 0 && stackData.currentImageIdIndex < stackData[firstCharacter].imageIds.length - 1) {
+        if (stackData.currentImageIdIndex >= 0 && stackData.currentImageIdIndex < stackData[firstCharacter].imageIds[0].length - 1) {
             stackData.currentImageIdIndex++;
-
-            const blobUrl = stack[firstCharacter].imageIds[stackData.currentImageIdIndex].replace('dicomweb:', '');
-            console.log(blobUrl)
-            fetch(blobUrl)
-                .then(response => response.blob())
-                .then(blob => {
-                    const reader = new FileReader();
-                    reader.onload = function (event) {
-                        const arrayBuffer = event.target.result;
-
-                        const byteArray = new Uint8Array(arrayBuffer);
-                        const dataSet = dicomParser.parseDicom(byteArray);
-
-                        const indexSpan = csViewportParent.querySelector('.imageNumber');
-
-                        // x00200013 값으로 이미지 번호 업데이트
-                        const imageNumberValue = dataSet.string('x00200013');
-                        if (indexSpan) {
-                            indexSpan.textContent = imageNumberValue;
-                        }
-
-                        const nextImageId = stack[firstCharacter].imageIds[stackData.currentImageIdIndex];
-                        cornerstone.loadImage(nextImageId).then(image => {
-                            cornerstone.displayImage(element, image);
-                        });
-                    };
-                    reader.readAsArrayBuffer(blob);
-                })
-                .catch(error => console.error(error));
+            stackUpDown(element,firstCharacter,csViewportParent);
         }
     }
 }
@@ -319,7 +284,6 @@ function stackScrollDown(element) {
 
 function stackScrollUp(element) {
         const stackToolData = cornerstoneTools.getToolState(element, 'stack');
-
 
         if (stackToolData && stackToolData.data.length > 0) {
             const stackData = stackToolData.data[0];
@@ -334,45 +298,51 @@ function stackScrollUp(element) {
                 }
             }
 
-
             if (stackData.currentImageIdIndex > 0) {
                 stackData.currentImageIdIndex--;
-
-                const blobUrl = stack[firstCharacter].imageIds[stackData.currentImageIdIndex].replace('dicomweb:', '');
-                fetch(blobUrl)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const reader = new FileReader();
-                        reader.onload = function (event) {
-                            const arrayBuffer = event.target.result;
-
-                            const byteArray = new Uint8Array(arrayBuffer);
-                            const dataSet = dicomParser.parseDicom(byteArray);
-
-                            const indexSpan = csViewportParent.querySelector('.imageNumber');
-
-                            const imageNumberValue = dataSet.string('x00200013');
-                            if (indexSpan) {
-                                indexSpan.textContent = imageNumberValue;
-                            }
-
-                            const nextImageId = stack[firstCharacter].imageIds[stackData.currentImageIdIndex];
-                            cornerstone.loadImage(nextImageId).then(image => {
-                                cornerstone.displayImage(element, image);
-                            });
-                        };
-                        reader.readAsArrayBuffer(blob);
-                    })
-                    .catch(error => console.error(error));
-
-
-                const prevImageId = stackData[firstCharacter].imageIds[stackData.currentImageIdIndex];
-                cornerstone.loadImage(prevImageId).then(image => {
-                    cornerstone.displayImage(element, image);
-                });
+                stackUpDown(element,firstCharacter,csViewportParent);
             }
         }
     }
+
+function stackUpDown(element,firstCharacter,csViewportParent){
+    let dicomFile = getDicomFile(firstCharacter);
+
+    let blobUrl;
+    dicomFile.then(dicomUrl => {
+        blobUrl = dicomUrl.replace('dicomweb:', '');
+
+        fetch(blobUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const arrayBuffer = event.target.result;
+
+                    const byteArray = new Uint8Array(arrayBuffer);
+                    const dataSet = dicomParser.parseDicom(byteArray);
+
+                    const indexSpan = csViewportParent.querySelector('.imageNumber');
+
+                    // x00200013 값으로 이미지 번호 업데이트
+                    const imageNumberValue = dataSet.string('x00200013');
+                    if (indexSpan) {
+                        indexSpan.textContent = imageNumberValue;
+                    }
+
+                    //const nextImageId = stack[firstCharacter].imageIds[stackData.currentImageIdIndex];
+                    cornerstone.loadImage(dicomUrl).then(image => {
+                        cornerstone.displayImage(element, image);
+                    });
+                };
+                reader.readAsArrayBuffer(blob);
+            })
+            .catch(error => console.error(error));
+    })
+}
+
+
+
 
 //레이 아웃 틀 만들기
 let isTogleBoxVisible = false;
@@ -436,6 +406,7 @@ function togleBox() {
 
 button.addEventListener('click', togleBox);
 
+//마우스 위치에 따른 레이아웃 색상 변경
 function applyBackgroundColor(row, column) {
     const allDivs = document.querySelectorAll('.table');
 
@@ -449,6 +420,7 @@ function applyBackgroundColor(row, column) {
     });
 }
 
+//마우스 위치에 따른 레이아웃 색상 초기화
 function resetBackgroundColor() {
     const allDivs = document.querySelectorAll('.table');
 
@@ -456,14 +428,14 @@ function resetBackgroundColor() {
         div.style.backgroundColor = '';
     });
 }
-
+//선택한 레이아웃 외 parentDiv none
 function hideDicomImage(index) {
     const parentDivs = document.getElementsByClassName('parentDiv');
     const parentDiv = parentDivs[index];
     parentDiv.style.display = 'none';
 
 }
-
+//선택한 레이아웃 만큰 parentDiv block
 function showDicomImage(index) {
     const parentDivs = document.getElementsByClassName('parentDiv');
     const parentDiv = parentDivs[index];

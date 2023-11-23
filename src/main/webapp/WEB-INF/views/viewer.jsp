@@ -329,6 +329,7 @@
                 </div>
 
                 <div class="wadoBox" id="dicomImageContainer">
+
                 </div>
             </div>
         </div>
@@ -344,7 +345,7 @@
 <%--<script src="/script/viPhs.js"></script>--%>
 <!-- <script src="/script/cornerstoneTest.js"></script> -->
 
-<!-- <script src="/script/LJW.js"></script> -->
+<script src="/script/LJWtest.js"></script>
 
 
 </body>
