@@ -37,20 +37,18 @@ thead {
 
 .listBox {
     transition-duration: 2s;
-    border-radius: 10px;
     display: flex;
     flex-direction: column;
-    margin-left: 6px;
     width: 100%;
     height: 100%;
 }
 
 .totalList {
     position: relative;
-    background: #181a1c;
+    background: #161819;
     border-radius: 10px;
     width: calc(100% - 40px);
-    height: 90%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -862,6 +860,3 @@ thead {
     font-size: 11px;
 }
 
-.displayNone {
-    display: none;
-}

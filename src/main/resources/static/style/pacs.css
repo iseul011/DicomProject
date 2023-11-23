@@ -159,3 +159,6 @@ html, body {
     box-sizing: border-box;
     border: 1px solid rgb(36, 36, 36);
 }
+.displayNone {
+     display: none;
+ }

@@ -340,13 +340,13 @@
 <%@ include file="include/footer.jsp" %>
 
 
-<script src="/script/test1.js"></script>
+<%--<script src="/script/test1.js"></script>--%>
 
 
 <%--<script src="/script/viPhs.js"></script>--%>
- <script src="/script/cornerstoneTest.js"></script>
+<%-- <script src="/script/cornerstoneTest.js"></script>--%>
 
-<script src="/script/LJWtest.js"></script>
+<script src="/script/viewer.js"></script>
 
 
 </body>
