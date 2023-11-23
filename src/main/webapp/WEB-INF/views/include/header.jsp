@@ -3,7 +3,8 @@
 <head>
     <title>WebViewer</title>
 </head>
-<link href="/style/pacs.css" rel="stylesheet" type="text/css"/>
+<%--<link href="/style/pacs.css" rel="stylesheet" type="text/css"/>--%>
+<link href="/style/pacsTest.css" rel="stylesheet" type="text/css"/>
 
 <body>
 <header>

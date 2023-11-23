@@ -344,7 +344,7 @@
 
 
 <%--<script src="/script/viPhs.js"></script>--%>
-<!-- <script src="/script/cornerstoneTest.js"></script> -->
+ <script src="/script/cornerstoneTest.js"></script>
 
 <script src="/script/LJWtest.js"></script>
 

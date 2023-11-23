@@ -46,9 +46,10 @@ async function overlayAiPresent(i) {
         }
     }
 
-    // polyline 그리기
     if (prContent != null && prContent.GraphicObjectSequence) {
         prContent.GraphicObjectSequence.forEach(function (graphicObject) {
+            overlayCtx.fillStyle = "";
+            overlayCtx.strokeStyle = "";
             if (graphicObject.GraphicType === 'POLYLINE') {
                 overlayCtx.beginPath();
 
@@ -67,15 +68,20 @@ async function overlayAiPresent(i) {
                 if (graphicObject.ClosedForPresentation === 'CLOSED') {
                     overlayCtx.closePath();
                 }
+                if (maxX > 1500 || maxY > 1500) {
+                    overlayCtx.strokeStyle = "#c0504d";
+                    overlayCtx.stroke();
+                } else {
+                    overlayCtx.fillStyle = "#c0504d";
+                    const gradiants =
+                    overlayCtx.strokeStyle = "#7fff00";
+                    overlayCtx.fill();
+                    overlayCtx.stroke();
+                }
 
-                overlayCtx.fillStyle = "#ff0000";
-
-                overlayCtx.fill();
             }
         });
     }
-
-
 }
 
 

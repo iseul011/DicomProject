@@ -9,7 +9,8 @@
 <%@ include file="include/header.jsp" %>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://unpkg.com/cornerstone-core"></script>
-<link href="/style/worklist.css" rel="stylesheet" type="text/css"/>
+<%--<link href="/style/worklist.css" rel="stylesheet" type="text/css"/>--%>
+<link href="/style/worklistTest.css" rel="stylesheet" type="text/css"/>
 
 
 <div class="container">
@@ -54,8 +55,8 @@
     </div>
 
     <div class="mainBox flex">
-        <div class="sideBox displayNone">
-            <div class="sideBoxWrap advancedSearch displayNone">
+        <div class="sideBox">
+            <div class="sideBoxWrap advancedSearch">
                 <div class="calender">
 
                 </div>
