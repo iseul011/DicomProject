@@ -400,6 +400,7 @@ async function searchDate() {
 
 }
 
+//상세조회 데이터 리셋
 async function resetDate() {
     if (isDivVisible) {
         // 입력된 값이 있는 input 요소들을 초기화
@@ -420,8 +421,6 @@ async function detailView() {
     if(isDivVisible) {
         sideBox.innerHTML = '';
     } else {
-        //켈린더 추가
-        sideBox.innerHTML += '';
 
         // 조회할 정보 추가
         sideBox.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
@@ -546,7 +545,6 @@ async function DateClick(date) {
     }
 
 }
-
 
 // function deleteData() {
 //     const chk = 'input[name="del"]:checked';
