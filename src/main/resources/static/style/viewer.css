@@ -167,7 +167,7 @@
 }
 
 .CSViewport.selectedViewport {
-    border: 6px solid pink;
+    border: 3px solid pink;
 }
 
 .thumbnail h3 {
@@ -223,4 +223,43 @@
     height: 22px;
     border: 0.1px solid slategray;
     float: left;
+}
+.displayNone {
+    display: none;
+}
+.mainMenu button.toolModalParent .toolModalChildren2.displayNone {
+    display: none;
+}
+.mainMenu button.toolModalParent .toolModalChildren2 {
+    border: 1px solid white;
+    border-radius: 10px;
+    position: absolute;
+    z-index: 1000000;
+    top: 100%;
+    left: 0px;
+    background: rgb(36, 36, 36);
+    width: 200%;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    padding: 5px;
+}
+
+.mainMenu button.toolModalParent .toolModalChildren2 > div {
+    width: 50%;
+}
+
+.mainMenu button.toolModalParent .toolModalChildren2 > div > div {
+    padding: 5px;
+}
+
+.mainMenu button.toolModalParent .toolModalChildren2 > div > div > span {
+    margin-top: 3px;
+    display: block;
+    font-size: 5px;
+    color: white;
+}
+
+.magnifyTool{
+    z-index: 99;
 }

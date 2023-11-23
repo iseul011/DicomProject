@@ -3,6 +3,7 @@
 <html>
 <head>
     <title>WebViewer</title>
+    <meta charset="UTF-8">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-core/dist/cornerstone.js"></script>
@@ -129,7 +130,7 @@
                     <span>플레이 클립</span>
                 </button>
                 <div>
-                    <button class="toolModalParent" onclick="toggleToolModal()">
+                    <button class="toolModalParent" onclick="toggleToolModal('toolModalChildren')">
                         <div>
                             <img src="/img/tools.2d1068915b14d4ae8a087ca1036b65b2.png" data-tool="8">
                             <svg viewBox="0 0 1030 638" width="10">
@@ -153,7 +154,7 @@
                             </div>
 
                             <div>
-                                <div data-tool="rotate" class="currentTool rotate" data-parent="tools" >
+                                <div data-tool="rotate" class="currentTool rotate" data-parent="tools" onclick="setupRotateTool()">
                                     <img src="/img/rotate.94c480f210401d6f6adabcf17115d1e5.png" data-tool="rotate" data-parent="tools">
                                     <span data-tool="rotate" data-parent="tools">회전</span>
                                 </div>
@@ -204,7 +205,7 @@
                     </button>
                 </div>
                 <div>
-                    <button class="toolModalParent" onclick="toggleToolModal()">
+                    <button class="toolModalParent" onclick="toggleToolModal('toolModalChildren2')">
                         <div>
                             <img src="/img/annotation.19ee74cd3ecff2134a423009b58463aa.png" data-tool="9">
                             <svg viewBox="0 0 1030 638" width="10">
@@ -212,65 +213,65 @@
                             </svg>
                         </div>
                         <span>주석</span>
-                        <div id="toolModalChildren2" class="toolModalChildren displayNone">
+                        <div class="toolModalChildren2 displayNone">
                             <div>
-                                <div data-tool="angle" class="currentTool angle" data-parent="annotation">
+                                <div data-tool="angle" class="currentTool angle" data-parent="annotation" onclick="setupAngleTool()">
                                     <img src="/img/angle.1e52dac1b36046ae8e3b17f7212d09e3.png" data-tool="angle" data-parent="annotation">
                                     <span data-tool="angle" data-parent="annotation">각도</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="arrowAnnotate" class="currentTool arrowAnnotate" data-parent="annotation">
+                                <div data-tool="arrowAnnotate" class="currentTool arrowAnnotate" data-parent="annotation" onclick="setupArrowAnnotateTool()">
                                     <img src="/img/arrowAnnotate.3b3e8aff47cbcad5127d6ef07404f4e3.png" data-tool="arrowAnnotate" data-parent="annotation">
                                     <span data-tool="arrowAnnotate" data-parent="annotation">화살표</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="probe" class="currentTool probe" data-parent="annotation">
+                                <div data-tool="probe" class="currentTool probe" data-parent="annotation" onclick="setupProbeTool()">
                                     <img src="/img/probe.c1bbaff5b3a138e4d0a91ed67b54bc2d.png" data-tool="probe" data-parent="annotation">
                                     <span data-tool="probe" data-parent="annotation">Probe</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="length" class="currentTool length" data-parent="annotation">
+                                <div data-tool="length" class="currentTool length" data-parent="annotation" onclick="setupLengthTool()">
                                     <img src="/img/length.62b344c23d7eb391d08d2ece39f69926.png" data-tool="length" data-parent="annotation">
                                     <span data-tool="length" data-parent="annotation">길이</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="rectangleROI" class="currentTool rectangleROI" data-parent="annotation">
+                                <div data-tool="rectangleROI" class="currentTool rectangleROI" data-parent="annotation" onclick="setupRectangleRoiTool()">
                                     <img src="/img/rectangleROI.6d28dc65ff156314a3f7679742611563.png" data-tool="rectangleROI" data-parent="annotation">
                                     <span data-tool="rectangleROI" data-parent="annotation">사각형 그리기</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="ellipticalROI" class="currentTool ellipticalROI" data-parent="annotation">
+                                <div data-tool="ellipticalROI" class="currentTool ellipticalROI" data-parent="annotation" onclick="setupEllipticalRoiTool()">
                                     <img src="/img/ellipticalROI.75a48af081b131624797edd4373c1b22.png" data-tool="ellipticalROI" data-parent="annotation">
                                     <span data-tool="ellipticalROI" data-parent="annotation">원 그리기</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="freeHand" class="currentTool freeHand" data-parent="annotation">
+                                <div data-tool="freeHand" class="currentTool freeHand" data-parent="annotation" onclick="setupFreehandRoiTool()">
                                     <img src="/img/freeHand.ccc90ff2cacb2a39f092e59689485f92.png" data-tool="freeHand" data-parent="annotation">
                                     <span data-tool="freeHand" data-parent="annotation">자율 그리기</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="bidirectional" class="currentTool bidirectional" data-parent="annotation">
+                                <div data-tool="bidirectional" class="currentTool bidirectional" data-parent="annotation" onclick="setupBidirectionalTool()">
                                     <img src="/img/bidirectional.9a08aab170feb4e1ede185075f4fdaa6.png" data-tool="bidirectional" data-parent="annotation">
                                     <span data-tool="bidirectional" data-parent="annotation">Bidirectional</span>
                                 </div>
                             </div>
 
                             <div>
-                                <div data-tool="cobbAngle" class="currentTool cobbAngle" data-parent="annotation">
+                                <div data-tool="cobbAngle" class="currentTool cobbAngle" data-parent="annotation" onclick="setupCobbAngleTool()">
                                     <img src="/img/cobbAngle.1b412c3001b7d430c1064115fe845d79.png" data-tool="cobbAngle" data-parent="annotation">
                                     <span data-tool="cobbAngle" data-parent="annotation">콥 각도</span>
                                 </div>
@@ -312,7 +313,7 @@
                     <span>Series</span>
                 </button>
 
-                <button class="disable" onclick="toggleMagnifyTool()">
+                <button class="disable">
                     <div>
                         <img src="/img/changeSeriesLayout.6c2935a8c5a52c722e1055e79e316d58.png">
                         <svg viewBox="0 0 1030 638" width="10">
@@ -338,7 +339,7 @@
 <%@ include file="include/footer.jsp" %>
 
 
-<!-- <script src="/script/test1.js"></script> -->
+<script src="/script/test1.js"></script>
 
 
 <%--<script src="/script/viPhs.js"></script>--%>
