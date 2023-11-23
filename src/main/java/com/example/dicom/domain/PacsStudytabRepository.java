@@ -28,28 +28,50 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
     void deleteByStudykey(String studykey);
 
 
-
-    // 날짜 조회 및 상세 조회
+    //상세 조회
     @Query(value = "SELECT * FROM STUDYTAB\n" +
-            "WHERE\n" +
-            "  AND STUDYDATE >= TO_DATE(?1, 'yyyymmdd')\n" +
+            " WHERE\n" +
+            " STUDYDATE >= TO_DATE(?1, 'yyyymmdd')\n" +
             " AND STUDYDATE <= TO_DATE(?2, 'yyyymmdd')", nativeQuery = true)
     List<PacsStudytab> dateAllFind(String startDate, String endDate);
 
     @Query(value = "SELECT * FROM STUDYTAB\n" +
-            "WHERE\n" +
-            "    modality = ?1\n" +
-            "  AND STUDYDATE >= TO_DATE(?2, 'yyyymmdd')\n" +
-            "AND STUDYDATE <= TO_DATE(?3, 'yyyymmdd')", nativeQuery = true)
-    List<PacsStudytab> dateAllFindEquipment( String equipment, String startDate, String endDate);
+            " WHERE\n" +
+            "   modality = ?1\n" +
+            " AND STUDYDATE >= TO_DATE(?2, 'yyyymmdd')\n" +
+            " AND STUDYDATE <= TO_DATE(?3, 'yyyymmdd')", nativeQuery = true)
+    List<PacsStudytab> dateAllFindEquipment(String equipment, String startDate, String endDate);
 
     @Query(value = "SELECT * FROM STUDYTAB\n" +
-            "WHERE\n" +
-            "    modality = ?1\n" +
-            "  AND verifyflag=?2\n" +
-            "  AND STUDYDATE >= TO_DATE(?3, 'yyyymmdd')\n" +
-            "AND STUDYDATE <= TO_DATE(?4, 'yyyymmdd')", nativeQuery = true)
+            " WHERE\n" +
+            "   modality = ?1\n" +
+            " AND verifyflag=?2\n" +
+            " AND STUDYDATE >= TO_DATE(?3, 'yyyymmdd')\n" +
+            " AND STUDYDATE <= TO_DATE(?4, 'yyyymmdd')", nativeQuery = true)
     List<PacsStudytab> dateAllFindEquipmentOptionNum(String equipment, String optionNum, String startDate, String endDate);
 
+    //날짜 조회
+    @Query(value = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate <= TRUNC(SYSDATE)", nativeQuery = true)
+    List<PacsStudytab> dateFindAll();
+
+    @Query(value = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate >= TRUNC(SYSDATE) - 1\n" +
+            " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
+    List<PacsStudytab> dateFindoneAgo();
+
+    @Query(value = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate >= TRUNC(SYSDATE) - 3\n" +
+            " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
+    List<PacsStudytab> dateFindThreeAgo();
+
+    @Query(value = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate >= TRUNC(SYSDATE) - 7\n" +
+            " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
+    List<PacsStudytab> dateFindSevenAgo();
 
 }

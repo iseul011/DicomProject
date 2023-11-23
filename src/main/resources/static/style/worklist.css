@@ -827,7 +827,7 @@ thead {
     font-size: 11px;
 }
 
-.searchDate {
+.searchDetail {
     display: inline-flex;
     -webkit-box-align: center;
     align-items: center;
@@ -859,3 +859,5 @@ thead {
     height: 28px;
     font-size: 11px;
 }
+
+
