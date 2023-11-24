@@ -385,7 +385,7 @@ async function searchDate() {
             startDate : stDate,
             endDate : edDate,
             equipment : eq,
-            optionNum : op,
+            optionNum : op
         }
     });
 
@@ -397,7 +397,6 @@ async function searchDate() {
     for (let i = 0; i < number; i++) {
         printSearchTable(searchListData[i]);
     }
-
 }
 
 //상세조회 데이터 리셋
