@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-core/dist/cornerstone.js"></script>
+    <script src="https://unpkg.com/cornerstone-core/dist/cornerstone.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-math@0.1.10/dist/cornerstoneMath.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@6.0.10/dist/cornerstoneTools.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
@@ -95,7 +96,7 @@
                     <span>다음</span>
                 </button>
 
-                <button class="default">
+                <button class="default" onclick="toggleOverlayCanvas()">
                     <img src="/img/default.fa9b027b98a164fb3b5849c0d3ca39ca.png">
                     <span>Default tool</span>
                 </button>
@@ -344,20 +345,9 @@
 </div>
 <%@ include file="include/footer.jsp" %>
 
-
-<%--<script src="/script/test1.js"></script>--%>
-
-
 <%--<script src="/script/viPhs.js"></script>--%>
-
-
-
-<%-- <script src="/script/cornerstoneTest.js"></script>--%>
-
 <script src="/script/viewer.js"></script>
-
-
-<script src="/script/LJW.js"></script>
+<%--<script src="/script/cornerstoneTest.js"></script>--%>
 <script src="/script/vietools.js"></script>
 
 </body>

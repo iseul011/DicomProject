@@ -22,6 +22,7 @@ function searchList() {
     resetSearchTable();
 
 }
+
 async function resetSearchTable() {
     await getSearchListData();
     printTotalCount()
@@ -75,12 +76,13 @@ function printSearchTable(data) {
     let studydesc = row.insertCell(4);
     let studydate = row.insertCell(5);
     let reportstatus = row.insertCell(6);
-    let seriescnt = row.insertCell(7);
-    let imagecnt = row.insertCell(8);
-    let verify = row.insertCell(9);
+    let AIScore = row.insertCell(7);
+    let seriescnt = row.insertCell(8);
+    let imagecnt = row.insertCell(9);
+    let verify = row.insertCell(10);
 
     row.addEventListener('click', function () {
-        loadPrevious(data.pid, data.pname);
+        loadPrevious(data.pid);
     });
 
     let checkbox = `<input type="checkbox" class="checkbox" name="checkbox" value="${data.studykey}"/>`;
@@ -92,6 +94,7 @@ function printSearchTable(data) {
     studydesc.className = "searchListBodyColumnLeft"
     studydate.className = "searchListBodyColumnCenter"
     reportstatus.className = "searchListBodyColumnCenter"
+    AIScore.className = "searchListBodyColumnCenter"
     seriescnt.className = "searchListBodyColumnCenter"
     imagecnt.className = "searchListBodyColumnCenter"
     verify.className = "searchListBodyColumnCenter"
@@ -103,6 +106,7 @@ function printSearchTable(data) {
     studydesc.innerHTML = data.studydesc;
     studydate.innerHTML = data.studydate;
     reportstatus.innerHTML = reportStatusString;
+    AIScore.innerHTML = data.ai_score;
     seriescnt.innerHTML = data.seriescnt;
     imagecnt.innerHTML = data.imagecnt;
     verify.innerHTML = data.verifyflag;
@@ -143,59 +147,104 @@ function overCount() {
     }
 }
 
-function loadPrevious(pid, pname) {
-    const table = document.querySelector(".previousListBody");
-    table.innerHTML = '';
-    let rows = table.querySelectorAll("tr");
+function loadPrevious(pid) {
+    // 클릭한 row의 다음에 tr을 추가합니다.
+    const clickedRow = event.currentTarget;
+    let previousTable;
+    const nextRow = clickedRow.parentNode.rows[clickedRow.rowIndex + 1];
+    let previousListRow;
 
-    for (let i = 1; i < rows.length; i++) {
-        rows[i].remove();
-    }
+    if (nextRow && nextRow.classList.contains('previousListRow')) {
+        nextRow.remove();
+    } else {
+        previousTable = document.createElement('table');
+        previousTable.className = 'previousListTable';
 
-    document.querySelector("#patient_id").innerHTML = pid;
-    document.querySelector("#patient_name").innerHTML = pname;
+        // previousListDiv 안에 바로 테이블을 추가합니다.
+        const previousDiv = document.createElement('div');
+        previousDiv.className = 'previousListDiv';
+        previousDiv.appendChild(previousTable);
 
-    axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
-        params: {
-            pid: pid
+        const td = document.createElement('td');
+        td.colSpan = 11;
+        td.className = "previousListBox"
+        td.appendChild(previousDiv);
+
+        const newRow = clickedRow.parentNode.insertRow(clickedRow.rowIndex);
+        newRow.className = 'previousListRow';
+        newRow.appendChild(td);
+
+        // 클릭한 row 다음에 추가된 previousListRow에 데이터를 채워넣는 함수
+        function fillPreviousTable(data) {
+            let reportStatusString = transReportStatus(data.reportstatus);
+
+            let row = previousTable.insertRow(-1);
+            let thumbnailBox = row.insertCell(0);
+            let modality = row.insertCell(1);
+            let studydesc = row.insertCell(2);
+            let studydate = row.insertCell(3);
+            let reportstatus = row.insertCell(4);
+            let AIScore = row.insertCell(5);
+            let seriescnt = row.insertCell(6);
+            let imagecnt = row.insertCell(7);
+            let verify = row.insertCell(8);
+
+            thumbnailBox.classList = "previousListLong thumbnailBox";
+            modality.classList = "previousListNormal searchListBodyColumnCenter"
+            studydesc.classList = "previousListLong searchListBodyColumnLeft"
+            studydate.classList = "previousListNormal searchListBodyColumnCenter"
+            reportstatus.classList = "previousListNormal searchListBodyColumnCenter"
+            AIScore.classList = "previousListNormal searchListBodyColumnCenter"
+            seriescnt.classList = "previousListShort searchListBodyColumnCenter";
+            imagecnt.classList = "previousListShort searchListBodyColumnCenter"
+            verify.classList = "previousListShort searchListBodyColumnCenter"
+
+            getThumbnail(thumbnailBox, data.studykey)
+            modality.innerHTML = data.modality;
+            studydesc.innerHTML = data.studydesc;
+            studydate.innerHTML = data.studydate;
+            reportstatus.innerHTML = reportStatusString;
+            AIScore.innerHTML = data.ai_score;
+            seriescnt.innerHTML = data.seriescnt;
+            imagecnt.innerHTML = data.imagecnt;
+            verify.innerHTML = data.verifyflag;
+
+            row.addEventListener('click', function () {
+                window.location.href = `/viewer/${data.studykey}/${data.studyinsuid}/${data.pid}`;
+            });
         }
+
+        axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
+            params: {
+                pid: pid
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                data.forEach(fillPreviousTable);
+            });
+    }
+}
+
+function getThumbnail(thumbnailBox, studykey) {
+    axios.get(`/v1/storage/getImage`, {
+        params: {
+            studykey: studykey,
+            serieskey: 1
+        },
     })
         .then(response => {
-            const data = response.data;
+            const thumbnailWrap = document.createElement('div');
+            thumbnailWrap.classList = "thumbnailWrap"
+            const thumbnail = document.createElement('img');
+            thumbnail.src = `data:image/jpeg;base64,${response.data}`;
+            thumbnail.alt = 'Thumbnail';
 
-            data.forEach(function (item) {
-                let reportStatusString = transReportStatus(item.reportstatus);
-
-                let row = table.insertRow(0);
-                let modality = row.insertCell(0);
-                let studydesc = row.insertCell(1);
-                let studydate = row.insertCell(2);
-                let reportstatus = row.insertCell(3);
-                let seriescnt = row.insertCell(4);
-                let imagecnt = row.insertCell(5);
-                let verify = row.insertCell(6);
-
-                row.className = "previousListBodyRow"
-                modality.className = "previousListBodyColumnCenter"
-                studydesc.className = "previousListBodyColumnLeft"
-                studydate.className = "previousListBodyColumnCenter"
-                reportstatus.className = "previousListBodyColumnCenter"
-                seriescnt.className = "previousListBodyColumnCenter"
-                imagecnt.className = "previousListBodyColumnCenter"
-                verify.className = "previousListBodyColumnCenter"
-
-                studydesc.innerHTML = item.studydesc;
-                modality.innerHTML = item.modality;
-                studydate.innerHTML = item.studydate;
-                reportstatus.innerHTML = reportStatusString;
-                seriescnt.innerHTML = item.seriescnt;
-                imagecnt.innerHTML = item.imagecnt;
-                verify.innerHTML = item.verifyflag;
-
-                row.addEventListener('click', function () {
-                    window.location.href = `/viewer/${item.studykey}/${item.studyinsuid}/${item.pid}`;
-                });
-            });
+            thumbnailWrap.appendChild(thumbnail);
+            thumbnailBox.appendChild(thumbnailWrap)
+        })
+        .catch(error => {
+            console.error(error);
         });
 }
 
@@ -209,7 +258,7 @@ function chkAll() {
 
 
 function sortTable(input) {
-    rowNumber=0;
+    rowNumber = 0;
     if (column === input) {
         order = !order;
     } else {
@@ -275,7 +324,7 @@ async function downloadDicomFiles() {
                         const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
                         const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile';
                         var link = document.createElement('a');
-                        var blob = new Blob([response.data], { type: 'application/dicom' });
+                        var blob = new Blob([response.data], {type: 'application/dicom'});
                         link.href = window.URL.createObjectURL(blob);
                         link.download = fileName
                         document.body.appendChild(link);

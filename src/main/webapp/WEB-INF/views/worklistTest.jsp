@@ -51,10 +51,11 @@
 
             <div class="sideMenu-btn" id="logout">
                 <a href="/logout">
-                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true"
-                     viewBox="0 0 24 24" data-testid="LogoutIcon">
-                    <path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
-                </svg>
+                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false"
+                         aria-hidden="true"
+                         viewBox="0 0 24 24" data-testid="LogoutIcon">
+                        <path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
+                    </svg>
                 </a>
             </div>
         </div>
@@ -63,29 +64,6 @@
     <div class="mainBox flex">
         <div class="sideBox">
             <div class="sideBoxWrap advancedSearch">
-                <div class="calender">
-
-                </div>
-                <div class="searchIconWrap">
-                    <div class="date">
-
-                    </div>
-                    <div class="modality">
-
-                    </div>
-                    <div class="submitWrap">
-                        <input type="submit" value="조회">
-                        <input type="button" value="재설정">
-                    </div>
-                </div>
-                <div class="sideBoxWrap morePInfo">
-                </div>
-            </div>
-            <div class="sideBoxWrap thumbnail">
-            </div>
-        </div>
-        <div class="listBox">
-            <div class="totalList">
                 <div class="searchBox">
                     <div class="header" id="search_header">
                         <h3>검색</h3>
@@ -153,6 +131,10 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="listBox">
+            <div class="totalList">
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
@@ -210,49 +192,11 @@
                     </div>
                 </div>
             </div>
-            <div class="bottomList displayNone">
-                <div class="previousBox">
-                    <div class="header" id="previous_header">
-                        <h3>Previous</h3>
-                    </div>
-                    <div class="patientStatusBox">
-                        <div class="patientStatusWrap">
-                            <span>환자 아이디 :</span>
-                            <span id="patient_id"></span>
-                        </div>
-                        <div class="patientStatusWrap">
-                            <span>환자 이름 : </span>
-                            <span id="patient_name"></span>
-                        </div>
-                    </div>
-                    <div class="previousListBox">
-                        <table class="previousList">
-                            <thead>
-                            <tr>
-                                <th class="previousListHead preNormal">검사 장비</th>
-                                <th class="previousListHead preLonger">검사 설명</th>
-                                <th class="previousListHead preShort">검사 일시</th>
-                                <th class="previousListHead preLong">판독 상태</th>
-                                <th class="previousListHead preShort">시리즈</th>
-                                <th class="previousListHead preShort">이미지</th>
-                                <th class="previousListHead preShort">verify</th>
-                            </tr>
-                            </thead>
-                            <tbody class="previousListBody">
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="reportBox">
-                    <div class="header">
-                        <h3>Report</h3>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
-<script src="/script/worklist.js"></script>
+<%--<script src="/script/worklist.js"></script>--%>
+<script src="/script/worklistTest.js"></script>
+
 
 <%@ include file="include/footer.jsp" %>

@@ -1,7 +1,11 @@
 package com.example.dicom.controller;
 
+import com.example.dicom.Dcm2Jpg;
 import com.example.dicom.domain.*;
 import lombok.AllArgsConstructor;
+import org.dcm4che3.data.Attributes;
+import org.dcm4che3.data.Tag;
+import org.dcm4che3.io.DicomInputStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -10,10 +14,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 @RequestMapping({"/v1/storage"})
 @AllArgsConstructor
@@ -34,11 +40,13 @@ public class PacsRestController {
         List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findAllByStudykeyAndSerieskey(studykey, serieskey);
         return pacsImagetab;
     }
+
     @GetMapping("/search/PacsImagetabs")
-    public List<PacsImagetab> getPacsImageTabsBySeriesUID(@RequestParam String seriesinsuid){
+    public List<PacsImagetab> getPacsImageTabsBySeriesUID(@RequestParam String seriesinsuid) {
         List<PacsImagetab> pacsImagetab = pacsImagetabRepository.findBySeriesinsuid(seriesinsuid);
         return pacsImagetab;
     }
+
     @DeleteMapping("/delete")
     public void Delete(@RequestBody List<String> pid) {
         for (int i = 0; i < pid.size(); i++) {
@@ -113,11 +121,11 @@ public class PacsRestController {
         System.out.println("startDate: " + startDate);
         System.out.println("endDate: " + endDate);
 
-        if(startDate != "" && endDate != "" && equipment != "" && optionNum != "") {
+        if (startDate != "" && endDate != "" && equipment != "" && optionNum != "") {
             return pacsStudytabRepository.dateAllFindEquipmentOptionNum(equipment, optionNum, startDate, endDate);
-        } else if(startDate != "" && endDate != "" && equipment != "") {
+        } else if (startDate != "" && endDate != "" && equipment != "") {
             return pacsStudytabRepository.dateAllFindEquipment(equipment, startDate, endDate);
-        } else if(startDate != "" && endDate != "") {
+        } else if (startDate != "" && endDate != "") {
             return pacsStudytabRepository.dateAllFind(startDate, endDate);
         }
 
@@ -129,19 +137,90 @@ public class PacsRestController {
 
         System.out.println("DateString: " + DateString);
 
-        if(DateString.equals("allDate")) {
+        if (DateString.equals("allDate")) {
             return pacsStudytabRepository.dateFindAll();
-        } else if(DateString.equals("oneDate")) {
+        } else if (DateString.equals("oneDate")) {
             return pacsStudytabRepository.dateFindoneAgo();
-        } else if(DateString.equals("threeDate")) {
+        } else if (DateString.equals("threeDate")) {
             return pacsStudytabRepository.dateFindThreeAgo();
-        } else if(DateString.equals("sevenDate")) {
+        } else if (DateString.equals("sevenDate")) {
             return pacsStudytabRepository.dateFindSevenAgo();
         }
 
         return null;
     }
 
+    @GetMapping("/getImagePath")
+    public List<String> getImagePaths(@RequestParam int studykey, @RequestParam String seriesinsuid) {
+        PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesinsuid(studykey, seriesinsuid);
+
+        if (pacsImagetab == null) {
+            return Collections.emptyList();
+        }
+
+        String directoryPath = "Z:\\" + pacsImagetab.getPath();
+
+        File directory = new File(directoryPath);
+
+        File[] files = directory.listFiles();
+
+        List<String> dcmFilePaths = new ArrayList<>();
+
+        if (files != null) {
+            for (File file : files) {
+
+                try (DicomInputStream dis = new DicomInputStream(file)) {
+                    Attributes attributes = dis.readDataset(-1, -1);
+                    String seriesInstanceUID = attributes.getString(Tag.SeriesInstanceUID);
+
+                    if (seriesinsuid.equals(seriesInstanceUID)) {
+                        dcmFilePaths.add(file.getAbsolutePath());
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        //Collections.sort(dcmFilePaths);
+        //System.out.println("dcmFilePaths"+dcmFilePaths);
+        return dcmFilePaths;
+
+    }
+
+    @GetMapping("/getImage")
+    public String getImage(@RequestParam int studykey, @RequestParam int serieskey) {
+        PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSerieskey(studykey, serieskey);
+
+        String directoryPath = "Z:\\" + pacsImagetab.getPath()+pacsImagetab.getFname();
+
+        String imageAsBase64 = "";
+        File file = new File(directoryPath);
+
+        BufferedImage image = null;
+        try {
+            Dcm2Jpg dcm2Jpg = new Dcm2Jpg();
+            image = dcm2Jpg.readImageFromDicomInputStream(file);
+            imageAsBase64 = convertBufferedImageToBase64(image, "jpg");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return imageAsBase64;
+    }
+
+    private String convertBufferedImageToBase64(BufferedImage image, String formatName) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, formatName, baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+        return Base64.getEncoder().encodeToString(imageInByte);
+    }
 }
+
+
+
 
 

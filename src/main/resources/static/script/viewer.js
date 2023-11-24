@@ -1,7 +1,9 @@
 let stack = {
     currentImageIdIndex: 0,
     imageIds: [],
+    PRContentList: [],
 };
+let overlaySeries = [];
 
 function createParentDiv() {
     for (let i = 0; i < 25; i++) {
@@ -22,6 +24,7 @@ async function viewDicom() {
 
     try {
         let seriesTabList = await getSeriesTab();
+        let seriesNum = 0;
 
         for (let i = 0; i < seriesTabList.length; i++) {
             let item = seriesTabList[i];
@@ -48,15 +51,16 @@ async function viewDicom() {
                 });
 
 
-                stack[i] = {
+                stack[seriesNum] = {
                     currentImageIdIndex: 0,
                     imageIds: [directoryPath],
-                    PRContentList: PRContentList,
+                    PRContentList:PRContentList
                 };
-                let dicomFile = await getDicomFile(i);
+                let dicomFile = await getDicomFile(seriesNum);
 
-                await displayDicomImage(i, dicomFile);
-                await overlayAiPresent(i);
+                await displayDicomImage(seriesNum, dicomFile);
+                await overlayAiPresent(seriesNum);
+                seriesNum++;
             }
         }
     } catch (error) {
@@ -239,19 +243,24 @@ function createViewportElement(i, dataSet) {
 async function overlayAiPresent(i) {
     let stackData = stack[i];
     let prContent = stackData.PRContentList[stackData.currentImageIdIndex];
+
     let maxX = 512;
     let maxY = 512;
 
     const viewportElement = document.querySelector(`#viewport${i}`);
-    let canvas = viewportElement.querySelector('.cornerstone-canvas');
     let overlayCanvas = viewportElement.querySelector('.overlay');
+    let canvas = viewportElement.querySelector(".cornerstone-canvas")
 
     if (!overlayCanvas) {
         overlayCanvas = document.createElement("canvas");
-        overlayCanvas.className = "overlay"
+        overlayCanvas.className = "overlay displayNone"
         overlayCanvas.width = Math.min(canvas.width, canvas.height);
         overlayCanvas.height = Math.min(canvas.width, canvas.height);
         viewportElement.appendChild(overlayCanvas);
+    }
+    else{
+        overlayCanvas.width = Math.min(canvas.width, canvas.height);
+        overlayCanvas.height = Math.min(canvas.width, canvas.height);
     }
 
     const overlayCtx = overlayCanvas.getContext('2d');
@@ -259,6 +268,7 @@ async function overlayAiPresent(i) {
 
     if (prContent != null && prContent.TextObjectSequence) {
         if (prContent.TextObjectSequence.length > 0) {
+            overlaySeries.push(i)
             prContent.TextObjectSequence.forEach(function (textObject) {
                 maxX = Math.max(maxX, textObject.BoundingBoxBottomRightHandCorner.Column);
                 maxY = Math.max(maxY, textObject.BoundingBoxBottomRightHandCorner.Row);
@@ -530,6 +540,18 @@ function gridLayout(row, column) {
     allViewports.forEach(viewport => {
         cornerstone.resize(viewport);
     });
+    console.log(overlaySeries)
+    overlaySeries.forEach(seriesNum => {
+        overlayAiPresent(seriesNum);
+    })
+}
+
+function toggleOverlayCanvas() {
+    const overlayCanvas = document.querySelector('.overlay');
+
+    if (overlayCanvas) {
+        overlayCanvas.classList.toggle('displayNone');
+    }
 }
 
 createParentDiv();

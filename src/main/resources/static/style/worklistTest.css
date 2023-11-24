@@ -172,7 +172,8 @@ thead {
 .iconFirst {
     margin-left: 30px;
 }
-.resetButton{
+
+.resetButton {
     background-color: black;
 }
 
@@ -454,11 +455,11 @@ thead {
     outline: 0px;
 }
 
-.searchList tbody tr td:nth-of-type(1) {
+.searchList tbody searchListBodyRow td:nth-of-type(1) {
     background: rgb(36, 36, 36);
 }
 
-.searchList tbody tr td {
+.searchList tbody searchListBodyRow td {
     font-size: 14px;
     padding: 8px 5px;
     border: 1px solid rgb(36, 36, 36);
@@ -492,6 +493,37 @@ thead {
     text-align: left;
     padding: 16px;
     color: rgba(0, 0, 0, 0.87);
+}
+
+.previousListDiv{
+    width: 95%;
+    margin: 0 auto;
+}
+
+.previousListTable {
+    width: 100%;
+}
+
+.previousListLong {
+    width: 20%;
+}
+
+.previousListNormal {
+    width: 10%;
+}
+
+previousListShort {
+    width: 5%;
+}
+
+.thumbnailWrap{
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+
+.thumbnailWrap img {
+    height: 120px;
 }
 
 .moreCountButtonWrap {
