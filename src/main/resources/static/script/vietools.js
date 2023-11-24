@@ -1,5 +1,20 @@
 cornerstoneTools.init();
 
+let testToolActive = false;
+function testTool() {
+    const testTool = cornerstoneTools.removeTool;
+
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!testToolActive) {
+        cornerstoneTools.addTool(testTool);
+        cornerstoneTools.setToolActive('remove', { mouseButtonMask: 1 });
+        testToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('remove');
+        testToolActive = false;
+    }
+}
+//회전기능
 let rotateToolActive = false;
 function setupRotateTool() {
     const RotateTool = cornerstoneTools.RotateTool;
@@ -198,6 +213,67 @@ function togglePanTool() {
     }
 }
 
+// Move 도구
+let isMoveEnabled = false;
+let isDraggingMove = false;
+let initialMousePositionMove = { x: 0, y: 0 };
+
+document.getElementById('moveButton').addEventListener('click', (event) => {
+    isMoveEnabled = !isMoveEnabled;
+
+    if (isMoveEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        initialMousePositionMove = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+    }
+});
+
+document.addEventListener('mousedown', (event) => {
+    if (isMoveEnabled) {
+        isDraggingMove = true;
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        initialMousePositionMove = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+    }
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDraggingMove && isMoveEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        const viewport = cornerstone.getViewport(activeViewport);
+        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+
+        const deltaX = currentMousePosition.x - initialMousePositionMove.x;
+        const deltaY = currentMousePosition.y - initialMousePositionMove.y;
+
+        viewport.translation.x += deltaX;
+        viewport.translation.y += deltaY;
+
+        cornerstone.setViewport(activeViewport, viewport);
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDraggingMove = false;
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDraggingMove && isMoveEnabled) {
+        const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
+        const viewport = cornerstone.getViewport(activeViewport);
+        const currentMousePosition = cornerstone.pageToPixel(activeViewport, event.clientX, event.clientY);
+
+        const deltaX = currentMousePosition.x - initialMousePositionMove.x;
+        const deltaY = currentMousePosition.y - initialMousePositionMove.y;
+
+        viewport.translation.x += deltaX;
+        viewport.translation.y += deltaY;
+
+        cornerstone.setViewport(activeViewport, viewport);
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDraggingMove = false;
+});
 
 
 //줌 기능
@@ -314,7 +390,7 @@ document.addEventListener('click', (event) => {
     // 클릭된 엘리먼트의 클래스 목록 확인
     let clickedElement = event.target
     const clickedElementClasses = event.target.classList;
-    if (clickedElement.classList.contains('cornerstone-canvas')) {
+    if (clickedElement.classList.contains('cornerstone-canvas') || clickedElement.classList.contains('overlay')) {
         // 클릭된 엘리먼트의 상위로 올라가며 CSViewport을 찾기
         const clickedViewportElement = clickedElement.parentNode
         console.log(clickedViewportElement)

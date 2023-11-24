@@ -90,7 +90,7 @@
                     <span>이전</span>
                 </button>
 
-                <button>
+                <button onclick="testTool()">
                     <img src="/img/next_study.09fbf5daceba6ace2519e74bde2e8420.png">
                     <span>다음</span>
                 </button>
@@ -110,7 +110,7 @@
                     <span>흑백 반전</span>
                 </button>
 
-                <button class="pan" onclick="togglePanTool()">
+                <button class="pan" <%--onclick="togglePanTool()"--%> id="moveButton">
                     <img src="/img/pan.47e8cd9f65cf64c8f2fb3d08c6f205ab.png">
                     <span>이동</span>
                 </button>
@@ -130,7 +130,7 @@
                     <span>비교검사</span>
                 </button>
 
-                <button class="playclip">
+                <button class="playclip" onclick="playClip()">
                     <img src="/img/play.6f437ab2591fe6a6c319e7e77f01df3e.png">
                     <span>플레이 클립</span>
                 </button>
