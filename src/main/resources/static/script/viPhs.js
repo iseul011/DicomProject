@@ -69,7 +69,7 @@ async function getSeriesTab() {
     try {
         const pathArray = window.location.pathname.split('/');
         const studykey = pathArray[2];
-        // const studykey =2 ;
+        // const studykey =2;
 
         let response = await axios.get("/v1/storage/search/PacsSeriestab", {
             params: {
@@ -494,7 +494,6 @@ function hideDicomImage(index) {
     const parentDivs = document.getElementsByClassName('parentDiv');
     const parentDiv = parentDivs[index];
     parentDiv.style.display = 'none';
-
 }
 
 //선택한 레이아웃 만큰 parentDiv block
@@ -535,7 +534,7 @@ function gridLayout(row, column) {
 //---- 썸네일 ----//
 let isDivVisible = false;
 
-async function thumbnailBox(studykey) {
+async function thumbnailBox() {
     const thumbnail = document.querySelector('.thumbnail');
 
     if (isDivVisible) {
@@ -544,25 +543,40 @@ async function thumbnailBox(studykey) {
         thumbnail.innerHTML += '<h3>썸네일</h3>';
         thumbnail.innerHTML += '<hr/>';
 
-        axios.get(`/getImage`, {
-            params: {
-                studykey: 4,
-                serieskey: 1
-            },
-        })
-            .then(response => {
+        try {
+            let seriesTabList = await getSeriesTab();
+
+            for (let i = 0; i < seriesTabList.length; i++) {
+                let item = seriesTabList[i];
+
+                // getImage 엔드포인트가 이미지 데이터를 base64 문자열로 반환한다고 가정
+                let response = await axios.get(`/getImage`, {
+                    params: {
+                        studykey: item.studykey,
+                        serieskey: item.serieskey
+                    },
+                });
+
                 const img = document.createElement('img');
-                img.className = 'bigThumbnail';
+                const div = document.createElement('div');
+
+                // 동적으로 클래스 할당
+                img.className = `bigThumbnail myImageClass-${i}`;
+
                 img.src = `data:image/jpeg;base64,${response.data}`;
                 img.alt = 'Thumbnail';
+                div.className = 'serieskey';
+                div.innerHTML = `<p style="font-size: 15px; color: #cfcfcf">시리즈: ${i + 1}</p>`;
+
+                img.addEventListener('click', () => handleThumbnailClick(item.studykey, item.seriesinsuid));
 
                 thumbnail.appendChild(img);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+                thumbnail.appendChild(div);
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
-
 
     // 스타일 조정
     thumbnail.style.backgroundColor = isDivVisible ? "" : "rgb(36, 36, 36)";
@@ -579,6 +593,50 @@ async function thumbnailBox(studykey) {
 
 // 썸네일 클릭 시 화면에 띄우기
 
+async function handleThumbnailClick(studykey, seriesinsuid) {
+    try {
+        // 해당 시리즈에 대한 DICOM 이미지 정보 가져오기
+        let directoryPath = await getImagePath(studykey, seriesinsuid);
+        let PRContentList = await getPRContentList(studykey, seriesinsuid, directoryPath.length);
+
+        // 이미지 정보를 순서대로 정렬
+        directoryPath.sort((a, b) => {
+            const numberA = extractNumber(a);
+            const numberB = extractNumber(b);
+
+            if (numberA !== null && numberB !== null) {
+                return numberA - numberB;
+            }
+
+            return a.localeCompare(b);
+        });
+
+        // 최대 레이아웃의 parentDiv에 해당하는 요소 찾기
+        const maxParentDiv = document.querySelector('.parentDiv:not(.displayNone)');
+
+        // 스택 생성
+        const newStack = {
+            currentImageIdIndex: 0,
+            imageIds: directoryPath,
+            PRContentList: PRContentList,
+        };
+
+        // DICOM 이미지 표시
+        await displayDicomImage(newStack, maxParentDiv);
+
+        // 화면에 레이아웃 표시
+        gridLayout(1, 1); // 1x1 레이아웃으로 설정
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
+// extractNumber 함수 추가
+function extractNumber(path) {
+    const match = path.match(/\.(\d+)\.\d+\.dcm$/);
+    return match ? parseInt(match[1]) : null;
+}
 
 createParentDiv();
 viewDicom();

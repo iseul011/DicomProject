@@ -187,7 +187,6 @@
     z-index: 2;
 }
 
-
 .togleBox {
     margin: 4px 5px 4px 0;
     width: 133px;
@@ -267,6 +266,6 @@
 }
 
 .bigThumbnail {
-    height: 110px;
-    width: 220px;
+    height: 100px;
+    width: 190px;
 }
