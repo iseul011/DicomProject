@@ -8,14 +8,7 @@
 
 <body>
 <header>
-    <button id="myButton">
+    <button onclick="worklist()">
         <img src="/img/logo_white.47988f1d7fe07963d2bb776adf9e2ade.png" alt="Logo">
     </button>
 </header>
-<script>
-    var myButton = document.getElementById('myButton');
-
-    myButton.addEventListener('click', function() {
-        window.location.href = '/worklist';
-    });
-</script>

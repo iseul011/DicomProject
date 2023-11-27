@@ -4,17 +4,17 @@
     <title>Login Page</title>
 </head>
 <body>
-<%--<link href="/style/login.css" rel="stylesheet" type="text/css"/>--%>
 <style>
     *, *:before, *:after {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
+        color: white;
     }
 
     body {
         font-family: "Open Sans", Helvetica, Arial, sans-serif;
-        background: #ededed;
+        background: #383838;
     }
 
     input, button {
@@ -23,45 +23,29 @@
         background: none;
         font-family: "Open Sans", Helvetica, Arial, sans-serif;
     }
-
     .tip {
         font-size: 20px;
         margin: 40px auto 50px;
         text-align: center;
     }
-
     .cont {
         overflow: hidden;
         position: relative;
         width: 900px;
         height: 550px;
         margin: 0 auto 100px;
-        background: #fff;
+        background: #1c1e1f;
     }
-
     .form {
         position: relative;
-        width: 640px;
-        height: 100%;
-        transition: transform 1.2s ease-in-out;
-        padding: 50px 30px 0;
-    }
-
-    .sub-cont {
-        overflow: hidden;
-        position: absolute;
-        left: 640px;
-        top: 0;
         width: 900px;
-        height: 100%;
-        padding-left: 260px;
-        background: #fff;
+        height: 200%;
         transition: transform 1.2s ease-in-out;
+        padding: 100px 30px 0;
     }
     .cont.s--signup .sub-cont {
         transform: translate3d(-640px, 0, 0);
     }
-
     button {
         display: block;
         margin: 0 auto;
@@ -73,50 +57,6 @@
         cursor: pointer;
     }
 
-    .img {
-        overflow: hidden;
-        z-index: 2;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 260px;
-        height: 100%;
-        padding-top: 360px;
-    }
-    .img:before {
-        content: "";
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 900px;
-        height: 100%;
-        background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/142996/sections-3.jpg");
-        background-size: cover;
-        transition: transform 1.2s ease-in-out;
-    }
-    .img:after {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-    }
-    .cont.s--signup .img:before {
-        transform: translate3d(640px, 0, 0);
-    }
-    .img__text {
-        z-index: 2;
-        position: absolute;
-        left: 0;
-        top: 50px;
-        width: 100%;
-        padding: 0 20px;
-        text-align: center;
-        color: #fff;
-        transition: transform 1.2s ease-in-out;
-    }
     .img__text h2 {
         margin-bottom: 10px;
         font-weight: normal;
@@ -124,39 +64,6 @@
     .img__text p {
         font-size: 14px;
         line-height: 1.5;
-    }
-    .cont.s--signup .img__text.m--up {
-        transform: translateX(520px);
-    }
-    .img__text.m--in {
-        transform: translateX(-520px);
-    }
-    .cont.s--signup .img__text.m--in {
-        transform: translateX(0);
-    }
-    .img__btn {
-        overflow: hidden;
-        z-index: 2;
-        position: relative;
-        width: 100px;
-        height: 36px;
-        margin: 0 auto;
-        background: transparent;
-        color: #fff;
-        text-transform: uppercase;
-        font-size: 15px;
-        cursor: pointer;
-    }
-    .img__btn:after {
-        content: "";
-        z-index: 2;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        border: 2px solid #fff;
-        border-radius: 30px;
     }
     .img__btn span {
         position: absolute;
@@ -169,22 +76,19 @@
         height: 100%;
         transition: transform 1.2s;
     }
-    .img__btn span.m--in {
-        transform: translateY(-72px);
-    }
     .cont.s--signup .img__btn span.m--in {
         transform: translateY(0);
     }
     .cont.s--signup .img__btn span.m--up {
         transform: translateY(72px);
     }
-
     h2 {
         width: 100%;
         font-size: 26px;
         text-align: center;
+        color : #fff;
+        font-family: 굴림;
     }
-
     label {
         display: block;
         width: 260px;
@@ -196,7 +100,6 @@
         color: #cfcfcf;
         text-transform: uppercase;
     }
-
     input {
         display: block;
         width: 100%;
@@ -206,25 +109,13 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.4);
         text-align: center;
     }
-
-    .forgot-pass {
-        margin-top: 15px;
-        text-align: center;
-        font-size: 12px;
-        color: #cfcfcf;
-    }
-
     .submit {
         margin-top: 40px;
         margin-bottom: 20px;
-        background: #d4af7a;
+        background: #266eff;
         text-transform: uppercase;
     }
 
-    .fb-btn {
-        border: 2px solid #d3dae9;
-        color: #8fa1c7;
-    }
     .fb-btn span {
         font-weight: bold;
         color: #455a81;
@@ -238,96 +129,25 @@
         transition-duration: 1.2s;
         transform: translate3d(640px, 0, 0);
     }
-
-    .sign-up {
-        transform: translate3d(-900px, 0, 0);
-    }
-    .cont.s--signup .sign-up {
-        transform: translate3d(0, 0, 0);
-    }
-
-    .icon-link {
-        position: absolute;
-        left: 5px;
-        bottom: 5px;
-        width: 32px;
-    }
-    .icon-link img {
-        width: 100%;
-        vertical-align: top;
-    }
-    .icon-link--twitter {
-        left: auto;
-        right: 5px;
-    }
-
-    .link-footer {
-        position: absolute;
-        left: 50%;
-        bottom: 0;
-        transform: translateX(-50%);
-    }
 </style>
-<p class="tip">Click on button in image container</p>
+<p class="tip"></p>
 <div class="cont">
     <div class="form sign-in">
-        <h2>Welcome back,</h2>
+        <h2>MEDIVISION</h2>
         <form action="/login" method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <label for="username">
-            <span>Email</span>
+            <span>Id</span>
             <input type="text" id="username" name="username" required />
         </label>
         <label  for="password">
             <span>Password</span>
             <input type="password" id="password" name="password" required />
         </label>
-        <p class="forgot-pass">Forgot password?</p>
         <button class="submit" type="submit">Sign In</button>
         </form>
     </div>
-    <div class="sub-cont">
-        <div class="img">
-            <div class="img__text m--up">
-                <h2>New here?</h2>
-                <p>Sign up and discover great amount of new opportunities!</p>
-            </div>
-            <div class="img__text m--in">
-                <h2>One of us?</h2>
-                <p>If you already has an account, just sign in. We've missed you!</p>
-            </div>
-            <div class="img__btn">
-                <span class="m--up">Sign Up</span>
-                <span class="m--in">Sign In</span>
-            </div>
-        </div>
-        <div class="form sign-up">
-            <h2>Time to feel like home,</h2>
-            <label>
-                <span>Name</span>
-                <input type="text" />
-            </label>
-            <label>
-                <span>Email</span>
-                <input type="email" />
-            </label>
-            <label>
-                <span>Password</span>
-                <input type="password" />
-            </label>
-            <button type="button" class="submit">Sign Up</button>
-            <button type="button" class="fb-btn">Join with <span>facebook</span></button>
-        </div>
-    </div>
 </div>
-
-<a href="https://dribbble.com/shots/3306190-Login-Registration-form" target="_blank" class="icon-link">
-    <img src="http://icons.iconarchive.com/icons/uiconstock/socialmedia/256/Dribbble-icon.png">
-</a>
-<a href="https://codepen.io/suez/pen/XWyBpre" target="_blank" class="link-footer">New 2023 Version</a>
-<a href="https://twitter.com/NikolayTalanov" target="_blank" class="icon-link icon-link--twitter">
-    <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/twitter-128.png">
-</a>
 </body>
 </html>
 

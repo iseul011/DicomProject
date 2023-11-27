@@ -47,10 +47,20 @@
     white-space: nowrap;
 }
 
-.viewerMenu .default{
+.viewerMenu .default {
     background: rgb(0, 0, 0);
     color: black;
     border-radius: 10%;
+    transition: background 0.3s, color 0.3s;
+}
+.viewerMenu .default:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: darkgray;
+}
+
+.viewerMenu .default:not(:hover) {
+    background: rgb(0, 0, 0);
+    color: black;
 }
 
 .mainMenu .contentBox {
@@ -167,7 +177,7 @@
 }
 
 .CSViewport.selectedViewport {
-    border: 3px solid pink;
+    outline: 3px solid pink;
 }
 
 .displayNone {
