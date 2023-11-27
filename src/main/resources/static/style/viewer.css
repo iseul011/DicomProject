@@ -170,18 +170,6 @@
     border: 3px solid pink;
 }
 
-.thumbnail h3 {
-    margin: 10px 0;
-}
-.thumbnail::-webkit-scrollbar {
-    display: none;
-}
-
-.thumbnail .bm {
-    font-size: 12px;
-    margin-bottom: 5px;
-}
-
 .displayNone {
     display: none;
 }
@@ -197,10 +185,6 @@
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-}
-
-.thumbnail img {
-    margin-top: 10px;
 }
 
 .togleBox {
@@ -262,4 +246,26 @@
 
 .magnifyTool{
     z-index: 99;
+}
+
+.thumbnail hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.thumbnail h3 {
+    margin-top: 10px;
+}
+
+.thumbnail img {
+    margin-top: 10px;
+}
+
+.thumbnail::-webkit-scrollbar {
+    display: none;
+}
+
+.bigThumbnail {
+    height: 100px;
+    width: 190px;
 }

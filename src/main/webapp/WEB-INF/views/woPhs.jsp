@@ -49,7 +49,7 @@
     </div>
 
     <div class="mainBox flex">
-        <div class="sideBox">
+        <div class="sideBoxDetail">
 
         </div>
         <div class="listBox">
