@@ -47,13 +47,6 @@ public class PacsRestController {
         return pacsImagetab;
     }
 
-    @DeleteMapping("/delete")
-    public void Delete(@RequestBody List<String> pid) {
-        for (int i = 0; i < pid.size(); i++) {
-            pacsStudytabRepository.deleteByStudykey(pid.get(i));
-        }
-    }
-
     @GetMapping("/search/PacsStudytab")
     public List<PacsStudytab> getPacsStudytab() {
         List<PacsStudytab> pacsStudytab = pacsStudytabRepository.findAll();
@@ -79,28 +72,28 @@ public class PacsRestController {
             Sort sort = Sort.by(order ? Sort.Direction.DESC : Sort.Direction.ASC, column);
 
             if (isEmpty(pidValue) && isEmpty(pNameValue)) {
-                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
+                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatusIgnoreCase(reportStatusValue, sort);
             }
 
             if (isEmpty(pidValue)) {
                 if (reportStatusValue == 0) {
-                    return pacsStudytabRepository.findByPname(pNameValue, sort);
+                    return pacsStudytabRepository.findByPnameIgnoreCase(pNameValue, sort);
                 } else {
-                    return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
+                    return pacsStudytabRepository.findByPnameAndReportstatusIgnoreCase(pNameValue, reportStatusValue, sort);
                 }
             }
 
             if (isEmpty(pNameValue)) {
                 if (reportStatusValue == 0) {
-                    return pacsStudytabRepository.findByPid(pidValue, sort);
+                    return pacsStudytabRepository.findByPidIgnoreCase(pidValue, sort);
                 } else {
-                    return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
+                    return pacsStudytabRepository.findByPidAndReportstatusIgnoreCase(pidValue, reportStatusValue, sort);
                 }
             }
 
             return (reportStatusValue == 0)
-                    ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
-                    : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
+                    ? pacsStudytabRepository.findByPidAndPnameIgnoreCase(pidValue, pNameValue, sort)
+                    : pacsStudytabRepository.findByPidAndPnameAndReportstatusIgnoreCase(pidValue, pNameValue, reportStatusValue, sort);
         }
     }
 

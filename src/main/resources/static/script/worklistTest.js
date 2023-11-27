@@ -87,7 +87,7 @@ function printSearchTable(data) {
 
     let checkbox = `<input type="checkbox" class="checkbox" name="checkbox" value="${data.studykey}"/>`;
     row.className = "searchListBodyRow"
-    chk.className = "searchListBodyColumnCenter"
+    chk.className = "searchListCheckBox"
     pid.className = "searchListBodyColumnLeft"
     pname.className = "searchListBodyColumnLeft"
     modality.className = "searchListBodyColumnCenter"
@@ -151,7 +151,7 @@ function loadPrevious(pid) {
     // 클릭한 row의 다음에 tr을 추가합니다.
     const clickedRow = event.currentTarget;
     let previousTable;
-    const nextRow = clickedRow.parentNode.rows[clickedRow.rowIndex + 1];
+    const nextRow = clickedRow.parentNode.rows[clickedRow.rowIndex];
     let previousListRow;
 
     if (nextRow && nextRow.classList.contains('previousListRow')) {
@@ -189,7 +189,7 @@ function loadPrevious(pid) {
             let imagecnt = row.insertCell(7);
             let verify = row.insertCell(8);
 
-            thumbnailBox.classList = "previousListLong thumbnailBox";
+            thumbnailBox.classList = "thumbnailBox";
             modality.classList = "previousListNormal searchListBodyColumnCenter"
             studydesc.classList = "previousListLong searchListBodyColumnLeft"
             studydate.classList = "previousListNormal searchListBodyColumnCenter"

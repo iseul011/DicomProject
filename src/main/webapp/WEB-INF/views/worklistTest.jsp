@@ -38,7 +38,6 @@
                         <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"></path>
                     </svg>
                 </div>
-                <span class="thumbnailBox">세부검색</span>
             </div>
         </div>
         <div class="sideSetting-wrap">
@@ -109,24 +108,27 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="searchIcon iconFirst" id="search_allTime">
-                                전체
+                            <div class="dateSearchBox">
+                                <div class="searchIcon" id="search_oneDay">
+                                    오늘
+                                </div>
+                                <div class="searchIcon" id="search_threeDay">
+                                    7일
+                                </div>
+                                <div class="searchIcon" id="search_oneWeek">
+                                    30일
+                                </div>
                             </div>
-                            <div class="searchIcon" id="search_oneDay">
-                                1일
-                            </div>
-                            <div class="searchIcon" id="search_threeDay">
-                                3일
-                            </div>
-                            <div class="searchIcon" id="search_oneWeek">
-                                1주일
-                            </div>
-                            <div class="searchIcon searchButton" id="search_submit" onclick="searchList()">
-                                검색
-                            </div>
-                            <div class="searchIcon resetButton" id="search_reset">
-                                재설정
+                            <div class="searchIconBox">
+                                <%--                                <div class="searchIcon" id="search_allTime">--%>
+                                <%--                                    전체--%>
+                                <%--                                </div>--%>
+                                <div class="searchIcon searchButton" id="search_submit" onclick="searchList()">
+                                    검색
+                                </div>
+                                <div class="searchIcon resetButton" id="search_reset">
+                                    재설정
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -143,12 +145,6 @@
                                  viewBox="0 0 24 24"
                                  data-testid="DownloadIcon">
                                 <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path>
-                            </svg>
-                        </button>
-                        <button class="deleteButton" onclick="deleteData()">검사 삭제
-                            <svg class="listSetIcon" focusable="false"
-                                 aria-hidden="true" viewBox="0 0 24 24" data-testid="DeleteForeverIcon">
-                                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zm2.46-7.12 1.41-1.41L12 12.59l2.12-2.12 1.41 1.41L13.41 14l2.12 2.12-1.41 1.41L12 15.41l-2.12 2.12-1.41-1.41L10.59 14l-2.13-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"></path>
                             </svg>
                         </button>
                         <div class="searchListCount" id="search_count">
@@ -171,18 +167,98 @@
                     <table class="searchList">
                         <thead class="searchListHead">
                         <tr class="searchListHeadRow">
-                            <th class="searchListHeadCheck"><input type="checkbox"
+                            <th class="searchListCheckBox"><input type="checkbox"
                                                                    onclick="chkAll()"></th>
-                            <th class="searchListHeadShort" onclick="sortTable('pid')">환자 아이디</th>
-                            <th class="searchListHeadShort" onclick="sortTable('pname')">환자 이름</th>
-                            <th class="searchListHeadShort">검사 장비</th>
-                            <th class="searchListHeadLong">검사 설명</th>
-                            <th class="searchListHeadShort" onclick="sortTable('studydate')">검사 일시</th>
-                            <th class="searchListHeadShort" onclick="sortTable('reportstatus')">판독 상태</th>
-                            <th class="searchListHeadShort">AI점수</th>
-                            <th class="searchListHeadShorter">시리즈</th>
-                            <th class="searchListHeadShorter">이미지</th>
-                            <th class="searchListHeadShorter">verify</th>
+                            <th class="searchListHeadShort" onclick="sortTable('pid')">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        환자 아이디
+                                        <?xml version="1.0" ?>
+                                        <svg viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"
+                                             preserveAspectRatio='xMidYMid meet' height="14px" fill="white">
+                                            <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShort" onclick="sortTable('pname')">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        환자 이름
+                                        <?xml version="1.0" ?>
+                                        <svg viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"
+                                             preserveAspectRatio='xMidYMid meet' height="14px" fill="white">
+                                            <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShort">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        검사 장비
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadLong">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        검사 설명
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShort" onclick="sortTable('studydate')">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        검사 일시
+                                        <?xml version="1.0" ?>
+                                        <svg viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"
+                                             preserveAspectRatio='xMidYMid meet' height="14px" fill="white">
+                                            <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShort" onclick="sortTable('reportstatus')">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        판독 상태
+                                        <?xml version="1.0" ?>
+                                        <svg viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"
+                                             preserveAspectRatio='xMidYMid meet' height="14px" fill="white">
+                                            <path d="M27.66 224h264.7c24.6 0 36.89-29.78 19.54-47.12l-132.3-136.8c-5.406-5.406-12.47-8.107-19.53-8.107c-7.055 0-14.09 2.701-19.45 8.107L8.119 176.9C-9.229 194.2 3.055 224 27.66 224zM292.3 288H27.66c-24.6 0-36.89 29.77-19.54 47.12l132.5 136.8C145.9 477.3 152.1 480 160 480c7.053 0 14.12-2.703 19.53-8.109l132.3-136.8C329.2 317.8 316.9 288 292.3 288z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShort">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        AI점수
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShorter">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        시리즈
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShorter">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        이미지
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="searchListHeadShorter">
+                                <div class="searchListHeadBox">
+                                    <div class="searchListHeadWrap">
+                                        verify
+                                    </div>
+                                </div>
+                            </th>
                         </tr>
                         </thead>
                         <tbody class="searchListBody">

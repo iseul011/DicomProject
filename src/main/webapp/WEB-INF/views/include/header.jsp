@@ -8,14 +8,14 @@
 
 <body>
 <header>
-    <button id="myButton">
-        <img src="/img/logo_white.47988f1d7fe07963d2bb776adf9e2ade.png" alt="Logo">
-    </button>
+    <div class="homeButton">
+        <img src="/img/Radiologic.png" alt="Logo">
+    </div>
 </header>
 <script>
-    var myButton = document.getElementById('myButton');
+    let homeButton = document.querySelector(".homeButton")
 
-    myButton.addEventListener('click', function() {
+    homeButton.addEventListener('click', function () {
         window.location.href = '/worklist';
     });
 </script>
