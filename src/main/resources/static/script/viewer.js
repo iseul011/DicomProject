@@ -7,7 +7,7 @@ function createParentDiv() {
     for (let i = 0; i < 25; i++) {
         const parentDiv = document.createElement('div');
         parentDiv.classList.add('parentDiv');
-        if (i > 4) {
+        if (i > 3) {
             parentDiv.classList.add('displayNone');
         }
         parentDiv.id = "parentDiv" + i;
@@ -69,7 +69,6 @@ async function getSeriesTab() {
     try {
         const pathArray = window.location.pathname.split('/');
         const studykey = pathArray[2];
-        // const studykey =2 ;
 
         let response = await axios.get("/v1/storage/search/PacsSeriestab", {
             params: {
@@ -129,7 +128,7 @@ async function getPRContentList(studykey, serieskey, imagecnt) {
 async function getDicomFile(i) {
     let response = await axios.get("/getDicomFile", {
         params: {
-            directoryPath: decodeURIComponent(stack[i].imageIds[0][stack.currentImageIdIndex])
+            directoryPath: decodeURIComponent(stack[i].imageIds[0][stack[i].currentImageIdIndex])
         },
         responseType: 'arraybuffer'
     });
@@ -321,7 +320,7 @@ function stackScrollDown(element) {
     const stackToolData = cornerstoneTools.getToolState(element, 'stack');
 
     if (stackToolData && stackToolData.data.length > 0) {
-        const stackData = stackToolData.data[0];
+
         let firstCharacter;
         const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
         const csViewportParent = mouseOverElement.closest('.CSViewport');
@@ -332,13 +331,10 @@ function stackScrollDown(element) {
                 firstCharacter = id.charAt(id.length - 1);
             }
         }
-        const indexSpan = csViewportParent.querySelector('.imageNumber');
 
-        if (stackData.currentImageIdIndex >= 0) {
-            stackData.currentImageIdIndex++;
+        if (stack[firstCharacter].currentImageIdIndex >= 0 && stack[firstCharacter].currentImageIdIndex<stack[firstCharacter].imageIds[0].length) {
             stack[firstCharacter].currentImageIdIndex++;
             stackUpDown(element, firstCharacter, csViewportParent);
-            console.log(stackData.currentImageIdIndex)
         }
 
     }
@@ -348,7 +344,7 @@ function stackScrollUp(element) {
     const stackToolData = cornerstoneTools.getToolState(element, 'stack');
 
     if (stackToolData && stackToolData.data.length > 0) {
-        const stackData = stackToolData.data[0];
+
         let firstCharacter;
         const mouseOverElement = document.elementFromPoint(event.pageX, event.pageY);
         const csViewportParent = mouseOverElement.closest('.CSViewport');
@@ -359,56 +355,59 @@ function stackScrollUp(element) {
                 firstCharacter = id.charAt(id.length - 1);
             }
         }
-        const indexSpan = csViewportParent.querySelector('.imageNumber');
-        if (stackData.currentImageIdIndex > 0) {
-            stackData.currentImageIdIndex--;
+
+        if (stack[firstCharacter].currentImageIdIndex > 0) {
             stack[firstCharacter].currentImageIdIndex--;
             stackUpDown(element, firstCharacter, csViewportParent);
         }
     }
 }
 
-function stackUpDown(element, firstCharacter, csViewportParent) {
-    let dicomFile = getDicomFile(firstCharacter);
+async function stackUpDown(element, firstCharacter, csViewportParent) {
+    try {
+        const dicomFile = await getDicomFile(firstCharacter);
 
-    let blobUrl;
-    dicomFile.then(dicomUrl => {
-        blobUrl = dicomUrl.replace('dicomweb:', '');
+        const blobUrl = dicomFile.replace('dicomweb:', '');
+        const response = await fetch(blobUrl);
+        const blob = await response.blob();
 
-        fetch(blobUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const arrayBuffer = event.target.result;
+        const arrayBuffer = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                resolve(event.target.result);
+            };
+            reader.onerror = function (error) {
+                reject(error);
+            };
+            reader.readAsArrayBuffer(blob);
+        });
 
-                    const byteArray = new Uint8Array(arrayBuffer);
-                    const dataSet = dicomParser.parseDicom(byteArray);
+        const byteArray = new Uint8Array(arrayBuffer);
+        const dataSet = dicomParser.parseDicom(byteArray);
 
-                    const indexSpan = csViewportParent.querySelector('.imageNumber');
+        const indexSpan = csViewportParent.querySelector('.imageNumber');
 
-                    // x00200013 값으로 이미지 번호 업데이트
-                    const imageNumberValue = dataSet.string('x00200013');
-                    if (indexSpan) {
-                        indexSpan.textContent = imageNumberValue;
-                    }
+        // Update image number with x00200013 value
+        const imageNumberValue = dataSet.string('x00200013');
+        if (indexSpan) {
+            indexSpan.textContent = imageNumberValue;
+        }
 
-                    //const nextImageId = stack[firstCharacter].imageIds[stackData.currentImageIdIndex];
-                    cornerstone.loadImage(dicomUrl).then(image => {
-                        cornerstone.displayImage(element, image);
-                        overlayAiPresent(firstCharacter);
-                    });
-                };
-                reader.readAsArrayBuffer(blob);
-            })
-            .catch(error => console.error(error));
-    })
+        // Load and display the image using Cornerstone
+        await cornerstone.loadImage(dicomFile).then(image => {
+            cornerstone.displayImage(element, image);
+            overlayAiPresent(firstCharacter);
+        });
+    } catch (error) {
+        console.error(error);
+    }
 }
+
 
 //GridLayout 만들기
 let isTogleBoxVisible = false;
 const button = document.getElementById('toggleButton');
-
+button.addEventListener('click', togleBox);
 function togleBox() {
     const button = document.getElementById('toggleButton');
 
@@ -421,19 +420,19 @@ function togleBox() {
         const togleBox = document.createElement('div');
         togleBox.classList.add('togleBox');
         togleBox.id = 'togleBox';
-
-        for (let i = 0; i < 5; i++) {
+        let cont = 0;
+        for (let i = 1; i < 6; i++) {
             const togleDiv = document.createElement('div');
 
-            for (let j = 0; j < 5; j++) {
+            for (let j = 1; j < 6; j++) {
                 const vertical = document.createElement('div');
                 vertical.classList.add('vertical-align');
 
                 const table = document.createElement('div');
                 table.classList.add('table');
-                table.id = 'table';
-                table.setAttribute("data-row", i + 1);
-                table.setAttribute("data-column", j + 1);
+                table.id = 'table'+cont;
+                table.setAttribute("data-row", i);
+                table.setAttribute("data-column", j);
 
                 table.addEventListener('click', function (event) {
                     const clickedRow = event.currentTarget.getAttribute('data-row');
@@ -455,6 +454,7 @@ function togleBox() {
 
                 vertical.appendChild(table);
                 togleDiv.appendChild(vertical);
+                cont++;
             }
             togleBox.appendChild(togleDiv);
         }
@@ -465,7 +465,7 @@ function togleBox() {
     isTogleBoxVisible = !isTogleBoxVisible;
 }
 
-button.addEventListener('click', togleBox);
+
 
 //마우스 위치에 따른 레이아웃 색상 변경
 function applyBackgroundColor(row, column) {
@@ -531,6 +531,8 @@ function gridLayout(row, column) {
         cornerstone.resize(viewport);
     });
 }
+
+
 
 createParentDiv();
 viewDicom();

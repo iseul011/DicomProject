@@ -76,21 +76,17 @@ public class UploadController {
             }
         }
 
-        //Collections.sort(dcmFilePaths);
-        //System.out.println("dcmFilePaths"+dcmFilePaths);
         return dcmFilePaths;
 
     }
 
 
+
     @GetMapping("/getDicomFile")
     public ResponseEntity<byte[]> getDicom(@RequestParam String directoryPath) throws IOException {
         // 예시: DICOM 파일의 경로 설정
-        //System.out.println("directoryPath : " + directoryPath);
 
         Path path = Paths.get(directoryPath);
-
-        //Path path = Paths.get("C:\\Users\\82104\\Downloads\\1.2.410.200013.1.510.1.20210310170346701.0009.dcm");
 
         // 파일을 바이트 배열로 읽기
         byte[] fileContent = Files.readAllBytes(path);
