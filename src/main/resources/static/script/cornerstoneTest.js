@@ -82,6 +82,11 @@ async function overlayAiPresent(i) {
             }
         });
     }
+    cornerstone.addLayer(viewportElement, overlayCanvas, {
+        name: 'myOverlay',
+        globalAlpha: 1.0,
+        renderingTools: true,
+    });
 }
 
 

@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-core/dist/cornerstone.js"></script>
+    <script src="https://unpkg.com/cornerstone-core/dist/cornerstone.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-math@0.1.10/dist/cornerstoneMath.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@6.0.10/dist/cornerstoneTools.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
@@ -84,6 +85,22 @@
                     <img src="/img/worklist.0c26b996e226a3db09e77ef62d440241.png">
                     <span>워크리스트</span>
                 </button>
+
+                <button>
+                    <img src="/img/previous_study.3cb78eecd6d2385b44cb9176ba1fc87c.png">
+                    <span>이전</span>
+                </button>
+
+                <button>
+                    <img src="/img/next_study.09fbf5daceba6ace2519e74bde2e8420.png">
+                    <span>다음</span>
+                </button>
+
+                <button class="default" onclick="toggleOverlayCanvas()">
+                    <img src="/img/default.fa9b027b98a164fb3b5849c0d3ca39ca.png">
+                    <span>Default tool</span>
+                </button>
+
                 <button class="wwwc" onclick="toggleWwwcTool()">
                     <img src="/img/wwwc.1cc5a0ecda9fd93a085688cedaa8a78b.png">
                     <span>윈도우 레벨</span>
@@ -311,8 +328,11 @@
 </div>
 <%@ include file="include/footer.jsp" %>
 
+<%--<script src="/script/viPhs.js"></script>--%>
 <script src="/script/viewer.js"></script>
-<script src="/script/viewtools.js"></script>
+<%--<script src="/script/cornerstoneTest.js"></script>--%>
+<script src="/script/vietools.js"></script>
+
 
 </body>
 

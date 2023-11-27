@@ -42,7 +42,6 @@ public class UploadController {
     private final PacsPresentationStateRepository pacsPresentationStateRepository;
 
     @GetMapping("/getImagePath")
-
     public List<String> getImagePaths(@RequestParam int studykey, @RequestParam String seriesinsuid) {
 
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesinsuid(studykey, seriesinsuid);
@@ -84,8 +83,6 @@ public class UploadController {
 
     @GetMapping("/getDicomFile")
     public ResponseEntity<byte[]> getDicom(@RequestParam String directoryPath) throws IOException {
-        // 예시: DICOM 파일의 경로 설정
-
         Path path = Paths.get(directoryPath);
 
         // 파일을 바이트 배열로 읽기

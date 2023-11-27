@@ -27,6 +27,10 @@ public class PacsController {
     public String worklist() {
         return "/worklist";
     }
+    @GetMapping("/worklistTest")
+    public String worklistTest() {
+        return "/worklistTest";
+    }
 
     @GetMapping("/viewPage")
     public String viewPage() {
