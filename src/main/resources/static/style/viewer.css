@@ -47,10 +47,20 @@
     white-space: nowrap;
 }
 
-.viewerMenu .default{
+.viewerMenu .default {
     background: rgb(0, 0, 0);
     color: black;
     border-radius: 10%;
+    transition: background 0.3s, color 0.3s;
+}
+.viewerMenu .default:hover {
+    background: rgba(0, 0, 0, 0.8);
+    color: darkgray;
+}
+
+.viewerMenu .default:not(:hover) {
+    background: rgb(0, 0, 0);
+    color: black;
 }
 
 .mainMenu .contentBox {
@@ -167,19 +177,7 @@
 }
 
 .CSViewport.selectedViewport {
-    border: 3px solid pink;
-}
-
-.thumbnail h3 {
-    margin: 10px 0;
-}
-.thumbnail::-webkit-scrollbar {
-    display: none;
-}
-
-.thumbnail .bm {
-    font-size: 12px;
-    margin-bottom: 5px;
+    outline: 3px solid pink;
 }
 
 .displayNone {
@@ -197,10 +195,6 @@
     top: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-}
-
-.thumbnail img {
-    margin-top: 10px;
 }
 
 .togleBox {
@@ -262,4 +256,26 @@
 
 .magnifyTool{
     z-index: 99;
+}
+
+.thumbnail hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.thumbnail h3 {
+    margin-top: 10px;
+}
+
+.thumbnail img {
+    margin-top: 10px;
+}
+
+.thumbnail::-webkit-scrollbar {
+    display: none;
+}
+
+.bigThumbnail {
+    height: 100px;
+    width: 190px;
 }

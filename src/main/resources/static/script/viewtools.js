@@ -1,5 +1,21 @@
 cornerstoneTools.init();
 
+//지우기
+let eraserToolActive = false;
+function eraserTool() {
+    const EraserTool = cornerstoneTools.EraserTool;
+
+    // 상태에 따라 도구 활성화 또는 비활성화
+    if (!eraserToolActive) {
+        cornerstoneTools.addTool(EraserTool);
+        cornerstoneTools.setToolActive('Eraser', { mouseButtonMask: 1 });
+        eraserToolActive = true;
+    } else {
+        cornerstoneTools.setToolDisabled('Eraser');
+        eraserToolActive = false;
+    }
+}
+//회전기능
 let rotateToolActive = false;
 function setupRotateTool() {
     const RotateTool = cornerstoneTools.RotateTool;
@@ -198,8 +214,6 @@ function togglePanTool() {
     }
 }
 
-
-
 //줌 기능
 let zoomToolActive = false;
 
@@ -239,14 +253,6 @@ function toggleMagnifyTool() {
         magnifyToolActive = false;
     }
 }
-//지정
-// toggleOrientationMarkersTool();
-// function toggleOrientationMarkersTool(){
-//     const OrientationMarkersTool = cornerstoneTools.OrientationMarkersTool;
-//
-//     cornerstoneTools.addTool(OrientationMarkersTool);
-//     cornerstoneTools.setToolActive('OrientationMarkers', { mouseButtonMask: 1 });
-// }
 // 초기화 도구
 function resetImage() {
     const activeViewport = cornerstone.getEnabledElement(document.getElementById(clickedElementId)).element;
@@ -283,6 +289,9 @@ document.getElementById('invertButton').addEventListener('click', () => {
 });
 
 let clickedElementId;
+let isDoubleClick = false;
+let originalGridTemplateRows;
+let originalGridTemplateColumns;
 
 function handleClickedViewport(viewportElement) {
     // 클릭된 뷰포트의 ID를 가져오기
@@ -297,7 +306,6 @@ function handleClickedViewport(viewportElement) {
     const allViewports = document.querySelectorAll('.CSViewport');
     allViewports.forEach(viewport => {
         viewport.classList.remove('selectedViewport');
-
     });
 
     // 클릭된 뷰포트에 빨간색 테두리 스타일 추가
@@ -310,11 +318,71 @@ function handleClickedViewport(viewportElement) {
     clickedElementId = clickedViewportId;
 }
 
+document.addEventListener('dblclick', (event) => {
+    // 클릭된 엘리먼트의 클래스 목록 확인
+    let clickedElement = event.target
+    const clickedElementClasses = event.target.classList;
+    if (clickedElement.classList.contains('cornerstone-canvas') || clickedElement.classList.contains('overlay')) {
+        // 클릭된 엘리먼트의 상위로 올라가며 CSViewport을 찾기
+        const clickedViewportElement = clickedElement.closest('.parentDiv');
+        console.log(clickedViewportElement);
+        if (clickedViewportElement) {
+            if (!isDoubleClick) {
+                // 첫 번째 더블 클릭
+                isDoubleClick = true;
+
+                // 더블 클릭 시 처리할 로직 호출
+                handleClickedViewport(clickedViewportElement);
+
+                // 현재 그리드 레이아웃 저장
+                const wadoBox = document.getElementById('dicomImageContainer');
+                originalGridTemplateRows = wadoBox.style.gridTemplateRows;
+                originalGridTemplateColumns = wadoBox.style.gridTemplateColumns;
+
+                // 나머지 CSViewport 숨기기
+                const allViewports = document.querySelectorAll('.parentDiv');
+                allViewports.forEach(viewport => {
+                    if (viewport.id !== clickedElementId) {
+                        viewport.style.display = 'none';
+                    }
+                });
+
+                // 그리드 레이아웃 설정
+                wadoBox.style.gridTemplateRows = 'repeat(1, 1fr)';
+                wadoBox.style.gridTemplateColumns = 'repeat(1, 1fr)';
+            } else {
+                // 두 번째 더블 클릭
+                isDoubleClick = false;
+
+                // 이전 그리드 레이아웃으로 복원
+                const wadoBox = document.getElementById('dicomImageContainer');
+                wadoBox.style.gridTemplateRows = originalGridTemplateRows;
+                wadoBox.style.gridTemplateColumns = originalGridTemplateColumns;
+
+                // 모든 CSViewport 다시 보이게 하기
+                const allViewports = document.querySelectorAll('.parentDiv');
+                allViewports.forEach(viewport => {
+                    viewport.style.display = 'block';
+                });
+
+                // 그리드 레이아웃 설정
+                wadoBox.style.gridTemplateRows = originalGridTemplateRows;
+                wadoBox.style.gridTemplateColumns = originalGridTemplateColumns;
+            }
+
+            const allViewports = document.querySelectorAll('.CSViewport');
+            allViewports.forEach(viewport => {
+                cornerstone.resize(viewport);
+            });
+        }
+    }
+});
+
 document.addEventListener('click', (event) => {
     // 클릭된 엘리먼트의 클래스 목록 확인
     let clickedElement = event.target
     const clickedElementClasses = event.target.classList;
-    if (clickedElement.classList.contains('cornerstone-canvas')) {
+    if (clickedElement.classList.contains('cornerstone-canvas') || clickedElement.classList.contains('overlay')) {
         // 클릭된 엘리먼트의 상위로 올라가며 CSViewport을 찾기
         const clickedViewportElement = clickedElement.parentNode
         console.log(clickedViewportElement)
@@ -323,6 +391,8 @@ document.addEventListener('click', (event) => {
         }
     }
 });
+
+
 
 function toggleToolModal(modalClass) {
     var allModals = document.querySelectorAll('.toolModalChildren, .toolModalChildren2');
@@ -333,4 +403,27 @@ function toggleToolModal(modalClass) {
             modal.classList.add('displayNone');
         }
     });
+}
+// 버튼 요소들을 가져옵니다.
+const buttons = document.querySelectorAll('.viewerMenu button');
+
+// 각 버튼에 클릭 이벤트 리스너를 추가합니다.
+buttons.forEach(button => {
+    button.addEventListener('click', function() {
+        // 현재 클릭된 버튼이 'default' 클래스를 가지고 있는지 확인합니다.
+        const isDefault = this.classList.contains('default');
+
+        // 모든 버튼에서 'default' 클래스를 제거합니다.
+        buttons.forEach(b => b.classList.remove('default'));
+
+        // 현재 클릭된 버튼이 'default' 클래스를 가지고 있지 않으면 추가합니다.
+        if (!isDefault) {
+            this.classList.add('default');
+        }
+    });
+});
+
+//페이지이동
+function worklist() {
+    window.location.href = '/worklist';
 }

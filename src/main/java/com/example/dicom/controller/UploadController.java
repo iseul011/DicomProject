@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.dcm4che3.data.Attributes;
 import org.dcm4che3.data.Tag;
 import org.dcm4che3.io.DicomInputStream;
+import org.dcm4che3.tool.dcm2jpg.Dcm2Jpg;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URLDecoder;
 import java.io.File;
@@ -25,6 +27,7 @@ import java.util.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import javax.imageio.ImageIO;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -71,11 +74,11 @@ public class UploadController {
                 }
             }
         }
-        //Collections.sort(dcmFilePaths);
-        //System.out.println("dcmFilePaths"+dcmFilePaths);
+
         return dcmFilePaths;
 
     }
+
 
 
     @GetMapping("/getDicomFile")
@@ -137,7 +140,37 @@ public class UploadController {
         }
 
         return new ResponseEntity<>(prContentList.toString(), HttpStatus.OK);
+    }
 
+    @GetMapping("/getImage")
+    public String getImage(@RequestParam int studykey, @RequestParam int serieskey) {
+        PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSerieskey(studykey, serieskey);
+
+        String directoryPath = "Z:\\" + pacsImagetab.getPath()+pacsImagetab.getFname();
+
+        String imageAsBase64 = "";
+        File file = new File(directoryPath);
+
+        BufferedImage image = null;
+        try {
+            Dcm2Jpg dcm2Jpg = new Dcm2Jpg();
+            image = dcm2Jpg.readImageFromDicomInputStream(file);
+            imageAsBase64 = convertBufferedImageToBase64(image, "jpg");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return imageAsBase64;
+    }
+
+    private String convertBufferedImageToBase64(BufferedImage image, String formatName) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, formatName, baos);
+        baos.flush();
+        byte[] imageInByte = baos.toByteArray();
+        baos.close();
+        return Base64.getEncoder().encodeToString(imageInByte);
     }
 }
 

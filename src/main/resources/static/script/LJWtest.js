@@ -176,6 +176,7 @@ async function viewDicom() {
 
     //dcm 파일을 바이트 배열로 변환
     async function getDicomFile(i){
+
         let response = await axios.get("/getDicomFile", {
             params: {
                 directoryPath: decodeURIComponent(stack[i].imageIds[0][stack.currentImageIdIndex])

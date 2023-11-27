@@ -23,7 +23,7 @@
     <div class="sideBar">
         <div class="sideMenu-wrap">
             <div>
-                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true"
+                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc"  focusable="false" aria-hidden="true"
                      viewBox="0 0 24 24" data-testid="AccountCircleIcon">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88C7.55 15.8 9.68 15 12 15s4.45.8 6.14 2.12C16.43 19.18 14.03 20 12 20z"></path>
                 </svg>
@@ -33,7 +33,7 @@
             </div>
             <div class="MuiBox-root css-0">
                 <div class="icon MuiBox-root css-0">
-                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false"
+                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" onclick="detailView()" focusable="false"
                          aria-hidden="true" viewBox="0 0 24 24" data-testid="AddToPhotosIcon">
                         <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"></path>
                     </svg>

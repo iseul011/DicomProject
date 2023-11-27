@@ -11,7 +11,7 @@ let reportStatusValue = 0;
 let searchListData;
 
 //상세 조회
-const sideBox = document.querySelector(".sideBox");
+const sideBoxDetail = document.querySelector(".sideBoxDetail");
 let isDivVisible = false;
 let stDate = '';
 let edDate = '';
@@ -385,7 +385,7 @@ async function searchDate() {
             startDate : stDate,
             endDate : edDate,
             equipment : eq,
-            optionNum : op,
+            optionNum : op
         }
     });
 
@@ -397,7 +397,6 @@ async function searchDate() {
     for (let i = 0; i < number; i++) {
         printSearchTable(searchListData[i]);
     }
-
 }
 
 //상세조회 데이터 리셋
@@ -419,14 +418,14 @@ async function resetDate() {
 async function detailView() {
 
     if(isDivVisible) {
-        sideBox.innerHTML = '';
+        sideBoxDetail.innerHTML = '';
     } else {
 
         // 조회할 정보 추가
-        sideBox.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
+        sideBoxDetail.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
                               <input class="startDate" type="date"/> To
                               <input class="endDate" type="date" /></br>`;
-        sideBox.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
+        sideBoxDetail.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
                              <select class="equipment">
                                  <option value="">선택해주세요</option>
                                  <option value="AS">AS</option>
@@ -464,27 +463,27 @@ async function detailView() {
                                  <option value="VF">VF</option>
                                  <option value="XA">XA</option>
                              </select></br>`;
-        sideBox.innerHTML += `<span class="imoticon"></span> Verify <br>
+        sideBoxDetail.innerHTML += `<span class="imoticon"></span> Verify <br>
                               <select class="optionNum">
                                  <option value="">선택해주세요</option>
                                  <option value="0">Not Requested</option>
                                  <option value="1">Request Completed</option>
                               </select></br>`;
-        sideBox.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
-        sideBox.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
+        sideBoxDetail.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
+        sideBoxDetail.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
 
     }
 
     //스타일 추가
-    sideBox.style.backgroundColor = isDivVisible ? "" : "rgb(36, 36, 36)";
-    sideBox.style.color = isDivVisible ? "" : "white";
-    sideBox.style.borderRadius = isDivVisible ? "" : "10px";
-    sideBox.style.flexDirection = isDivVisible ? "" : "column";
-    sideBox.style.width = isDivVisible ? "" : "300px";
-    sideBox.style.height = isDivVisible ? "" : "100%";
-    sideBox.style.padding = isDivVisible ? "" : "5px";
-    sideBox.style.marginLeft = isDivVisible ? "" : "12px";
-    sideBox.style.fontSize = isDivVisible ? "" : "14px";
+    sideBoxDetail.style.backgroundColor = isDivVisible ? "" : "rgb(36, 36, 36)";
+    sideBoxDetail.style.color = isDivVisible ? "" : "white";
+    sideBoxDetail.style.borderRadius = isDivVisible ? "" : "10px";
+    sideBoxDetail.style.flexDirection = isDivVisible ? "" : "column";
+    sideBoxDetail.style.width = isDivVisible ? "" : "300px";
+    sideBoxDetail.style.height = isDivVisible ? "" : "100%";
+    sideBoxDetail.style.padding = isDivVisible ? "" : "5px";
+    sideBoxDetail.style.marginLeft = isDivVisible ? "" : "12px";
+    sideBoxDetail.style.fontSize = isDivVisible ? "" : "14px";
 
     isDivVisible = !isDivVisible;
 }
