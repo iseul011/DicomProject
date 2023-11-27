@@ -311,20 +311,7 @@
 </div>
 <%@ include file="include/footer.jsp" %>
 
-
-<%--<script src="/script/test1.js"></script>--%>
-
-
-<%--<script src="/script/viPhs.js"></script>--%>
-
-
-
-<%-- <script src="/script/cornerstoneTest.js"></script>--%>
-
 <script src="/script/viewer.js"></script>
-
-
-<%--<script src="/script/LJW.js"></script>--%>
 <script src="/script/viewtools.js"></script>
 
 </body>
