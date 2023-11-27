@@ -141,6 +141,7 @@ async function getDicomFile(i) {
 
 }
 
+
 async function displayDicomImage(i, dicomFile) {
     try {
         const blobUrl = dicomFile.replace('dicomweb:', '');
@@ -176,6 +177,8 @@ async function displayDicomImage(i, dicomFile) {
 
             event.preventDefault();
         });
+
+
     } catch (error) {
         console.error(error);
     }
@@ -533,12 +536,14 @@ function gridLayout(row, column) {
 
 //---- 썸네일 ----//
 let isDivVisible = false;
+let selectedImageIndex = null;
 
 async function thumbnailBox() {
     const thumbnail = document.querySelector('.thumbnail');
 
     if (isDivVisible) {
         thumbnail.innerHTML = '';
+        selectedImageIndex = null;
     } else {
         thumbnail.innerHTML += '<h3>썸네일</h3>';
         thumbnail.innerHTML += '<hr/>';
@@ -549,7 +554,6 @@ async function thumbnailBox() {
             for (let i = 0; i < seriesTabList.length; i++) {
                 let item = seriesTabList[i];
 
-                // getImage 엔드포인트가 이미지 데이터를 base64 문자열로 반환한다고 가정
                 let response = await axios.get(`/getImage`, {
                     params: {
                         studykey: item.studykey,
@@ -557,28 +561,29 @@ async function thumbnailBox() {
                     },
                 });
 
+                const imgContainer = document.createElement('div'); // Container for each image
                 const img = document.createElement('img');
                 const div = document.createElement('div');
 
-                // 동적으로 클래스 할당
-                img.className = `bigThumbnail myImageClass-${i}`;
-
+                imgContainer.className = `thumbnail-image-container`;
+                img.className = `bigThumbnail myImageClass-${i + 1}`;
                 img.src = `data:image/jpeg;base64,${response.data}`;
-                img.alt = 'Thumbnail';
-                div.className = 'serieskey';
+                img.alt = 'thumbnail';
                 div.innerHTML = `<p style="font-size: 15px; color: #cfcfcf">시리즈: ${i + 1}</p>`;
 
-                img.addEventListener('click', () => handleThumbnailClick(item.studykey, item.seriesinsuid));
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(div);
 
-                thumbnail.appendChild(img);
-                thumbnail.appendChild(div);
+                console.log(imgContainer);
+                imgContainer.addEventListener('click', () => handleThumbnailClick(item.studykey, item.seriesinsuid, i));
+
+                thumbnail.appendChild(imgContainer);
             }
         } catch (error) {
             console.error(error);
         }
     }
 
-    // 스타일 조정
     thumbnail.style.backgroundColor = isDivVisible ? "" : "rgb(36, 36, 36)";
     thumbnail.style.height = isDivVisible ? "" : "900px";
     thumbnail.style.width = isDivVisible ? "" : "280px";
@@ -591,48 +596,62 @@ async function thumbnailBox() {
     isDivVisible = !isDivVisible;
 }
 
-// 썸네일 클릭 시 화면에 띄우기
-
-async function handleThumbnailClick(studykey, seriesinsuid) {
+async function handleThumbnailClick(studykey, seriesinsuid, index) {
     try {
-        // 해당 시리즈에 대한 DICOM 이미지 정보 가져오기
-        let directoryPath = await getImagePath(studykey, seriesinsuid);
-        let PRContentList = await getPRContentList(studykey, seriesinsuid, directoryPath.length);
+        if (selectedImageIndex !== index) {
+            let directoryPath = await getImagePath(studykey, seriesinsuid);
+            let PRContentList = await getPRContentList(studykey, seriesinsuid, directoryPath.imagecnt);
 
-        // 이미지 정보를 순서대로 정렬
-        directoryPath.sort((a, b) => {
-            const numberA = extractNumber(a);
-            const numberB = extractNumber(b);
+            console.log(directoryPath);
+            console.log(PRContentList);
 
-            if (numberA !== null && numberB !== null) {
-                return numberA - numberB;
+            directoryPath.sort((a, b) => {
+                const numberA = extractNumber(a);
+                const numberB = extractNumber(b);
+
+                if (numberA !== null && numberB !== null) {
+                    return numberA - numberB;
+                }
+
+                return a.localeCompare(b);
+            });
+            let seriesTabList = await getSeriesTab();
+
+            for (let i = 0; i < seriesTabList.length; i++) {
+                stack[i] = {
+                    currentImageIdIndex: 0,
+                    imageIds: directoryPath,
+                    PRContentList: PRContentList,
+                };
             }
 
-            return a.localeCompare(b);
-        });
+            if (selectedImageIndex !== null) {
+                resetSelectedImage(selectedImageIndex);
+            }
 
-        // 최대 레이아웃의 parentDiv에 해당하는 요소 찾기
-        const maxParentDiv = document.querySelector('.parentDiv:not(.displayNone)');
+            // 변경된 부분: 선택한 이미지만 표시
+            const maxParentDiv = document.querySelector('.parentDiv:not(.displayNone)');
+            await displayDicomImage(index, stack.imageIds[stack.currentImageIdIndex]);
 
-        // 스택 생성
-        const newStack = {
-            currentImageIdIndex: 0,
-            imageIds: directoryPath,
-            PRContentList: PRContentList,
-        };
+            gridLayout(1, 1);
 
-        // DICOM 이미지 표시
-        await displayDicomImage(newStack, maxParentDiv);
-
-        // 화면에 레이아웃 표시
-        gridLayout(1, 1); // 1x1 레이아웃으로 설정
+            selectedImageIndex = index;
+            highlightSelectedImage(selectedImageIndex);
+        }
     } catch (error) {
         console.error(error);
     }
-
+}
+function resetSelectedImage(index) {
+    const selectedImageElement = document.querySelector(`.myImageClass-${index + 1}`);
+    selectedImageElement.style.border = 'none';
 }
 
-// extractNumber 함수 추가
+function highlightSelectedImage(index) {
+    const selectedImageElement = document.querySelector(`.myImageClass-${index + 1}`);
+    selectedImageElement.style.border = '2px solid red'; // You can change the border color as needed
+}
+
 function extractNumber(path) {
     const match = path.match(/\.(\d+)\.\d+\.dcm$/);
     return match ? parseInt(match[1]) : null;
