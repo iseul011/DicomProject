@@ -80,56 +80,23 @@
     <div class="mainBox">
         <div class="mainMenu">
             <ul class="viewerMenu">
-                <button>
+                <button onclick="worklist()">
                     <img src="/img/worklist.0c26b996e226a3db09e77ef62d440241.png">
                     <span>워크리스트</span>
                 </button>
-
-                <button>
-                    <img src="/img/previous_study.3cb78eecd6d2385b44cb9176ba1fc87c.png">
-                    <span>이전</span>
-                </button>
-
-                <button onclick="testTool()">
-                    <img src="/img/next_study.09fbf5daceba6ace2519e74bde2e8420.png">
-                    <span>다음</span>
-                </button>
-
-                <button class="default">
-                    <img src="/img/default.fa9b027b98a164fb3b5849c0d3ca39ca.png">
-                    <span>Default tool</span>
-                </button>
-
                 <button class="wwwc" onclick="toggleWwwcTool()">
                     <img src="/img/wwwc.1cc5a0ecda9fd93a085688cedaa8a78b.png">
                     <span>윈도우 레벨</span>
                 </button>
-
                 <button class="invert" id="invertButton">
                     <img src="/img/invert.ede51ece1c3d447e625c3191b6a2af9c.png">
                     <span>흑백 반전</span>
                 </button>
 
-                <button class="pan" <%--onclick="togglePanTool()"--%> id="moveButton">
+                <button class="pan" onclick="togglePanTool()">
                     <img src="/img/pan.47e8cd9f65cf64c8f2fb3d08c6f205ab.png">
                     <span>이동</span>
                 </button>
-
-                <button class="scrollLoop">
-                    <img src="/img/scrollloop.5508766fa02ed78f41fbf1381d8329e4.png">
-                    <span>스크롤 루프</span>
-                </button>
-
-                <button class="oneSeriesImage">
-                    <img src="/img/changeImageLayout.2294818a3aa0403736162eb1a10a89b7.png">
-                    <span>1시리즈</span>
-                </button>
-
-                <button class="comparisonCheck">
-                    <img src="/img/comparison.07c6226e96a236664e9ac4c5ff078c44.png">
-                    <span>비교검사</span>
-                </button>
-
                 <button class="playclip" onclick="playClip()">
                     <img src="/img/play.6f437ab2591fe6a6c319e7e77f01df3e.png">
                     <span>플레이 클립</span>
@@ -290,7 +257,7 @@
                             </div>
 
                             <div>
-                                <div data-tool="eraser" class="currentTool eraser" data-parent="annotation">
+                                <div data-tool="eraser" class="currentTool eraser" data-parent="annotation" onclick="eraserTool()">
                                     <img src="/img/eraser.bf8a01d63d3fddbbe86da109fdaa188b.png" data-tool="eraser" data-parent="annotation">
                                     <span data-tool="eraser" data-parent="annotation">선택 삭제</span>
                                 </div>
@@ -357,8 +324,8 @@
 <script src="/script/viewer.js"></script>
 
 
-<script src="/script/LJW.js"></script>
-<script src="/script/vietools.js"></script>
+<%--<script src="/script/LJW.js"></script>--%>
+<script src="/script/viewtools.js"></script>
 
 </body>
 

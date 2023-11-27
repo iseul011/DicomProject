@@ -532,5 +532,6 @@ function gridLayout(row, column) {
     });
 }
 
+
 createParentDiv();
 viewDicom();
