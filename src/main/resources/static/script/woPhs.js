@@ -25,7 +25,6 @@ let threeDate;
 let sevenDate;
 
 
-
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
     const getPName = document.getElementById("input_patient_name");

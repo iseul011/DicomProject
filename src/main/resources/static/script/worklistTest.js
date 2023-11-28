@@ -3,12 +3,28 @@ const searchTable = document.querySelector(".searchListBody");
 
 let number = 0;
 let rowNumber = 0;
-let column = '';
+let column = 'pid';
 let order = true;
 let pidValue = null;
 let pNameValue = null;
 let reportStatusValue = 0;
 let searchListData;
+
+//상세 조회
+const sideBoxDetail = document.querySelector(".sideBoxDetail");
+let isDivVisible = false;
+let stDate = '';
+let edDate = '';
+let eq = '';
+let op = '';
+
+//날짜 조회
+let allDate;
+let oneDate;
+let threeDate;
+let sevenDate;
+
+searchList();
 
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
@@ -18,12 +34,11 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
-    selectPaging();
     resetSearchTable();
-
 }
 
 async function resetSearchTable() {
+    selectPaging();
     await getSearchListData();
     printTotalCount()
     createMoreCountButton();
@@ -148,7 +163,7 @@ function overCount() {
 }
 
 function loadPrevious(pid) {
-    // 클릭한 row의 다음에 tr을 추가합니다.
+
     const clickedRow = event.currentTarget;
     let previousTable;
     const nextRow = clickedRow.parentNode.rows[clickedRow.rowIndex];
@@ -160,7 +175,6 @@ function loadPrevious(pid) {
         previousTable = document.createElement('table');
         previousTable.className = 'previousListTable';
 
-        // previousListDiv 안에 바로 테이블을 추가합니다.
         const previousDiv = document.createElement('div');
         previousDiv.className = 'previousListDiv';
         previousDiv.appendChild(previousTable);
@@ -174,7 +188,16 @@ function loadPrevious(pid) {
         newRow.className = 'previousListRow';
         newRow.appendChild(td);
 
-        // 클릭한 row 다음에 추가된 previousListRow에 데이터를 채워넣는 함수
+        axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
+            params: {
+                pid: pid
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                data.forEach(fillPreviousTable);
+            });
+
         function fillPreviousTable(data) {
             let reportStatusString = transReportStatus(data.reportstatus);
 
@@ -190,14 +213,14 @@ function loadPrevious(pid) {
             let verify = row.insertCell(8);
 
             thumbnailBox.classList = "thumbnailBox";
-            modality.classList = "previousListNormal searchListBodyColumnCenter"
-            studydesc.classList = "previousListLong searchListBodyColumnLeft"
-            studydate.classList = "previousListNormal searchListBodyColumnCenter"
-            reportstatus.classList = "previousListNormal searchListBodyColumnCenter"
-            AIScore.classList = "previousListNormal searchListBodyColumnCenter"
-            seriescnt.classList = "previousListShort searchListBodyColumnCenter";
-            imagecnt.classList = "previousListShort searchListBodyColumnCenter"
-            verify.classList = "previousListShort searchListBodyColumnCenter"
+            modality.classList = "previousListNormal previousListCell";
+            studydesc.classList = "previousListLong previousListCell"
+            studydate.classList = "previousListNormal previousListCell"
+            reportstatus.classList = "previousListNormal previousListCell"
+            AIScore.classList = "previousListNormal previousListCell"
+            seriescnt.classList = "previousListShort previousListCell";
+            imagecnt.classList = "previousListShort previousListCell"
+            verify.classList = "previousListShort previousListCell"
 
             getThumbnail(thumbnailBox, data.studykey)
             modality.innerHTML = data.modality;
@@ -213,16 +236,6 @@ function loadPrevious(pid) {
                 window.location.href = `/viewer/${data.studykey}/${data.studyinsuid}/${data.pid}`;
             });
         }
-
-        axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
-            params: {
-                pid: pid
-            }
-        })
-            .then(response => {
-                const data = response.data;
-                data.forEach(fillPreviousTable);
-            });
     }
 }
 
@@ -313,9 +326,9 @@ async function downloadDicomFiles() {
             directoryPaths.forEach(directoryPath => {
                 axios({
                     method: 'get',
-                    url: `/getDicomDownloadPath`,
+                    url: `/getDicomDownload`,
                     params: {
-                        directoryPath: encodeURIComponent(directoryPath)
+                        directoryPath: encodeURIComponent(directoryPath),
                     },
                     responseType: 'arraybuffer'
                 })
@@ -336,12 +349,46 @@ async function downloadDicomFiles() {
     }
 }
 
+async function downloadJPEGFiles() {
+    const selectedStudyKeys = getSelectedStudyKeys();
+    for (const studykey of selectedStudyKeys) {
+        let seriesTabList = await getSeriesTab(studykey);
+
+        for (let i = 0; i < seriesTabList.length; i++) {
+            let item = seriesTabList[i];
+            let directoryPaths = await getImagePath(item.studykey, item.seriesinsuid);
+            directoryPaths.forEach(directoryPath => {
+                axios({
+                    method: 'get',
+                    url: `/getJPEGDownload`,
+                    params: {
+                        directoryPath: encodeURIComponent(directoryPath),
+                    },
+                    responseType: 'arraybuffer'
+                })
+                    .then(response => {
+                        const contentDisposition = response.headers.get('content-disposition');
+                        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                        const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile.jpg'; // Specify the desired file extension
+                        var link = document.createElement('a');
+                        var blob = new Blob([response.data], {type: 'image/jpeg'}); // Set the MIME type for JPEG
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+            });
+        }
+    }
+}
+
 
 async function getSeriesTab(studykey) {
     try {
         const response = await axios.get("/v1/storage/search/PacsSeriestab", {
             params: {
-                studykey: studykey // 여러 studykey를 콤마로 구분하여 전달
+                studykey: studykey
             }
         });
 

@@ -171,7 +171,7 @@
                         </button>
                         <div class="searchListCount" id="search_count">
                             <label class="countLabel" for="selectPaging">
-                                <select class="countSelect" id="selectPaging" onchange="selectPaging()">
+                                <select class="countSelect" id="selectPaging" onchange="resetSearchTable()">
                                     <option value=10>10개씩 보기</option>
                                     <option value=20>20개씩 보기</option>
                                     <option value=50>50개씩 보기</option>

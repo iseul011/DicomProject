@@ -11,19 +11,21 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
 
     List<PacsStudytab> findAllByPid(String pid);
 
-    List<PacsStudytab> findByPidIgnoreCase(String pid, Sort sort);
+    List<PacsStudytab> findByPid(String pid, Sort sort);
 
-    List<PacsStudytab> findByPnameIgnoreCase(String pname, Sort sort);
+    List<PacsStudytab> findByPname(String pname, Sort sort);
 
-    List<PacsStudytab> findByReportstatusIgnoreCase(int reportstatus, Sort sort);
+    List<PacsStudytab> findByReportstatus(int reportstatus, Sort sort);
 
-    List<PacsStudytab> findByPidAndPnameIgnoreCase(String pid, String pname, Sort sort);
+    List<PacsStudytab> findByPidAndPname(String pid, String pname, Sort sort);
 
-    List<PacsStudytab> findByPidAndReportstatusIgnoreCase(String pid, int reportstatus, Sort sort);
+    List<PacsStudytab> findByPidAndReportstatus(String pid, int reportstatus, Sort sort);
 
-    List<PacsStudytab> findByPnameAndReportstatusIgnoreCase(String pname, int reportstatus, Sort sort);
+    List<PacsStudytab> findByPnameAndReportstatus(String pname, int reportstatus, Sort sort);
 
-    List<PacsStudytab> findByPidAndPnameAndReportstatusIgnoreCase(String pid, String pname, int reportstatus, Sort sort);
+    List<PacsStudytab> findByPidAndPnameAndReportstatus(String pid, String pname, int reportstatus, Sort sort);
+
+
     
 
     //상세 조회

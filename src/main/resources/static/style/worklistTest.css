@@ -12,67 +12,22 @@ thead {
     min-width: 250px;
     height: 100%;
     padding: 5px;
+    align-items: center;
 }
 
-/*.calender{*/
-/*    width: 100%;*/
-/*    max-width: 100%;*/
-/*    background: transparent;*/
-/*    border: none;*/
-/*    color: white;*/
-/*    font-family: Arial, Helvetica, sans-serif;*/
-/*    line-height: 1.125em;*/
-/*}*/
 
-.mainBox {
-    transition-duration: 2s;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: calc(100% - 30px);
-    -webkit-box-align: stretch;
-    align-items: stretch;
-    box-sizing: border-box;
+.searchBoxWrap{
+    width: 90%;
+    height: auto;
+    margin-top: 20px;
 }
 
-.listBox {
-    transition-duration: 2s;
+.basicSearchBox{
     display: flex;
     flex-direction: column;
-    width: 100%;
-    height: 100%;
-}
-
-.totalList {
-    position: relative;
-    background: #161819;
-    border-radius: 0 15px 15px 0;
-    width: calc(100% - 40px);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.header {
-    color: rgb(255, 255, 255);
-    margin-top: 15px;
-    margin-left: 10px;
 }
 
 .searchWrap {
-    display: inline-flex;
-    flex-direction: column;
-    position: relative;
-    min-width: 0px;
-    padding: 0px;
-    margin-bottom: 10px;
-    border: 0px;
-    vertical-align: top;
-    width: 100%;
-}
-
-.searchInner {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -82,11 +37,11 @@ thead {
     width: 100%;
 }
 
+
 .inputBox {
     display: flex;
     justify-content: center;
 }
-
 
 .inputWrap {
     display: inline-flex;
@@ -96,7 +51,7 @@ thead {
     background-color: #101112;
     height: 45px;
     border-radius: 5px;
-    width: 95%;
+    width: 100%;
     margin-top: 15px;
     justify-content: center;
     align-items: center;
@@ -151,34 +106,79 @@ thead {
     margin-top: 10px;
 }
 
-.searchIconBox {
+.searchButtonBox {
     display: flex;
     flex-direction: row;
     width: 100%;
-}
-
-.searchIcon {
-    width: 70px;
-    height: 30px;
-    font-size: 14px;
-    background: #163570;
-    color: white;
-    border-radius: 5px;
-
-    text-align: center;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.resetButton {
-    background-color: black;
+    margin-top: 15px;
+    justify-content: space-between;
 }
 
 .searchButton {
-    background: rgb(98, 18, 18);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+    vertical-align: middle;
+    border-radius: 15px;
+    color: white;
+    background-color: #27292E;
+    width: 100px;
+    height: 28px;
+    font-size: 11px;
+    border: 1px solid transparent;
+}
+
+.searchButtonIcon {
+    user-select: none;
+    width: 1em;
+    height: 1em;
+    display: inline-block;
+    fill: #00AFEF;
+    font-size: 20px;
+    margin-left: 5px;
+}
+/*.calender{*/
+/*    width: 100%;*/
+/*    max-width: 100%;*/
+/*    background: transparent;*/
+/*    border: none;*/
+/*    color: white;*/
+/*    font-family: Arial, Helvetica, sans-serif;*/
+/*    line-height: 1.125em;*/
+/*}*/
+
+.mainBox {
+    transition-duration: 2s;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: calc(100% - 30px);
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.listBox {
+    transition-duration: 2s;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.totalList {
+    position: relative;
+    background: #161819;
+    border-radius: 0 15px 15px 0;
+    width: calc(100% - 40px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .listSetBox {
@@ -298,7 +298,8 @@ thead {
 }
 
 .searchList thead tr th {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 700;
     color: rgb(206, 206, 206);
     background: #121313;
     padding: 8px 0;
@@ -370,14 +371,14 @@ thead {
     color: inherit;
     display: table-row;
     vertical-align: middle;
-    outline: 0px;
+    outline: 0;
 }
 
-.searchList tbody tr td:nth-of-type(1) {
+.searchList tbody .searchListBodyRow td:nth-of-type(1) {
     background: rgb(36, 36, 36);
 }
 
-.searchList tbody tr td {
+.searchList tbody .searchListBodyRow td {
     font-size: 14px;
     padding: 8px 5px;
     border-right: 3px solid #121313;
@@ -390,12 +391,18 @@ thead {
     align-items: center;
 }
 
+.previousListBox {
+    background-color: #161819;
+}
+
 .previousListDiv {
     width: 95%;
-    margin: 0 auto;
+    margin: 20px auto;
+    background-color: #242424;
 }
 
 .previousListTable {
+    border-collapse: collapse;
     width: 100%;
 }
 
@@ -407,7 +414,7 @@ thead {
     width: 10%;
 }
 
-previousListShort {
+.previousListShort {
     width: 5%;
 }
 
@@ -415,14 +422,33 @@ previousListShort {
     background-color: black;
     display: flex;
     justify-content: center;
-    width: 210px;
-    height: 120px;
+    width: 270px;
+    height: 170px;
 }
 
 .thumbnailBox {
     background-color: black;
-    width: 210px;
-    height: 120px;
+    width: 10%;
+    max-width: 270px;
+    height: 170px;
+}
+
+.previousListCell {
+    text-align: center;
+    color: white;
+}
+
+.previousListTable td {
+    border-bottom: 20px solid #161819;
+    border-right: 2px solid #161819;
+}
+
+.previousListTable tr:last-child td {
+    border-bottom: none;
+}
+
+.previousListTable td:last-child {
+    border-right: none;
 }
 
 .moreCountButtonWrap {
@@ -460,167 +486,6 @@ previousListShort {
     margin-left: 5px;
 }
 
-.bottomList {
-    display: flex;
-    justify-content: space-around;
-    box-sizing: border-box;
-    width: 100%;
-    margin: 12px 0px 0px;
-    height: 45%;
-}
-
-.previousBox {
-    display: block;
-    border-radius: 10px;
-    background: rgb(36, 36, 36);
-    width: 50%;
-    height: 100%;
-    color: white;
-}
-
-.patientStatusBox {
-    box-sizing: border-box;
-    display: flex;
-    flex-flow: wrap;
-    width: 100%;
-    margin-top: 14px;
-    margin-left: 35px;
-}
-
-.patientStatusWrap {
-    flex-basis: 50%;
-    -webkit-box-flex: 0;
-    flex-grow: 0;
-    max-width: 50%;
-}
-
-.patientStatusWrap::before {
-    display: inline-block;
-    position: relative;
-    top: 4px;
-    content: " ";
-    width: 3px;
-    height: 17px;
-    margin-right: 5px;
-    background: rgb(98, 18, 18);
-}
-
-.previousListBox {
-    margin-top: 14px;
-    margin-left: 32px;
-    width: calc(100% - 70px);
-    height: auto;
-    max-height: calc(100% - 110px);
-    overflow: auto;
-    color: rgba(0, 0, 0, 0.87);
-}
-
-.previousList {
-    table-layout: fixed;
-    word-break: break-all;
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-
-}
-
-.previousList th {
-    text-align: center;
-    background: rgb(9, 9, 9);
-    padding: 8px 0px;
-    border: 1px solid rgb(36, 36, 36);
-    box-sizing: border-box;
-    font-size: 14px;
-    color: rgb(206, 206, 206);
-
-}
-
-.previousListHead {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 500;
-    font-size: 0.875rem;
-    line-height: 1.5rem;
-    letter-spacing: 0.01071em;
-    vertical-align: inherit;
-    border-bottom: 1px solid rgb(224, 224, 224);
-    text-align: left;
-    padding: 16px;
-    color: rgba(0, 0, 0, 0.87);
-    position: sticky;
-    top: 0px;
-    z-index: 2;
-    background-color: rgb(255, 255, 255);
-}
-
-.previousListBodyRow td {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-height: 38px;
-}
-
-.preNormal {
-    width: 13%;
-}
-
-.preLonger {
-    width: 25%;
-}
-
-.preShort {
-    width: 11%;
-}
-
-.preLong {
-    width: 18%;
-}
-
-.previousListBody {
-    background: rgb(36, 36, 36);
-    text-align: center;
-    height: 100%;
-    cursor: pointer;
-}
-
-.previousList tbody tr:nth-of-type(2n-1) {
-    background: rgb(57, 57, 57);
-}
-
-.previousList tbody tr td {
-    font-size: 14px;
-    padding: 8px 5px;
-    border: 1px solid rgb(36, 36, 36);
-    color: rgb(206, 206, 206);
-    box-sizing: border-box;
-    word-break: break-all;
-}
-
-.previousListBodyColumnCenter {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.43;
-    letter-spacing: 0.01071em;
-    display: table-cell;
-    vertical-align: inherit;
-    border-bottom: 1px solid rgb(224, 224, 224);
-    text-align: center;
-    padding: 16px;
-    color: rgba(0, 0, 0, 0.87);
-}
-
-.previousListBodyColumnLeft {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    font-weight: 400;
-    font-size: 0.875rem;
-    line-height: 1.43;
-    letter-spacing: 0.01071em;
-    vertical-align: inherit;
-    border-bottom: 1px solid rgb(224, 224, 224);
-    text-align: left;
-    padding: 16px;
-    color: rgba(0, 0, 0, 0.87);
-}
 
 .reportBox {
     border-radius: 8px;
