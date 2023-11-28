@@ -8,15 +8,8 @@
 
 <body>
 <header>
-    <div class="homeButton">
+    <div class="homeButton" onclick="worklist()">
         <img src="/img/Radiologic.png" alt="Logo">
     </div>
 </header>
-<script>
-    let homeButton = document.querySelector(".homeButton")
-
-    homeButton.addEventListener('click', function () {
-        window.location.href = '/worklist';
-    });
-</script>
 

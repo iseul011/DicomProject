@@ -81,11 +81,11 @@
     <div class="mainBox">
         <div class="mainMenu">
             <ul class="viewerMenu">
+
                 <button onclick="worklist()">
                     <img src="/img/worklist.0c26b996e226a3db09e77ef62d440241.png">
                     <span>워크리스트</span>
                 </button>
-
                 <button>
                     <img src="/img/previous_study.3cb78eecd6d2385b44cb9176ba1fc87c.png">
                     <span>이전</span>
@@ -95,7 +95,6 @@
                     <img src="/img/next_study.09fbf5daceba6ace2519e74bde2e8420.png">
                     <span>다음</span>
                 </button>
-
                 <button class="default" onclick="toggleOverlayCanvas()">
                     <img src="/img/default.fa9b027b98a164fb3b5849c0d3ca39ca.png">
                     <span>Default tool</span>
@@ -113,10 +112,6 @@
                 <button class="pan" onclick="togglePanTool()">
                     <img src="/img/pan.47e8cd9f65cf64c8f2fb3d08c6f205ab.png">
                     <span>이동</span>
-                </button>
-                <button class="playclip" onclick="playClip()">
-                    <img src="/img/play.6f437ab2591fe6a6c319e7e77f01df3e.png">
-                    <span>플레이 클립</span>
                 </button>
                 <div>
                     <button class="toolModalParent" onclick="toggleToolModal('toolModalChildren')">
@@ -146,48 +141,6 @@
                                 <div data-tool="rotate" class="currentTool rotate" data-parent="tools" onclick="setupRotateTool()">
                                     <img src="/img/rotate.94c480f210401d6f6adabcf17115d1e5.png" data-tool="rotate" data-parent="tools">
                                     <span data-tool="rotate" data-parent="tools">회전</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div data-tool="rightRotate" class="currentTool rightRotate" data-parent="tools" >
-                                    <img src="/img/rightRotate.053a9e994df6b6be59bb0c3d702741e6.png" data-tool="rightRotate" data-parent="tools">
-                                    <span data-tool="rightRotate" data-parent="tools">오른쪽 회전</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div data-tool="leftRotate" class="currentTool leftRotate" data-parent="tools" >
-                                    <img src="/img/leftRotate.8a64a37656bf3e1a3eba2c1d82b98c7d.png" data-tool="leftRotate" data-parent="tools">
-                                    <span data-tool="leftRotate" data-parent="tools">왼쪽 회전</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div data-tool="horizontalFlip" class="currentTool horizontalFlip" data-parent="tools" >
-                                    <img src="/img/hFlip.80d6a0b3bd0b788f42da409f5d115877.png" data-tool="horizontalFlip" data-parent="tools">
-                                    <span data-tool="horizontalFlip" data-parent="tools">수평 뒤집기</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div data-tool="verticalFlip" class="currentTool verticalFlip" data-parent="tools" >
-                                    <img src="/img/vFlip.1a75c203d6207c94829eb64a96bf952b.png" data-tool="verticalFlip" data-parent="tools">
-                                    <span data-tool="verticalFlip" data-parent="tools">수직 대칭 이동</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div data-tool="Crosshairs" class="currentTool Crosshairs" data-parent="tools">
-                                    <img src="/img/crossHairs.9132d282e7ad1ca57623c0d0bfe543a5.png" data-tool="Crosshairs" data-parent="tools">
-                                    <span data-tool="Crosshairs" data-parent="tools">Crosshairs</span>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div data-tool="referenceLine" class="currentTool referenceLine" data-parent="tools">
-                                    <img src="/img/referenceLine.ba6d43bced93ff634d34a2e98cdf9f6f.png" data-tool="referenceLine" data-parent="tools">
-                                    <span data-tool="referenceLine" data-parent="tools">참조 선</span>
                                 </div>
                             </div>
                         </div>
@@ -301,16 +254,6 @@
                     </div>
                     <span>Series</span>
                 </button>
-
-                <button class="disable">
-                    <div>
-                        <img src="/img/changeSeriesLayout.6c2935a8c5a52c722e1055e79e316d58.png">
-                        <svg viewBox="0 0 1030 638" width="10">
-                            <path d="M1017 68L541 626q-11 12-26 12t-26-12L13 68Q-3 49 6 24.5T39 0h952q24 0 33 24.5t-7 43.5z" fill="#FFF"></path>
-                        </svg>
-                    </div>
-                    <span>이미지레이아웃</span>
-                </button>
             </ul>
 
             <div class="contentBox">
@@ -331,7 +274,7 @@
 <%--<script src="/script/viPhs.js"></script>--%>
 <script src="/script/viewer.js"></script>
 <%--<script src="/script/cornerstoneTest.js"></script>--%>
-<script src="/script/vietools.js"></script>
+<script src="/script/viewtools.js"></script>
 
 
 </body>
