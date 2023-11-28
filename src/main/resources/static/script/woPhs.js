@@ -23,6 +23,9 @@ let allDate;
 let oneDate;
 let threeDate;
 let sevenDate;
+let today;
+let oneWeek;
+let thirtyDay;
 
 
 function searchList() {
@@ -33,9 +36,9 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
-
     selectPaging();
     resetSearchTable();
+
 }
 
 async function resetSearchTable() {
@@ -66,7 +69,6 @@ async function getSearchListData() {
 
     searchListData = response.data;
 
-    console.log(searchListData);
     overCount();
 
     for (let i = 0; i < number; i++) {
@@ -78,6 +80,7 @@ function printTotalCount() {
     const totalCount = document.querySelector(".totalCases");
 
     totalCount.innerHTML = `<p>총 검사 건수: ${number}</p>`;
+
 }
 
 function printSearchTable(data) {
@@ -91,23 +94,25 @@ function printSearchTable(data) {
     let studydesc = row.insertCell(4);
     let studydate = row.insertCell(5);
     let reportstatus = row.insertCell(6);
-    let seriescnt = row.insertCell(7);
-    let imagecnt = row.insertCell(8);
-    let verify = row.insertCell(9);
+    let AIScore = row.insertCell(7);
+    let seriescnt = row.insertCell(8);
+    let imagecnt = row.insertCell(9);
+    let verify = row.insertCell(10);
 
     row.addEventListener('click', function () {
-        loadPrevious(data.pid, data.pname);
+        loadPrevious(data.pid);
     });
 
     let checkbox = `<input type="checkbox" class="checkbox" name="checkbox" value="${data.studykey}"/>`;
     row.className = "searchListBodyRow"
-    chk.className = "searchListBodyColumnCenter"
+    chk.className = "searchListCheckBox"
     pid.className = "searchListBodyColumnLeft"
     pname.className = "searchListBodyColumnLeft"
     modality.className = "searchListBodyColumnCenter"
     studydesc.className = "searchListBodyColumnLeft"
     studydate.className = "searchListBodyColumnCenter"
     reportstatus.className = "searchListBodyColumnCenter"
+    AIScore.className = "searchListBodyColumnCenter"
     seriescnt.className = "searchListBodyColumnCenter"
     imagecnt.className = "searchListBodyColumnCenter"
     verify.className = "searchListBodyColumnCenter"
@@ -119,6 +124,7 @@ function printSearchTable(data) {
     studydesc.innerHTML = data.studydesc;
     studydate.innerHTML = data.studydate;
     reportstatus.innerHTML = reportStatusString;
+    AIScore.innerHTML = data.ai_score;
     seriescnt.innerHTML = data.seriescnt;
     imagecnt.innerHTML = data.imagecnt;
     verify.innerHTML = data.verifyflag;
@@ -148,6 +154,7 @@ function printMore() {
         printSearchTable(searchListData[i])
     }
 
+
     printTotalCount();
     deleteMoreCountButton();
 }
@@ -158,59 +165,104 @@ function overCount() {
     }
 }
 
-function loadPrevious(pid, pname) {
-    const table = document.querySelector(".previousListBody");
-    table.innerHTML = '';
-    let rows = table.querySelectorAll("tr");
+function loadPrevious(pid) {
+    // 클릭한 row의 다음에 tr을 추가합니다.
+    const clickedRow = event.currentTarget;
+    let previousTable;
+    const nextRow = clickedRow.parentNode.rows[clickedRow.rowIndex];
+    let previousListRow;
 
-    for (let i = 1; i < rows.length; i++) {
-        rows[i].remove();
-    }
+    if (nextRow && nextRow.classList.contains('previousListRow')) {
+        nextRow.remove();
+    } else {
+        previousTable = document.createElement('table');
+        previousTable.className = 'previousListTable';
 
-    document.querySelector("#patient_id").innerHTML = pid;
-    document.querySelector("#patient_name").innerHTML = pname;
+        // previousListDiv 안에 바로 테이블을 추가합니다.
+        const previousDiv = document.createElement('div');
+        previousDiv.className = 'previousListDiv';
+        previousDiv.appendChild(previousTable);
 
-    axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
-        params: {
-            pid: pid
+        const td = document.createElement('td');
+        td.colSpan = 11;
+        td.className = "previousListBox"
+        td.appendChild(previousDiv);
+
+        const newRow = clickedRow.parentNode.insertRow(clickedRow.rowIndex);
+        newRow.className = 'previousListRow';
+        newRow.appendChild(td);
+
+        // 클릭한 row 다음에 추가된 previousListRow에 데이터를 채워넣는 함수
+        function fillPreviousTable(data) {
+            let reportStatusString = transReportStatus(data.reportstatus);
+
+            let row = previousTable.insertRow(-1);
+            let thumbnailBox = row.insertCell(0);
+            let modality = row.insertCell(1);
+            let studydesc = row.insertCell(2);
+            let studydate = row.insertCell(3);
+            let reportstatus = row.insertCell(4);
+            let AIScore = row.insertCell(5);
+            let seriescnt = row.insertCell(6);
+            let imagecnt = row.insertCell(7);
+            let verify = row.insertCell(8);
+
+            thumbnailBox.classList = "thumbnailBox";
+            modality.classList = "previousListNormal searchListBodyColumnCenter"
+            studydesc.classList = "previousListLong searchListBodyColumnLeft"
+            studydate.classList = "previousListNormal searchListBodyColumnCenter"
+            reportstatus.classList = "previousListNormal searchListBodyColumnCenter"
+            AIScore.classList = "previousListNormal searchListBodyColumnCenter"
+            seriescnt.classList = "previousListShort searchListBodyColumnCenter";
+            imagecnt.classList = "previousListShort searchListBodyColumnCenter"
+            verify.classList = "previousListShort searchListBodyColumnCenter"
+
+            getThumbnail(thumbnailBox, data.studykey)
+            modality.innerHTML = data.modality;
+            studydesc.innerHTML = data.studydesc;
+            studydate.innerHTML = data.studydate;
+            reportstatus.innerHTML = reportStatusString;
+            AIScore.innerHTML = data.ai_score;
+            seriescnt.innerHTML = data.seriescnt;
+            imagecnt.innerHTML = data.imagecnt;
+            verify.innerHTML = data.verifyflag;
+
+            row.addEventListener('click', function () {
+                window.location.href = `/viewer/${data.studykey}/${data.studyinsuid}/${data.pid}`;
+            });
         }
+
+        axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
+            params: {
+                pid: pid
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                data.forEach(fillPreviousTable);
+            });
+    }
+}
+
+function getThumbnail(thumbnailBox, studykey) {
+    axios.get(`/v1/storage/getImage`, {
+        params: {
+            studykey: studykey,
+            serieskey: 1
+        },
     })
         .then(response => {
-            const data = response.data;
+            const thumbnailWrap = document.createElement('div');
+            thumbnailWrap.classList = "thumbnailWrap"
+            const thumbnail = document.createElement('img');
+            thumbnail.src = `data:image/jpeg;base64,${response.data}`;
+            thumbnail.alt = 'Thumbnail';
 
-            data.forEach(function (item) {
-                let reportStatusString = transReportStatus(item.reportstatus);
-
-                let row = table.insertRow(0);
-                let modality = row.insertCell(0);
-                let studydesc = row.insertCell(1);
-                let studydate = row.insertCell(2);
-                let reportstatus = row.insertCell(3);
-                let seriescnt = row.insertCell(4);
-                let imagecnt = row.insertCell(5);
-                let verify = row.insertCell(6);
-
-                row.className = "previousListBodyRow"
-                modality.className = "previousListBodyColumnCenter"
-                studydesc.className = "previousListBodyColumnLeft"
-                studydate.className = "previousListBodyColumnCenter"
-                reportstatus.className = "previousListBodyColumnCenter"
-                seriescnt.className = "previousListBodyColumnCenter"
-                imagecnt.className = "previousListBodyColumnCenter"
-                verify.className = "previousListBodyColumnCenter"
-
-                studydesc.innerHTML = item.studydesc;
-                modality.innerHTML = item.modality;
-                studydate.innerHTML = item.studydate;
-                reportstatus.innerHTML = reportStatusString;
-                seriescnt.innerHTML = item.seriescnt;
-                imagecnt.innerHTML = item.imagecnt;
-                verify.innerHTML = item.verifyflag;
-
-                row.addEventListener('click', function () {
-                    window.location.href = `/viewer/${item.studykey}/${item.studyinsuid}/${item.pid}`;
-                });
-            });
+            thumbnailWrap.appendChild(thumbnail);
+            thumbnailBox.appendChild(thumbnailWrap)
+        })
+        .catch(error => {
+            console.error(error);
         });
 }
 
@@ -224,14 +276,13 @@ function chkAll() {
 
 
 function sortTable(input) {
-    rowNumber=0;
+    rowNumber = 0;
     if (column === input) {
         order = !order;
     } else {
         column = input
         order = true
     }
-
     resetSearchTable();
 }
 
@@ -274,41 +325,35 @@ async function downloadDicomFiles() {
     for (const studykey of selectedStudyKeys) {
         let seriesTabList = await getSeriesTab(studykey);
 
-        let items = [];
         for (let i = 0; i < seriesTabList.length; i++) {
-
-            items.push(seriesTabList[i].seriesnum);
-        }
-
-        let uniqueItems = [...new Set(items)];
-        // 중복된 숫자를 제거
-        for (let i = 0; i < uniqueItems.length; i++) {
             let item = seriesTabList[i];
-            let directoryPaths = await getImagePath(item.studykey, uniqueItems[i]);
-            // 각 DICOM 파일에 대해 다운로드 링크를 생성하고 다운로드합니다.
+            let directoryPaths = await getImagePath(item.studykey, item.seriesinsuid);
             directoryPaths.forEach(directoryPath => {
-                axios.get(`/getDicomDownloadPath`, {
+                axios({
+                    method: 'get',
+                    url: `/getDicomDownloadPath`,
                     params: {
                         directoryPath: encodeURIComponent(directoryPath)
-                    }
+                    },
+                    responseType: 'arraybuffer'
                 })
                     .then(response => {
                         const contentDisposition = response.headers.get('content-disposition');
                         const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
                         const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile';
-                        // Blob을 다운로드하는 링크를 생성합니다.
                         var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(new Blob([response.data]));
-                        link.download = fileName // 파일 이름으로 다운로드
+                        var blob = new Blob([response.data], {type: 'application/dicom'});
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName
                         document.body.appendChild(link);
                         link.click();
                         document.body.removeChild(link);
                     });
             });
-
         }
     }
 }
+
 
 async function getSeriesTab(studykey) {
     try {
@@ -326,12 +371,12 @@ async function getSeriesTab(studykey) {
     }
 }
 
-async function getImagePath(studykey, seriesnum) {
+async function getImagePath(studykey, seriesinsuid) {
     try {
         let response = await axios.get("/getImagePath", {
             params: {
                 studykey: studykey,
-                seriesnum: seriesnum
+                seriesinsuid: seriesinsuid
             }
         });
 
@@ -347,7 +392,6 @@ function getSelectedStudyKeys() {
     const selectedRows = document.querySelectorAll('.searchListBodyRow input[type="checkbox"]:checked');
     return Array.from(selectedRows).map(row => row.value);
 }
-
 //상세 조회
 function searchDetailList() {
     const startDate = document.querySelector(".startDate");
@@ -421,7 +465,7 @@ async function detailView() {
     } else {
 
         // 조회할 정보 추가
-        sideBoxDetail.innerHTML += `<span class="imoticon"></span> 검사일자 <br/> 
+        sideBoxDetail.innerHTML += `<span class="imoticon" id="imoticon"></span> 검사일자 <br/> 
                               <input class="startDate" type="date"/> To
                               <input class="endDate" type="date" /></br>`;
         sideBoxDetail.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
@@ -470,16 +514,15 @@ async function detailView() {
                               </select></br>`;
         sideBoxDetail.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
         sideBoxDetail.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
-
     }
 
     //스타일 추가
-    sideBoxDetail.style.backgroundColor = isDivVisible ? "" : "rgb(36, 36, 36)";
+    sideBoxDetail.style.backgroundColor = isDivVisible ? "" : "#181a1c";
     sideBoxDetail.style.color = isDivVisible ? "" : "white";
     sideBoxDetail.style.borderRadius = isDivVisible ? "" : "10px";
     sideBoxDetail.style.flexDirection = isDivVisible ? "" : "column";
     sideBoxDetail.style.width = isDivVisible ? "" : "300px";
-    sideBoxDetail.style.height = isDivVisible ? "" : "100%";
+    sideBoxDetail.style.height = isDivVisible ? "" : "400px";
     sideBoxDetail.style.padding = isDivVisible ? "" : "5px";
     sideBoxDetail.style.marginLeft = isDivVisible ? "" : "12px";
     sideBoxDetail.style.fontSize = isDivVisible ? "" : "14px";
@@ -488,27 +531,27 @@ async function detailView() {
 }
 
 // 날짜 조회
-const search_allTime = document.getElementById("search_allTime");
-const search_oneDay = document.getElementById("search_oneDay");
-const search_threeDay = document.getElementById("search_threeDay");
+const search_findToday = document.getElementById("search_findToday");
 const search_oneWeek = document.getElementById("search_oneWeek");
+const search_thirtyDay = document.getElementById("search_thirtyDay");
+const search_reset = document.getElementById("search_reset");
 
-search_allTime.addEventListener("click", () => {
-    allDate = 'allDate';
-    clickDateList(allDate);
+search_reset.addEventListener("click", () => {
+    history.go(0);
 });
-search_oneDay.addEventListener("click", () => {
-    oneDate = 'oneDate';
-    clickDateList(oneDate);
-});
-search_threeDay.addEventListener("click", () => {
-    threeDate = 'threeDate';
-    clickDateList(threeDate);
+search_findToday.addEventListener("click", () => {
+    today = 'findToday';
+    clickDateList(today);
 });
 search_oneWeek.addEventListener("click", () => {
-    sevenDate = 'sevenDate';
-    clickDateList(sevenDate);
+    oneWeek = 'oneWeek';
+    clickDateList(oneWeek);
 });
+search_thirtyDay.addEventListener("click", () => {
+    thirtyDay = 'thirtyDay';
+    clickDateList(thirtyDay);
+});
+
 
 function clickDateList(date) {
     selectPaging();

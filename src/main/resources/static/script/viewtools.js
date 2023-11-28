@@ -200,7 +200,6 @@ function toggleWwwcTool() {
 
 //이동
 let panToolActive = false;
-
 function togglePanTool() {
     const PanTool = cornerstoneTools.PanTool;
 
@@ -213,10 +212,8 @@ function togglePanTool() {
         panToolActive = false;
     }
 }
-
 //줌 기능
 let zoomToolActive = false;
-
 function toggleZoomTool() {
     const ZoomTool = cornerstoneTools.ZoomTool;
 
@@ -238,7 +235,6 @@ function toggleZoomTool() {
         zoomToolActive = false;
     }
 }
-
 //돋보기 기능
 let magnifyToolActive = false;
 function toggleMagnifyTool() {
