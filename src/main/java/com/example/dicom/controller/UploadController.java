@@ -80,7 +80,6 @@ public class UploadController {
     }
 
 
-
     @GetMapping("/getDicomFile")
     public ResponseEntity<byte[]> getDicom(@RequestParam String directoryPath) throws IOException {
         Path path = Paths.get(directoryPath);
@@ -98,7 +97,7 @@ public class UploadController {
                 .body(fileContent);
     }
 
-    @GetMapping("/getDicomDownloadPath")
+    @GetMapping("/getDicomDownload")
     public ResponseEntity<byte[]> getDicomDownloadPath(@RequestParam("directoryPath") String directoryPath) throws IOException {
         try {
             // URL 디코딩 수행
@@ -117,6 +116,29 @@ public class UploadController {
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         } catch (UnsupportedEncodingException e) {
             // URL 디코딩 중 예외 처리
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getJPEGDownload")
+    public ResponseEntity<byte[]> getJPEGFileDownload(@RequestParam("directoryPath") String directoryPath) throws IOException {
+        try {
+            String decodedDirectoryPath = URLDecoder.decode(directoryPath, "UTF-8");
+            Path path = Paths.get(decodedDirectoryPath);
+            Dcm2Jpg dcm2Jpg = new Dcm2Jpg();
+            BufferedImage image = dcm2Jpg.readImageFromDicomInputStream(path.toFile());
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(image, "jpg", baos);
+            byte[] data = baos.toByteArray();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_JPEG);
+            headers.setContentDispositionFormData("attachment", path.getFileName().toString().replace(".dcm", ".jpg"));
+
+            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -146,7 +168,7 @@ public class UploadController {
     public String getImage(@RequestParam int studykey, @RequestParam int serieskey) {
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSerieskey(studykey, serieskey);
 
-        String directoryPath = "Z:\\" + pacsImagetab.getPath()+pacsImagetab.getFname();
+        String directoryPath = "Z:\\" + pacsImagetab.getPath() + pacsImagetab.getFname();
 
         String imageAsBase64 = "";
         File file = new File(directoryPath);

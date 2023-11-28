@@ -66,35 +66,33 @@ public class PacsRestController {
             @RequestParam(required = false) String pidValue,
             @RequestParam(required = false) String pNameValue,
             @RequestParam int reportStatusValue) {
-        if (column.isEmpty()) {
-            return pacsStudytabRepository.findAll();
-        } else {
-            Sort sort = Sort.by(order ? Sort.Direction.DESC : Sort.Direction.ASC, column);
+
+            Sort sort = Sort.by(order ? Sort.Direction.ASC : Sort.Direction.DESC, column);
 
             if (isEmpty(pidValue) && isEmpty(pNameValue)) {
-                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatusIgnoreCase(reportStatusValue, sort);
+                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
             }
 
             if (isEmpty(pidValue)) {
                 if (reportStatusValue == 0) {
-                    return pacsStudytabRepository.findByPnameIgnoreCase(pNameValue, sort);
+                    return pacsStudytabRepository.findByPname(pNameValue, sort);
                 } else {
-                    return pacsStudytabRepository.findByPnameAndReportstatusIgnoreCase(pNameValue, reportStatusValue, sort);
+                    return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
                 }
             }
 
             if (isEmpty(pNameValue)) {
                 if (reportStatusValue == 0) {
-                    return pacsStudytabRepository.findByPidIgnoreCase(pidValue, sort);
+                    return pacsStudytabRepository.findByPid(pidValue, sort);
                 } else {
-                    return pacsStudytabRepository.findByPidAndReportstatusIgnoreCase(pidValue, reportStatusValue, sort);
+                    return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
                 }
             }
 
             return (reportStatusValue == 0)
-                    ? pacsStudytabRepository.findByPidAndPnameIgnoreCase(pidValue, pNameValue, sort)
-                    : pacsStudytabRepository.findByPidAndPnameAndReportstatusIgnoreCase(pidValue, pNameValue, reportStatusValue, sort);
-        }
+                    ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
+                    : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
+
     }
 
     private boolean isEmpty(String value) {

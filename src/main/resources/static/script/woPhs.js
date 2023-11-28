@@ -19,9 +19,14 @@ let eq = '';
 let op = '';
 
 //날짜 조회
+let allDate;
+let oneDate;
+let threeDate;
+let sevenDate;
 let today;
 let oneWeek;
 let thirtyDay;
+
 
 function searchList() {
     const getPid = document.getElementById("input_patient_id");

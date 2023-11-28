@@ -1,19 +1,16 @@
+@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:display=swap');
+
 * {
+    font-family: "Noto Sans KR", sans-serif;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    -webkit-text-size-adjust: none;
 }
 
 header {
     width: 100vw;
     height: 90px;
-}
-
-@media screen and (max-width: 1920px) {
-    header {
-        height: 60px;
-    }
 }
 
 header > button {

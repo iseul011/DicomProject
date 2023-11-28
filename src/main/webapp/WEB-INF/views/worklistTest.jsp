@@ -68,52 +68,35 @@
 
     <div class="mainBox flex">
         <div class="sideBox">
-            <div class="sideBoxWrap advancedSearch">
-                <div class="searchBox">
+            <div class="searchBoxWrap">
+                <div class="basicSearchBox">
                     <div class="header" id="search_header">
                         <h3>검색</h3>
                     </div>
                     <div class="searchWrap">
-                        <div class="searchInner">
-                            <div class="inputBox">
-                                <div class="inputWrap" id="pIdWrap">
-                                    <div class="inputInner">
-                                        <label for="input_patient_id" class="searchLabel"
-                                               id="patient_id_label">
-                                            <input class="searchInput" type="text" id="input_patient_id"
-                                                   placeholder="환자 아이디" onfocus="addFocusStyle(id)"
-                                                   onblur="removeFocusStyle(id)">
-                                        </label>
-                                    </div>
+                        <div class="inputBox">
+                            <div class="inputWrap" id="pIdWrap">
+                                <div class="inputInner">
+                                    <label for="input_patient_id" class="searchLabel"
+                                           id="patient_id_label">
+                                        <input class="searchInput" type="text" id="input_patient_id"
+                                               placeholder="환자 아이디" onfocus="addFocusStyle(id)"
+                                               onblur="removeFocusStyle(id)">
+                                    </label>
                                 </div>
                             </div>
-                            <div class="inputBox">
-                                <div class="inputWrap" id="pNameWrap">
-                                    <div class="inputInner">
-                                        <label for="input_patient_name" class="searchLabel"
-                                               id="patient_name_label">
-                                            <input class="searchInput" type="text" id="input_patient_name"
-                                                   placeholder="환자 이름" onfocus="addFocusStyle(id)"
-                                                   onblur="removeFocusStyle(id)">
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="inputBox">
-                                <div class="inputWrap">
-                                    <div class="inputInner" id="reading_Status">
-                                        <label class="searchLabel">
-                                            <select class="searchInput" id="report_Status">
-                                                <option value=0 select>판독상태</option>
-                                                <option value=2>열람중</option>
-                                                <option value=3>읽지않음</option>
-                                                <option value=5>예비판독</option>
-                                                <option value=6>판독</option>
-                                            </select>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
+
+                        </div>
+                        <div class="inputBox">
+                            <div class="inputWrap" id="pNameWrap">
+                                <div class="inputInner">
+                                    <label for="input_patient_name" class="searchLabel"
+                                           id="patient_name_label">
+                                        <input class="searchInput" type="text" id="input_patient_name"
+                                               placeholder="환자 이름" onfocus="addFocusStyle(id)"
+                                               onblur="removeFocusStyle(id)">
+                                    </label>
+
                             <div class="dateSearchBox">
                                 <div class="searchIcon" id="search_findToday">
                                     오늘
@@ -123,21 +106,59 @@
                                 </div>
                                 <div class="searchIcon" id="search_thirtyDay">
                                     30일
-                                </div>
-                            </div>
-                            <div class="searchIconBox">
-                                <%--                                <div class="searchIcon" id="search_allTime">--%>
-                                <%--                                    전체--%>
-                                <%--                                </div>--%>
-                                <div class="searchIcon searchButton" id="search_submit" onclick="searchList()">
-                                    검색
-                                </div>
-                                <div class="searchIcon resetButton" id="search_reset">
-                                    재설정
+
                                 </div>
                             </div>
                         </div>
+                        <div class="inputBox">
+                            <div class="inputWrap">
+                                <div class="inputInner" id="reading_Status">
+                                    <label class="searchLabel">
+                                        <select class="searchInput" id="report_Status">
+                                            <option value=0 select>판독상태</option>
+                                            <option value=2>열람중</option>
+                                            <option value=3>읽지않음</option>
+                                            <option value=5>예비판독</option>
+                                            <option value=6>판독</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+                    <div class="searchButtonBox">
+                        <div class="searchButton" id="search_submit" onclick="searchList()">
+                            검색
+                            <svg class="searchButtonIcon" focusable="false"
+                                 aria-hidden="true" viewBox="0 0 24 24" data-testid="ArrowCircleRightOutlinedIcon">
+                                <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12s4.48 10 10 10 10-4.48 10-10zM4 12c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8-8-3.58-8-8zm12 0-4 4-1.41-1.41L12.17 13H8v-2h4.17l-1.59-1.59L12 8l4 4z"></path>
+                            </svg>
+                        </div>
+                        <div class="searchButton" id="search_reset">
+                            재설정
+                            <svg class="searchButtonIcon" focusable="false"
+                                 aria-hidden="true" viewBox="0 0 24 24" data-testid="RestartAltIcon">
+                                <path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93 0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34C4.9 8.79 4 10.79 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="dateSearchBox">
+                    <%--                                <div class="searchIcon" id="search_oneDay">--%>
+                    <%--                                    오늘--%>
+                    <%--                                </div>--%>
+                    <%--                                <div class="searchIcon" id="search_threeDay">--%>
+                    <%--                                    7일--%>
+                    <%--                                </div>--%>
+                    <%--                                <div class="searchIcon" id="search_oneWeek">--%>
+                    <%--                                    30일--%>
+                    <%--                                </div>--%>
+                    <%--                            </div>--%>
+                    <%--                                <div class="searchIcon" id="search_allTime">--%>
+                    <%--                                    전체--%>
+                    <%--                                </div>--%>
+
                 </div>
             </div>
 <%--            <div class="sideBoxDetail">--%>
@@ -148,7 +169,7 @@
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
-                        <button class="downloadButton" onclick="downloadDicomFiles()">다운로드
+                        <button class="downloadButton" onclick="downloadJPEGFiles()">다운로드
                             <svg class="listSetIcon" focusable="false" aria-hidden="true"
                                  viewBox="0 0 24 24"
                                  data-testid="DownloadIcon">
@@ -157,7 +178,7 @@
                         </button>
                         <div class="searchListCount" id="search_count">
                             <label class="countLabel" for="selectPaging">
-                                <select class="countSelect" id="selectPaging" onchange="selectPaging()">
+                                <select class="countSelect" id="selectPaging" onchange="resetSearchTable()">
                                     <option value=10>10개씩 보기</option>
                                     <option value=20>20개씩 보기</option>
                                     <option value=50>50개씩 보기</option>
@@ -176,7 +197,7 @@
                         <thead class="searchListHead">
                         <tr class="searchListHeadRow">
                             <th class="searchListCheckBox"><input type="checkbox"
-                                                                   onclick="chkAll()"></th>
+                                                                  onclick="chkAll()"></th>
                             <th class="searchListHeadShort" onclick="sortTable('pid')">
                                 <div class="searchListHeadBox">
                                     <div class="searchListHeadWrap">
