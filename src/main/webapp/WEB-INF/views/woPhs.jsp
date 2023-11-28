@@ -1,6 +1,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <html>
 <head>
     <title>WebViewer</title>
@@ -8,18 +8,28 @@
 <body>
 <%@ include file="include/header.jsp" %>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-<script src="https://unpkg.com/cornerstone-core"></script>
+<script src="https://cdn.jsdelivr.net/npm/cornerstone-core/dist/cornerstone.js"></script>
+<script src="https://unpkg.com/cornerstone-core/dist/cornerstone.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cornerstone-math@0.1.10/dist/cornerstoneMath.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cornerstone-tools@6.0.10/dist/cornerstoneTools.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cornerstone-web-image-loader@2.1.1/dist/cornerstoneWebImageLoader.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cornerstone-wado-image-loader@4.13.2/dist/cornerstoneWADOImageLoader.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dicom-parser@1.8.21/dist/dicomParser.min.js"></script>
+<%--<link href="/style/worklist.css" rel="stylesheet" type="text/css"/>--%>
 <link href="/style/worklist.css" rel="stylesheet" type="text/css"/>
+
 
 <div class="container">
     <div class="sideBar">
         <div class="sideMenu-wrap">
             <div>
-                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true"
+                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc"  focusable="false" aria-hidden="true"
                      viewBox="0 0 24 24" data-testid="AccountCircleIcon">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88C7.55 15.8 9.68 15 12 15s4.45.8 6.14 2.12C16.43 19.18 14.03 20 12 20z"></path>
                 </svg>
-                <span class="hospital">DICOM</span>
+                <span class="hospital">
+                    <sec:authentication property="name"/>
+                </span>
             </div>
             <div class="MuiBox-root css-0">
                 <div class="icon MuiBox-root css-0">
@@ -40,10 +50,12 @@
             </div>
 
             <div class="sideMenu-btn" id="logout">
-                <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true"
-                     viewBox="0 0 24 24" data-testid="LogoutIcon">
-                    <path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
-                </svg>
+                <a href="/logout">
+                    <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1sc7qhc" focusable="false" aria-hidden="true"
+                         viewBox="0 0 24 24" data-testid="LogoutIcon">
+                        <path d="m17 7-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"></path>
+                    </svg>
+                </a>
             </div>
         </div>
     </div>
@@ -99,6 +111,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="searchIcon iconFirst" id="search_allTime">
                                 전체
                             </div>
@@ -111,16 +124,15 @@
                             <div class="searchIcon" id="search_oneWeek">
                                 1주일
                             </div>
-                            <div class="searchIcon" id="search_reset">
-                                재설정
-                            </div>
-                            <div class="searchIcon iconLast" id="search_submit" onclick="searchList()">
+                            <div class="searchIcon searchButton" id="search_submit" onclick="searchList()">
                                 검색
+                            </div>
+                            <div class="searchIcon resetButton" id="search_reset">
+                                재설정
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
@@ -165,6 +177,7 @@
                             <th class="searchListHeadLong">검사 설명</th>
                             <th class="searchListHeadShort" onclick="sortTable('studydate')">검사 일시</th>
                             <th class="searchListHeadShort" onclick="sortTable('reportstatus')">판독 상태</th>
+                            <th class="searchListHeadShort">AI점수</th>
                             <th class="searchListHeadShorter">시리즈</th>
                             <th class="searchListHeadShorter">이미지</th>
                             <th class="searchListHeadShorter">verify</th>
@@ -177,7 +190,7 @@
                     </div>
                 </div>
             </div>
-            <div class="bottomList">
+            <div class="bottomList displayNone">
                 <div class="previousBox">
                     <div class="header" id="previous_header">
                         <h3>Previous</h3>

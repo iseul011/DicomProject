@@ -130,14 +130,12 @@ public class PacsRestController {
 
         System.out.println("DateString: " + DateString);
 
-        if (DateString.equals("allDate")) {
-            return pacsStudytabRepository.dateFindAll();
-        } else if (DateString.equals("oneDate")) {
-            return pacsStudytabRepository.dateFindoneAgo();
-        } else if (DateString.equals("threeDate")) {
-            return pacsStudytabRepository.dateFindThreeAgo();
-        } else if (DateString.equals("sevenDate")) {
+        if (DateString.equals("findToday")) {
+            return pacsStudytabRepository.findToday();
+        } else if (DateString.equals("oneWeek")) {
             return pacsStudytabRepository.dateFindSevenAgo();
+        } else if (DateString.equals("thirtyDay")) {
+            return pacsStudytabRepository.dateFindThirtyAgo();
         }
 
         return null;
@@ -211,6 +209,7 @@ public class PacsRestController {
         baos.close();
         return Base64.getEncoder().encodeToString(imageInByte);
     }
+
 }
 
 

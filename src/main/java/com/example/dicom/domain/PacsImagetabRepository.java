@@ -13,8 +13,6 @@ public interface PacsImagetabRepository extends JpaRepository<PacsImagetab, Inte
 
     List<PacsImagetab> findAllByStudykeyAndSerieskey(int studykey, int serieskey);
 
-    PacsImagetab findFirstByStudykeyAndSerieskey(int studykey, int serieskey);
-
     List<PacsImagetab> findByStudykey(int studykey);
 
     List<PacsImagetab> findAllByStudykeyAndSeriesnumber(int studykey, int seriesnum);

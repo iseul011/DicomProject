@@ -730,6 +730,10 @@ thead {
     background: rgb(160, 0, 0);
 }
 
+#imoticon {
+    margin-top: 190px;
+}
+
 .startDate {
     width: 100px;
     height: 28px;
@@ -769,7 +773,7 @@ thead {
     margin-bottom: 30px;
     margin-left: 10px;
     border-radius: 36px;
-    width: calc(100% - 20px);
+    width: 100%;
     height: 28px;
     padding: 0px 10px;
     border: 0px;
