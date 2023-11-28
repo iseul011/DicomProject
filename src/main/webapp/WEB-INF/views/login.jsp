@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Login Page</title>
+    <meta charset="UTF-8">
 </head>
 <body>
 <style>
@@ -27,6 +28,7 @@
         font-size: 20px;
         margin: 40px auto 50px;
         text-align: center;
+        height: 120px;
     }
     .cont {
         overflow: hidden;
@@ -43,7 +45,7 @@
         transition: transform 1.2s ease-in-out;
         padding: 100px 30px 0;
     }
-    .cont.s--signup .sub-cont {
+    .cont.s--signup {
         transform: translate3d(-640px, 0, 0);
     }
     button {
@@ -76,10 +78,10 @@
         height: 100%;
         transition: transform 1.2s;
     }
-    .cont.s--signup .img__btn span.m--in {
+    .cont.s--signup .img__btn span {
         transform: translateY(0);
     }
-    .cont.s--signup .img__btn span.m--up {
+    .cont.s--signup .img__btn span {
         transform: translateY(72px);
     }
     h2 {
@@ -135,16 +137,15 @@
     <div class="form sign-in">
         <h2>MEDIVISION</h2>
         <form action="/login" method="post">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <label for="username">
-            <span>Id</span>
-            <input type="text" id="username" name="username" required />
-        </label>
-        <label  for="password">
-            <span>Password</span>
-            <input type="password" id="password" name="password" required />
-        </label>
-        <button class="submit" type="submit">Sign In</button>
+            <label for="username">
+                <span>Id</span>
+                <input type="text" id="username" name="username" required />
+            </label>
+            <label  for="password">
+                <span>Password</span>
+                <input type="password" id="password" name="password" required />
+            </label>
+            <button class="submit" type="submit">Sign In</button>
         </form>
     </div>
 </div>
