@@ -554,5 +554,162 @@ function toggleOverlayCanvas() {
     }
 }
 
+//---- 썸네일 ----//
+let isDivVisible = false;
+let selectedImageIndex = null;
+
+async function thumbnailBox() {
+    const thumbnail = document.querySelector('.thumbnail');
+
+    if (isDivVisible) {
+        thumbnail.innerHTML = '';
+        selectedImageIndex = null;
+    } else {
+        thumbnail.innerHTML += '<h3>썸네일</h3>';
+        thumbnail.innerHTML += '<hr/>';
+
+        try {
+            let seriesTabList = await getSeriesTab();
+
+            for (let i = 0; i < seriesTabList.length; i++) {
+                let item = seriesTabList[i];
+
+                let response = await axios.get(`/v1/storage/getImage`, {
+                    params: {
+                        studykey: item.studykey,
+                        serieskey: item.serieskey
+                    },
+                });
+
+                const imgContainer = document.createElement('div'); // Container for each image
+                const img = document.createElement('img');
+                const div = document.createElement('div');
+
+                imgContainer.className = `thumbnail-image-container`;
+                img.className = `bigThumbnail myImageClass-${i + 1}`;
+                img.src = `data:image/jpeg;base64,${response.data}`;
+                img.alt = 'thumbnail';
+                div.innerHTML = `<p style="font-size: 15px; color: #cfcfcf">시리즈: ${i + 1}</p>`;
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(div);
+
+                imgContainer.addEventListener('click', () => handleThumbnailClick(item.studykey, item.seriesinsuid, item.serieskey, i));
+
+                thumbnail.appendChild(imgContainer);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    thumbnail.style.backgroundColor = isDivVisible ? "" : "rgb(36, 36, 36)";
+    thumbnail.style.height = isDivVisible ? "" : "900px";
+    thumbnail.style.width = isDivVisible ? "" : "280px";
+    thumbnail.style.color = isDivVisible ? "" : "white";
+    thumbnail.style.textAlign = isDivVisible ? "" : "center";
+    thumbnail.style.marginRight = isDivVisible ? "" : "10px";
+    thumbnail.style.fontSize = isDivVisible ? "" : "18px";
+    thumbnail.style.overflowY = isDivVisible ? "" : "scroll";
+
+    isDivVisible = !isDivVisible;
+}
+
+async function handleThumbnailClick(studykey, seriesinsuid, serieskey, index) {
+    try {
+        if (selectedImageIndex !== index) {
+            let directoryPath = await getImagePath(studykey, seriesinsuid);
+            let PRContentList = await getPRContentList(studykey, serieskey, directoryPath.imagecnt);
+
+            console.log(directoryPath);
+            console.log(PRContentList);
+
+            directoryPath.sort((a, b) => {
+                const numberA = extractNumber(a);
+                const numberB = extractNumber(b);
+
+                if (numberA !== null && numberB !== null) {
+                    return numberA - numberB;
+                }
+
+                return a.localeCompare(b);
+            });
+            let seriesTabList = await getSeriesTab();
+
+            for (let i = 0; i < seriesTabList.length; i++) {
+                stack[i] = {
+                    currentImageIdIndex: 0,
+                    imageIds: directoryPath,
+                    PRContentList: PRContentList,
+                };
+            }
+
+            if (selectedImageIndex !== null) {
+                resetSelectedImage(selectedImageIndex);
+            }
+
+            // 변경된 부분: 선택한 이미지만 표시
+            const maxParentDiv = document.querySelector('.parentDiv:not(.displayNone)');
+            await displayDicomImage(index, stack.imageIds[stack.currentImageIdIndex]);
+
+            gridLayout(1, 1);
+
+            selectedImageIndex = index;
+            highlightSelectedImage(selectedImageIndex);
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+function selectedImageGridLayout() {
+    const wadoBox = document.getElementById('dicomImageContainer');
+    const maxParentDiv = document.getElementById('maxParentDiv');
+
+    // 이전 그리드 레이아웃 저장
+    originalGridTemplateRows = wadoBox.style.gridTemplateRows;
+    originalGridTemplateColumns = wadoBox.style.gridTemplateColumns;
+
+    // 모든 CSViewport을 숨기기
+    const allViewports = document.querySelectorAll('.parentDiv');
+    allViewports.forEach(viewport => {
+        viewport.style.display = 'none';
+    });
+
+    // 그리드 레이아웃 설정 (1x1)
+    wadoBox.style.gridTemplateRows = 'repeat(1, 1fr)';
+    wadoBox.style.gridTemplateColumns = 'repeat(1, 1fr)';
+
+    // maxParentDiv 활용: 클릭한 이미지에 해당하는 parentDiv 최대 확장
+    if (maxParentDiv) {
+        maxParentDiv.style.display = 'block'; // maxParentDiv 표시
+
+        // 나머지 코드는 maxParentDiv에 맞게 설정
+        // 예: maxParentDiv의 스타일, 자식 요소들의 스타일, 클릭한 이미지에 대한 설정 등
+        // ...
+
+        // 클릭한 이미지에 해당하는 parentDiv에 스타일 적용 (예시)
+        const clickedParentDiv = document.querySelector(`#parentDiv${selectedImageIndex}`);
+        if (clickedParentDiv) {
+            clickedParentDiv.style.width = '100%';
+            clickedParentDiv.style.height = '100%';
+        }
+    }
+}
+function resetSelectedImage(index) {
+    const selectedImageElement = document.querySelector(`.myImageClass-${index + 1}`);
+    selectedImageElement.style.border = 'none';
+}
+
+function highlightSelectedImage(index) {
+    const selectedImageElement = document.querySelector(`.myImageClass-${index + 1}`);
+    selectedImageElement.style.border = '2px solid red'; // You can change the border color as needed
+}
+
+function extractNumber(path) {
+    const match = path.match(/\.(\d+)\.\d+\.dcm$/);
+    return match ? parseInt(match[1]) : null;
+}
+
 createParentDiv();
 viewDicom();

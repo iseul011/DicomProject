@@ -11,7 +11,7 @@ let reportStatusValue = 0;
 let searchListData;
 
 //상세 조회
-const sideBoxDetail = document.querySelector(".sideBoxDetail");
+const sideBoxDetail = document.querySelector(".dateSearchBox");
 let isDivVisible = false;
 let stDate = '';
 let edDate = '';
@@ -19,10 +19,6 @@ let eq = '';
 let op = '';
 
 //날짜 조회
-let allDate;
-let oneDate;
-let threeDate;
-let sevenDate;
 let today;
 let oneWeek;
 let thirtyDay;
@@ -463,11 +459,12 @@ async function detailView() {
     if(isDivVisible) {
         sideBoxDetail.innerHTML = '';
     } else {
-
         // 조회할 정보 추가
-        sideBoxDetail.innerHTML += `<span class="imoticon" id="imoticon"></span> 검사일자 <br/> 
-                              <input class="startDate" type="date"/> To
-                              <input class="endDate" type="date" /></br>`;
+
+        sideBoxDetail.innerHTML += `
+                              <span class="imoticon">검사일자</span>
+                              <input class="startDate" type="date"/>To
+                              <input class="endDate" type="date" /></br>`
         sideBoxDetail.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
                              <select class="equipment">
                                  <option value="">선택해주세요</option>
@@ -522,7 +519,7 @@ async function detailView() {
     sideBoxDetail.style.borderRadius = isDivVisible ? "" : "10px";
     sideBoxDetail.style.flexDirection = isDivVisible ? "" : "column";
     sideBoxDetail.style.width = isDivVisible ? "" : "300px";
-    sideBoxDetail.style.height = isDivVisible ? "" : "400px";
+    sideBoxDetail.style.height = isDivVisible ? "" : "300px";
     sideBoxDetail.style.padding = isDivVisible ? "" : "5px";
     sideBoxDetail.style.marginLeft = isDivVisible ? "" : "12px";
     sideBoxDetail.style.fontSize = isDivVisible ? "" : "14px";

@@ -126,21 +126,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="dateSearchBox">
-                    <%--                                <div class="searchIcon" id="search_oneDay">--%>
-                    <%--                                    오늘--%>
-                    <%--                                </div>--%>
-                    <%--                                <div class="searchIcon" id="search_threeDay">--%>
-                    <%--                                    7일--%>
-                    <%--                                </div>--%>
-                    <%--                                <div class="searchIcon" id="search_oneWeek">--%>
-                    <%--                                    30일--%>
-                    <%--                                </div>--%>
-                    <%--                            </div>--%>
-                    <%--                                <div class="searchIcon" id="search_allTime">--%>
-                    <%--                                    전체--%>
-                    <%--                                </div>--%>
+                <%--서치--%>
+                <div class="detailBox">
+                    <button class="detailView" onclick="detailView()">세부조회</button>
+                    <div class="dateSearchBox">
 
+                    </div>
+                    <div class="clickDate">
+                        <div class="searchIcon" id="search_findToday">
+                            오늘
+                        </div>
+                        <div class="searchIcon" id="search_oneWeek">
+                            7일
+                        </div>
+                        <div class="searchIcon" id="search_thirtyDay">
+                            30일
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -282,7 +284,7 @@
     </div>
 </div>
 <%--<script src="/script/worklist.js"></script>--%>
-<script src="/script/worklistTest.js"></script>
+<script src="/script/woPhs.js"></script>
 
 
 <%@ include file="include/footer.jsp" %>
