@@ -51,25 +51,19 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
     //날짜 조회
     @Query(value = "SELECT *\n" +
             " FROM STUDYTAB\n" +
-            " WHERE studydate <= TRUNC(SYSDATE)", nativeQuery = true)
-    List<PacsStudytab> dateFindAll();
-
-    @Query(value = "SELECT *\n" +
-            " FROM STUDYTAB\n" +
-            " WHERE studydate >= TRUNC(SYSDATE) - 1\n" +
-            " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
-    List<PacsStudytab> dateFindoneAgo();
-
-    @Query(value = "SELECT *\n" +
-            " FROM STUDYTAB\n" +
-            " WHERE studydate >= TRUNC(SYSDATE) - 3\n" +
-            " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
-    List<PacsStudytab> dateFindThreeAgo();
+            " WHERE studydate = TRUNC(SYSDATE)", nativeQuery = true)
+    List<PacsStudytab> findToday();
 
     @Query(value = "SELECT *\n" +
             " FROM STUDYTAB\n" +
             " WHERE studydate >= TRUNC(SYSDATE) - 7\n" +
             " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
     List<PacsStudytab> dateFindSevenAgo();
+
+    @Query(value = "SELECT *\n" +
+            " FROM STUDYTAB\n" +
+            " WHERE studydate >= TRUNC(SYSDATE) - 30\n" +
+            " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
+    List<PacsStudytab> dateFindThirtyAgo();
 
 }
