@@ -155,13 +155,11 @@ async function displayDicomImage(i, dicomFile) {
         const byteArray = new Uint8Array(arrayBuffer);
         const dataSet = dicomParser.parseDicom(byteArray);
 
-        // Create viewportElement
+
         const viewportElement = createViewportElement(i, dataSet);
 
-        // Enable cornerstone for the created viewportElement
         cornerstone.enable(viewportElement);
 
-        // Load and display the image in the viewportElement
         cornerstone.loadImage(dicomFile).then(image => {
             cornerstone.displayImage(viewportElement, image);
         });

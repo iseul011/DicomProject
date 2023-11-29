@@ -43,20 +43,59 @@ public class UploadController {
 
     @GetMapping("/getImagePath")
     public List<String> getImagePaths(@RequestParam int studykey, @RequestParam String seriesinsuid) {
-
+        // studykey와 seriesinsuid를 기반으로 PacsImagetab을 조회합니다.
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSeriesinsuid(studykey, seriesinsuid);
 
+        // 조회된 결과가 없으면 빈 리스트를 반환합니다.
         if (pacsImagetab == null) {
             return Collections.emptyList();
         }
 
+        // DICOM 파일이 저장된 디렉토리 경로를 생성합니다.
         String directoryPath = "Z:\\" + pacsImagetab.getPath();
 
+        // 디렉토리 객체를 생성합니다.
         File directory = new File(directoryPath);
 
+        // 디렉토리 내의 파일 목록을 얻어옵니다.
         File[] files = directory.listFiles();
 
         List<String> dcmFilePaths = new ArrayList<>();
+
+//        // InstanceNumber와 파일을 매핑할 Map을 생성합니다.
+//        Map<Integer, File> instanceNumberToFileMap = new HashMap<>();
+//
+//        // 파일이 존재하면서 DICOM 파일일 경우 처리합니다.
+//        if (files != null) {
+//            for (File file : files) {
+//                try (DicomInputStream dis = new DicomInputStream(file)) {
+//                    // DICOM 파일의 속성을 읽어옵니다.
+//                    Attributes attributes = dis.readDataset(-1, -1);
+//                    String seriesInstanceUID = attributes.getString(Tag.SeriesInstanceUID);
+//
+//                    // 요청된 SeriesInstanceUID와 일치하는 경우에 처리합니다.
+//                    if (seriesinsuid.equals(seriesInstanceUID)) {
+//                        int[] instanceNumber = attributes.getInts(Tag.InstanceNumber);
+//                        if (instanceNumber.length > 0) {
+//                            // InstanceNumber와 파일을 매핑합니다.
+//                            instanceNumberToFileMap.put(instanceNumber[0], file);
+//                        }
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        // InstanceNumber를 정렬합니다.
+//        List<Integer> sortedInstanceNumbers = new ArrayList<>(instanceNumberToFileMap.keySet());
+//        Collections.sort(sortedInstanceNumbers);
+//
+//        // 정렬된 InstanceNumber에 해당하는 파일 경로를 리스트에 추가합니다.
+//        List<String> dcmFilePaths = new ArrayList<>();
+//        for (int instanceNumber : sortedInstanceNumbers) {
+//            dcmFilePaths.add(instanceNumberToFileMap.get(instanceNumber).getAbsolutePath());
+//        }
 
         if (files != null) {
             for (File file : files) {
@@ -75,9 +114,11 @@ public class UploadController {
             }
         }
 
+        // 정렬된 파일 경로 리스트를 반환합니다.
+        //System.out.println("dcmFilePaths : "+dcmFilePaths);
         return dcmFilePaths;
-
     }
+
 
 
     @GetMapping("/getDicomFile")
