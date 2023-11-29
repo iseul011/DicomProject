@@ -507,8 +507,8 @@ async function detailView() {
 
         dateSearchBox.innerHTML += `
                               <span class="imoticon">검사일자</span>
-                              <input class="startDate" type="date"/>To
-                              <input class="endDate" type="date" /></br>`
+                              <input class="startDate" type="date" value="2023-01-01"/>To
+                              <input class="endDate" type="date" value="2023-11-01"/></br>`
         dateSearchBox.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
                              <select class="equipment">
                                  <option value="">선택해주세요</option>
