@@ -3,7 +3,7 @@ const searchTable = document.querySelector(".searchListBody");
 
 let number = 0;
 let rowNumber = 0;
-let column = '';
+let column = 'pid';
 let order = true;
 let pidValue = null;
 let pNameValue = null;
@@ -11,7 +11,7 @@ let reportStatusValue = 0;
 let searchListData;
 
 //상세 조회
-const sideBoxDetail = document.querySelector(".dateSearchBox");
+const dateSearchBox = document.querySelector(".dateSearchBox");
 let isDivVisible = false;
 let stDate = '';
 let edDate = '';
@@ -23,6 +23,7 @@ let today;
 let oneWeek;
 let thirtyDay;
 
+searchList();
 
 function searchList() {
     const getPid = document.getElementById("input_patient_id");
@@ -32,12 +33,11 @@ function searchList() {
     pidValue = getPid.value;
     pNameValue = getPName.value;
     reportStatusValue = getReport_Status.value;
-    selectPaging();
     resetSearchTable();
-
 }
 
 async function resetSearchTable() {
+    selectPaging();
     await getSearchListData();
     printTotalCount()
     createMoreCountButton();
@@ -162,7 +162,7 @@ function overCount() {
 }
 
 function loadPrevious(pid) {
-    // 클릭한 row의 다음에 tr을 추가합니다.
+
     const clickedRow = event.currentTarget;
     let previousTable;
     const nextRow = clickedRow.parentNode.rows[clickedRow.rowIndex];
@@ -174,7 +174,6 @@ function loadPrevious(pid) {
         previousTable = document.createElement('table');
         previousTable.className = 'previousListTable';
 
-        // previousListDiv 안에 바로 테이블을 추가합니다.
         const previousDiv = document.createElement('div');
         previousDiv.className = 'previousListDiv';
         previousDiv.appendChild(previousTable);
@@ -188,7 +187,16 @@ function loadPrevious(pid) {
         newRow.className = 'previousListRow';
         newRow.appendChild(td);
 
-        // 클릭한 row 다음에 추가된 previousListRow에 데이터를 채워넣는 함수
+        axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
+            params: {
+                pid: pid
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                data.forEach(fillPreviousTable);
+            });
+
         function fillPreviousTable(data) {
             let reportStatusString = transReportStatus(data.reportstatus);
 
@@ -204,14 +212,14 @@ function loadPrevious(pid) {
             let verify = row.insertCell(8);
 
             thumbnailBox.classList = "thumbnailBox";
-            modality.classList = "previousListNormal searchListBodyColumnCenter"
-            studydesc.classList = "previousListLong searchListBodyColumnLeft"
-            studydate.classList = "previousListNormal searchListBodyColumnCenter"
-            reportstatus.classList = "previousListNormal searchListBodyColumnCenter"
-            AIScore.classList = "previousListNormal searchListBodyColumnCenter"
-            seriescnt.classList = "previousListShort searchListBodyColumnCenter";
-            imagecnt.classList = "previousListShort searchListBodyColumnCenter"
-            verify.classList = "previousListShort searchListBodyColumnCenter"
+            modality.classList = "previousListNormal previousListCell";
+            studydesc.classList = "previousListLong previousListCell"
+            studydate.classList = "previousListNormal previousListCell"
+            reportstatus.classList = "previousListNormal previousListCell"
+            AIScore.classList = "previousListNormal previousListCell"
+            seriescnt.classList = "previousListShort previousListCell";
+            imagecnt.classList = "previousListShort previousListCell"
+            verify.classList = "previousListShort previousListCell"
 
             getThumbnail(thumbnailBox, data.studykey)
             modality.innerHTML = data.modality;
@@ -227,16 +235,6 @@ function loadPrevious(pid) {
                 window.location.href = `/viewer/${data.studykey}/${data.studyinsuid}/${data.pid}`;
             });
         }
-
-        axios.get(`/v1/storage/search/PacsStudytab/searchByPid`, {
-            params: {
-                pid: pid
-            }
-        })
-            .then(response => {
-                const data = response.data;
-                data.forEach(fillPreviousTable);
-            });
     }
 }
 
@@ -327,9 +325,9 @@ async function downloadDicomFiles() {
             directoryPaths.forEach(directoryPath => {
                 axios({
                     method: 'get',
-                    url: `/getDicomDownloadPath`,
+                    url: `/getDicomDownload`,
                     params: {
-                        directoryPath: encodeURIComponent(directoryPath)
+                        directoryPath: encodeURIComponent(directoryPath),
                     },
                     responseType: 'arraybuffer'
                 })
@@ -350,12 +348,46 @@ async function downloadDicomFiles() {
     }
 }
 
+async function downloadJPEGFiles() {
+    const selectedStudyKeys = getSelectedStudyKeys();
+    for (const studykey of selectedStudyKeys) {
+        let seriesTabList = await getSeriesTab(studykey);
+
+        for (let i = 0; i < seriesTabList.length; i++) {
+            let item = seriesTabList[i];
+            let directoryPaths = await getImagePath(item.studykey, item.seriesinsuid);
+            directoryPaths.forEach(directoryPath => {
+                axios({
+                    method: 'get',
+                    url: `/getJPEGDownload`,
+                    params: {
+                        directoryPath: encodeURIComponent(directoryPath),
+                    },
+                    responseType: 'arraybuffer'
+                })
+                    .then(response => {
+                        const contentDisposition = response.headers.get('content-disposition');
+                        const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                        const fileName = fileNameMatch ? fileNameMatch[1] : 'downloadedFile.jpg'; // Specify the desired file extension
+                        var link = document.createElement('a');
+                        var blob = new Blob([response.data], {type: 'image/jpeg'}); // Set the MIME type for JPEG
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    });
+            });
+        }
+    }
+}
+
 
 async function getSeriesTab(studykey) {
     try {
         const response = await axios.get("/v1/storage/search/PacsSeriestab", {
             params: {
-                studykey: studykey // 여러 studykey를 콤마로 구분하여 전달
+                studykey: studykey
             }
         });
 
@@ -388,6 +420,7 @@ function getSelectedStudyKeys() {
     const selectedRows = document.querySelectorAll('.searchListBodyRow input[type="checkbox"]:checked');
     return Array.from(selectedRows).map(row => row.value);
 }
+
 //상세 조회
 function searchDetailList() {
     const startDate = document.querySelector(".startDate");
@@ -457,15 +490,15 @@ async function resetDate() {
 async function detailView() {
 
     if(isDivVisible) {
-        sideBoxDetail.innerHTML = '';
+        dateSearchBox.innerHTML = '';
     } else {
         // 조회할 정보 추가
 
-        sideBoxDetail.innerHTML += `
+        dateSearchBox.innerHTML += `
                               <span class="imoticon">검사일자</span>
                               <input class="startDate" type="date"/>To
                               <input class="endDate" type="date" /></br>`
-        sideBoxDetail.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
+        dateSearchBox.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
                              <select class="equipment">
                                  <option value="">선택해주세요</option>
                                  <option value="AS">AS</option>
@@ -503,110 +536,84 @@ async function detailView() {
                                  <option value="VF">VF</option>
                                  <option value="XA">XA</option>
                              </select></br>`;
-        sideBoxDetail.innerHTML += `<span class="imoticon"></span> Verify <br>
+        dateSearchBox.innerHTML += `<span class="imoticon"></span> Verify <br>
                               <select class="optionNum">
                                  <option value="">선택해주세요</option>
                                  <option value="0">Not Requested</option>
                                  <option value="1">Request Completed</option>
                               </select></br>`;
-        sideBoxDetail.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
-        sideBoxDetail.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
+        dateSearchBox.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
+        dateSearchBox.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
+
+
     }
 
+    // 날짜 조회
+    const search_findToday = document.getElementById("search_findToday");
+    const search_oneWeek = document.getElementById("search_oneWeek");
+    const search_thirtyDay = document.getElementById("search_thirtyDay");
+    const search_reset = document.getElementById("search_reset");
+
+    search_reset.addEventListener("click", () => {
+        history.go(0);
+    });
+    search_findToday.addEventListener("click", () => {
+        today = 'findToday';
+        clickDateList(today);
+    });
+    search_oneWeek.addEventListener("click", () => {
+        oneWeek = 'oneWeek';
+        clickDateList(oneWeek);
+    });
+    search_thirtyDay.addEventListener("click", () => {
+        thirtyDay = 'thirtyDay';
+        clickDateList(thirtyDay);
+    });
+
+
+    function clickDateList(date) {
+        selectPaging();
+        resetClickDateTable(date);
+    }
+
+    async function resetClickDateTable(date) {
+        await DateClick(date);
+        printTotalCount()
+        createMoreCountButton();
+        deleteMoreCountButton();
+    }
+
+    async function DateClick(date) {
+        searchTable.innerHTML = '';
+
+        console.log("date: " + date);
+
+        const response = await axios.get("/v1/storage/search/PacsStudytab/clickSearch", {
+            params: {
+                DateString : date
+            }
+        });
+
+        searchListData = response.data;
+        console.log(searchListData);
+
+        overCount();
+
+        for (let i = 0; i < number; i++) {
+            printSearchTable(searchListData[i]);
+        }
+
+    }
     //스타일 추가
-    sideBoxDetail.style.backgroundColor = isDivVisible ? "" : "#181a1c";
-    sideBoxDetail.style.color = isDivVisible ? "" : "white";
-    sideBoxDetail.style.borderRadius = isDivVisible ? "" : "10px";
-    sideBoxDetail.style.flexDirection = isDivVisible ? "" : "column";
-    sideBoxDetail.style.width = isDivVisible ? "" : "300px";
-    sideBoxDetail.style.height = isDivVisible ? "" : "300px";
-    sideBoxDetail.style.padding = isDivVisible ? "" : "5px";
-    sideBoxDetail.style.marginLeft = isDivVisible ? "" : "12px";
-    sideBoxDetail.style.fontSize = isDivVisible ? "" : "14px";
+    dateSearchBox.style.backgroundColor = isDivVisible ? "" : "#181a1c";
+    dateSearchBox.style.color = isDivVisible ? "" : "white";
+    dateSearchBox.style.borderRadius = isDivVisible ? "" : "10px";
+    dateSearchBox.style.flexDirection = isDivVisible ? "" : "column";
+    dateSearchBox.style.width = isDivVisible ? "" : "300px";
+    dateSearchBox.style.height = isDivVisible ? "" : "300px";
+    dateSearchBox.style.padding = isDivVisible ? "" : "5px";
+    dateSearchBox.style.marginLeft = isDivVisible ? "" : "12px";
+    dateSearchBox.style.fontSize = isDivVisible ? "" : "14px";
 
     isDivVisible = !isDivVisible;
 }
-
-// 날짜 조회
-const search_findToday = document.getElementById("search_findToday");
-const search_oneWeek = document.getElementById("search_oneWeek");
-const search_thirtyDay = document.getElementById("search_thirtyDay");
-const search_reset = document.getElementById("search_reset");
-
-search_reset.addEventListener("click", () => {
-    history.go(0);
-});
-search_findToday.addEventListener("click", () => {
-    today = 'findToday';
-    clickDateList(today);
-});
-search_oneWeek.addEventListener("click", () => {
-    oneWeek = 'oneWeek';
-    clickDateList(oneWeek);
-});
-search_thirtyDay.addEventListener("click", () => {
-    thirtyDay = 'thirtyDay';
-    clickDateList(thirtyDay);
-});
-
-
-function clickDateList(date) {
-    selectPaging();
-    resetClickDateTable(date);
-}
-
-async function resetClickDateTable(date) {
-    await DateClick(date);
-    printTotalCount()
-    createMoreCountButton();
-    deleteMoreCountButton();
-}
-
-async function DateClick(date) {
-    searchTable.innerHTML = '';
-
-    console.log("date: " + date);
-
-    const response = await axios.get("/v1/storage/search/PacsStudytab/clickSearch", {
-        params: {
-            DateString : date
-        }
-    });
-
-    searchListData = response.data;
-    console.log(searchListData);
-
-    overCount();
-
-    for (let i = 0; i < number; i++) {
-        printSearchTable(searchListData[i]);
-    }
-
-}
-
-// function deleteData() {
-//     const chk = 'input[name="del"]:checked';
-//     const selectedElements = document.querySelectorAll(chk);
-//
-//     const selectedElementsCnt = selectedElements.length;
-//     const pid = new Array(selectedElementsCnt);
-//
-//     document.querySelectorAll('input[name="del"]:checked').forEach(function (v, i) {
-//         pid[i] = v.value;
-//     });
-//
-//     axios.post(`/v1/storage/delete`, pid, {
-//         headers: {
-//             "Content-Type": "application/json"
-//         }
-//     })
-//         .then(response => {
-//             if (confirm("삭제 하시겠습니까?")) {
-//                 alert("삭제 완료");
-//             } else {
-//                 alert("리로드");
-//             }
-//         });
-// }
-
-
