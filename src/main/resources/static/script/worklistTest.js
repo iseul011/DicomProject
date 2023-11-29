@@ -3,7 +3,7 @@ const searchTable = document.querySelector(".searchListBody");
 
 let number = 0;
 let rowNumber = 0;
-let column = 'pid';
+let column = 'studykey';
 let order = true;
 let pidValue = null;
 let pNameValue = null;
@@ -11,7 +11,7 @@ let reportStatusValue = 0;
 let searchListData;
 
 //상세 조회
-const sideBoxDetail = document.querySelector(".sideBoxDetail");
+const dateSearchBox = document.querySelector(".dateSearchBox");
 let isDivVisible = false;
 let stDate = '';
 let edDate = '';
@@ -19,10 +19,9 @@ let eq = '';
 let op = '';
 
 //날짜 조회
-let allDate;
-let oneDate;
-let threeDate;
-let sevenDate;
+let today;
+let oneWeek;
+let thirtyDay;
 
 searchList();
 
@@ -54,6 +53,12 @@ function selectPaging() {
 async function getSearchListData() {
     searchTable.innerHTML = '';
 
+    if(pidValue===""){
+        pidValue=null;
+    }
+    if(pNameValue===""){
+        pNameValue=null;
+    }
     const response = await axios.get("/v1/storage/search/PacsStudytab/searchList", {
         params: {
             column: column,
@@ -420,4 +425,206 @@ async function getImagePath(studykey, seriesinsuid) {
 function getSelectedStudyKeys() {
     const selectedRows = document.querySelectorAll('.searchListBodyRow input[type="checkbox"]:checked');
     return Array.from(selectedRows).map(row => row.value);
+}
+
+function toggleModal(){
+    let modal = document.getElementById('toggleModal');
+    modal.classList.toggle('displayNone');
+}
+
+//상세 조회
+function searchDetailList() {
+    const startDate = document.querySelector(".startDate");
+    const endDate = document.querySelector(".endDate");
+    const equipment = document.querySelector(".equipment");
+    const optionNum = document.querySelector(".optionNum");
+
+    stDate = startDate.value.replace('-', '').replace('-', '');
+    edDate = endDate.value.replace('-', '').replace('-', '');
+    eq = equipment.value;
+    op = optionNum.value;
+
+    console.log(stDate);
+    console.log(edDate);
+    console.log(eq);
+    console.log(op);
+
+    selectPaging();
+    resetDetailSearchTable();
+}
+
+async function resetDetailSearchTable() {
+    await searchDate();
+    printTotalCount()
+    createMoreCountButton();
+    deleteMoreCountButton();
+}
+
+async function searchDate() {
+    searchTable.innerHTML = '';
+
+    const response = await axios.get("/v1/storage/search/PacsStudytab/findSearch", {
+        params: {
+            startDate : stDate,
+            endDate : edDate,
+            equipment : eq,
+            optionNum : op
+        }
+    });
+
+    searchListData = response.data;
+    console.log(searchListData);
+
+    overCount();
+
+    for (let i = 0; i < number; i++) {
+        printSearchTable(searchListData[i]);
+    }
+}
+
+//상세조회 데이터 리셋
+async function resetDate() {
+    if (isDivVisible) {
+        // 입력된 값이 있는 input 요소들을 초기화
+        const startDateInput = document.querySelector(".startDate");
+        const endDateInput = document.querySelector(".endDate");
+        const equipmentSelect = document.querySelector(".equipment");
+        const optionNumSelect = document.querySelector(".optionNum");
+
+        startDateInput.value = '';
+        endDateInput.value = '';
+        equipmentSelect.value = '';
+        optionNumSelect.value = '';
+    }
+}
+
+async function detailView() {
+
+    if(isDivVisible) {
+        dateSearchBox.innerHTML = '';
+    } else {
+        // 조회할 정보 추가
+
+        dateSearchBox.innerHTML += `
+                              <span class="imoticon">검사일자</span>
+                              <input class="startDate" type="date"/>To
+                              <input class="endDate" type="date" /></br>`
+        dateSearchBox.innerHTML += `<span class="imoticon"></span> 검사장비 <br/>
+                             <select class="equipment">
+                                 <option value="">선택해주세요</option>
+                                 <option value="AS">AS</option>
+                                 <option value="AU">AU</option>
+                                 <option value="BI">BI</option>
+                                 <option value="CD">CD</option>
+                                 <option value="CF">CF</option>
+                                 <option value="CP">CP</option>
+                                 <option value="CR">CR</option>
+                                 <option value="CS">CS</option>
+                                 <option value="CT">CT</option>
+                                 <option value="DD">DD</option>
+                                 <option value="DF">DF</option>
+                                 <option value="DG">DG</option>
+                                 <option value="DM">DM</option>
+                                 <option value="DR">DR</option>
+                                 <option value="DS">DS</option>
+                                 <option value="DX">DX</option>
+                                 <option value="EC">EC</option>
+                                 <option value="ES">ES</option>
+                                 <option value="FA">FA</option>
+                                 <option value="FS">FS</option>
+                                 <option value="LS">LS</option>
+                                 <option value="LP">LP</option>
+                                 <option value="MA">MA</option>
+                                 <option value="MR">MR</option>
+                                 <option value="MS">MS</option>
+                                 <option value="NM">NM</option>
+                                 <option value="OT">OT</option>
+                                 <option value="PT">PT</option>
+                                 <option value="RF">RF</option>
+                                 <option value="RG">RG</option>
+                                 <option value="TG">TG</option>
+                                 <option value="US">US</option>
+                                 <option value="VF">VF</option>
+                                 <option value="XA">XA</option>
+                             </select></br>`;
+        dateSearchBox.innerHTML += `<span class="imoticon"></span> Verify <br>
+                              <select class="optionNum">
+                                 <option value="">선택해주세요</option>
+                                 <option value="0">Not Requested</option>
+                                 <option value="1">Request Completed</option>
+                              </select></br>`;
+        dateSearchBox.innerHTML += `<button class="searchDetail" onclick="searchDetailList()">조회</button>`;
+        dateSearchBox.innerHTML += `<button class="resetDate" onclick="resetDate()">재설정</button>`;
+
+
+    }
+
+    // 날짜 조회
+    const search_findToday = document.getElementById("search_findToday");
+    const search_oneWeek = document.getElementById("search_oneWeek");
+    const search_thirtyDay = document.getElementById("search_thirtyDay");
+    const search_reset = document.getElementById("search_reset");
+
+    search_reset.addEventListener("click", () => {
+        history.go(0);
+    });
+    search_findToday.addEventListener("click", () => {
+        today = 'findToday';
+        clickDateList(today);
+    });
+    search_oneWeek.addEventListener("click", () => {
+        oneWeek = 'oneWeek';
+        clickDateList(oneWeek);
+    });
+    search_thirtyDay.addEventListener("click", () => {
+        thirtyDay = 'thirtyDay';
+        clickDateList(thirtyDay);
+    });
+
+
+    function clickDateList(date) {
+        selectPaging();
+        resetClickDateTable(date);
+    }
+
+    async function resetClickDateTable(date) {
+        await DateClick(date);
+        printTotalCount()
+        createMoreCountButton();
+        deleteMoreCountButton();
+    }
+
+    async function DateClick(date) {
+        searchTable.innerHTML = '';
+
+        console.log("date: " + date);
+
+        const response = await axios.get("/v1/storage/search/PacsStudytab/clickSearch", {
+            params: {
+                DateString : date
+            }
+        });
+
+        searchListData = response.data;
+        console.log(searchListData);
+
+        overCount();
+
+        for (let i = 0; i < number; i++) {
+            printSearchTable(searchListData[i]);
+        }
+
+    }
+    //스타일 추가
+    dateSearchBox.style.backgroundColor = isDivVisible ? "" : "#181a1c";
+    dateSearchBox.style.color = isDivVisible ? "" : "white";
+    dateSearchBox.style.borderRadius = isDivVisible ? "" : "10px";
+    dateSearchBox.style.flexDirection = isDivVisible ? "" : "column";
+    dateSearchBox.style.width = isDivVisible ? "" : "300px";
+    dateSearchBox.style.height = isDivVisible ? "" : "300px";
+    dateSearchBox.style.padding = isDivVisible ? "" : "5px";
+    dateSearchBox.style.marginLeft = isDivVisible ? "" : "12px";
+    dateSearchBox.style.fontSize = isDivVisible ? "" : "14px";
+
+    isDivVisible = !isDivVisible;
 }

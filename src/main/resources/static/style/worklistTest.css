@@ -16,13 +16,13 @@ thead {
 }
 
 
-.searchBoxWrap{
+.searchBoxWrap {
     width: 90%;
     height: auto;
     margin-top: 20px;
 }
 
-.basicSearchBox{
+.basicSearchBox {
     display: flex;
     flex-direction: column;
 }
@@ -218,6 +218,18 @@ thead {
     height: 28px;
     font-size: 11px;
     border: 1px solid transparent;
+}
+
+.downLoadModalBox {
+    position: absolute;
+    top: 80px;
+    left: 1240px;
+    background-color: #27292E;
+}
+
+.downLoadModalWrap {
+    display: flex;
+    flex-direction: column;
 }
 
 .listSetIcon {
@@ -429,7 +441,7 @@ thead {
 
 .thumbnailBox {
     background-color: black;
-    width: 10%;
+    width: 15%;
     max-width: 270px;
     height: 170px;
 }
@@ -640,3 +652,6 @@ thead {
     font-size: 11px;
 }
 
+.displayNone {
+    display: none;
+}

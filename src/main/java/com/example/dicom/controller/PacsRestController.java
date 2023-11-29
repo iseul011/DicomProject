@@ -64,40 +64,61 @@ public class PacsRestController {
             @RequestParam(required = false) String column,
             @RequestParam boolean order,
             @RequestParam(required = false) String pidValue,
-            @RequestParam(required = false) String pNameValue,
+            @RequestParam(required = false)
+            String pNameValue,
             @RequestParam int reportStatusValue) {
 
-            Sort sort = Sort.by(order ? Sort.Direction.ASC : Sort.Direction.DESC, column);
-
-            if (isEmpty(pidValue) && isEmpty(pNameValue)) {
-                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
-            }
-
-            if (isEmpty(pidValue)) {
-                if (reportStatusValue == 0) {
-                    return pacsStudytabRepository.findByPname(pNameValue, sort);
-                } else {
-                    return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
-                }
-            }
-
-            if (isEmpty(pNameValue)) {
-                if (reportStatusValue == 0) {
-                    return pacsStudytabRepository.findByPid(pidValue, sort);
-                } else {
-                    return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
-                }
-            }
-
-            return (reportStatusValue == 0)
-                    ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
-                    : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
+        Sort sort = Sort.by(order ? Sort.Direction.ASC : Sort.Direction.DESC, column);
+        if (pidValue == null && pNameValue == null) {
+            return pacsStudytabRepository.findAll(sort);
+        }
+        return (reportStatusValue == 0)
+                ? pacsStudytabRepository.findByPidOrPnameOrPidAndPname(pidValue, pNameValue, pidValue, pNameValue, sort)
+                : pacsStudytabRepository.findByPidAndPnameOrPidAndReportstatusOrPnameAndReportstatusOrPidAndPnameAndReportstatus
+                (pidValue, pNameValue, pidValue, reportStatusValue, pNameValue,
+                        reportStatusValue, pidValue, pNameValue, reportStatusValue, sort);
 
     }
-
-    private boolean isEmpty(String value) {
-        return value == null || value.isEmpty();
-    }
+//
+//    @GetMapping("/search/PacsStudytab/searchList")
+//    public List<PacsStudytab> getSortedSearchPacsStudytab(
+//            @RequestParam(required = false) String column,
+//            @RequestParam boolean order,
+//            @RequestParam(required = false) String pidValue,
+//            @RequestParam(required = false) String pNameValue,
+//            @RequestParam int reportStatusValue) {
+//
+//            Sort sort = Sort.by(order ? Sort.Direction.ASC : Sort.Direction.DESC, column);
+//
+//            if (isEmpty(pidValue) && isEmpty(pNameValue)) {
+//                return (reportStatusValue == 0) ? pacsStudytabRepository.findAll(sort) : pacsStudytabRepository.findByReportstatus(reportStatusValue, sort);
+//            }
+//
+//            if (isEmpty(pidValue)) {
+//                if (reportStatusValue == 0) {
+//                    return pacsStudytabRepository.findByPname(pNameValue, sort);
+//                } else {
+//                    return pacsStudytabRepository.findByPnameAndReportstatus(pNameValue, reportStatusValue, sort);
+//                }
+//            }
+//
+//            if (isEmpty(pNameValue)) {
+//                if (reportStatusValue == 0) {
+//                    return pacsStudytabRepository.findByPid(pidValue, sort);
+//                } else {
+//                    return pacsStudytabRepository.findByPidAndReportstatus(pidValue, reportStatusValue, sort);
+//                }
+//            }
+//
+//            return (reportStatusValue == 0)
+//                    ? pacsStudytabRepository.findByPidAndPname(pidValue, pNameValue, sort)
+//                    : pacsStudytabRepository.findByPidAndPnameAndReportstatus(pidValue, pNameValue, reportStatusValue, sort);
+//
+//    }
+//
+//    private boolean isEmpty(String value) {
+//        return value == null || value.isEmpty();
+//    }
 
 
     @GetMapping("/search/PacsStudytab/findSearch")
@@ -181,7 +202,7 @@ public class PacsRestController {
     public String getImage(@RequestParam int studykey, @RequestParam int serieskey) {
         PacsImagetab pacsImagetab = pacsImagetabRepository.findFirstByStudykeyAndSerieskey(studykey, serieskey);
 
-        String directoryPath = "Z:\\" + pacsImagetab.getPath()+pacsImagetab.getFname();
+        String directoryPath = "Z:\\" + pacsImagetab.getPath() + pacsImagetab.getFname();
 
         String imageAsBase64 = "";
         File file = new File(directoryPath);
