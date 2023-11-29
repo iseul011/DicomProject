@@ -126,10 +126,12 @@
                         </div>
                     </div>
                 </div>
+
                 <%--서치--%>
                 <div class="detailBox">
                     <button class="detailView" onclick="detailView()">세부조회</button>
                     <div class="dateSearchBox">
+
 
                     </div>
                     <div class="clickDate">
@@ -152,13 +154,23 @@
                 <div class="listSetBox">
                     <span class="totalCases"></span>
                     <div class="listSetWrap">
-                        <button class="downloadButton" onclick="downloadJPEGFiles()">다운로드
+                        <button class="downloadButton" onclick="toggleModal()">다운로드
                             <svg class="listSetIcon" focusable="false" aria-hidden="true"
                                  viewBox="0 0 24 24"
                                  data-testid="DownloadIcon">
                                 <path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"></path>
                             </svg>
                         </button>
+                        <div class="downLoadModalBox displayNone" id="toggleModal">
+                            <div class="downLoadModalWrap">
+                                <div class="downloadButton" id="dicom-download" onclick="downloadDicomFiles()">
+                                    To Dicom
+                                </div>
+                                <div class="downloadButton" id="jpeg-download" onclick="downloadJPEGFiles()">
+                                    To JPEG
+                                </div>
+                            </div>
+                        </div>
                         <div class="searchListCount" id="search_count">
                             <label class="countLabel" for="selectPaging">
                                 <select class="countSelect" id="selectPaging" onchange="resetSearchTable()">
@@ -246,7 +258,7 @@
                             <th class="searchListHeadShort">
                                 <div class="searchListHeadBox">
                                     <div class="searchListHeadWrap">
-                                        AI점수
+                                        AI Score
                                     </div>
                                 </div>
                             </th>
@@ -280,9 +292,12 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+</body>
 <%--<script src="/script/worklist.js"></script>--%>
 <script src="/script/woPhs.js"></script>
 

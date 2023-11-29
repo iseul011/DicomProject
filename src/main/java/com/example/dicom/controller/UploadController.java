@@ -125,10 +125,8 @@ public class UploadController {
     public ResponseEntity<byte[]> getDicom(@RequestParam String directoryPath) throws IOException {
         Path path = Paths.get(directoryPath);
 
-        // 파일을 바이트 배열로 읽기
         byte[] fileContent = Files.readAllBytes(path);
 
-        // HTTP Response 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.valueOf("application/dicom"));
         headers.setContentDispositionFormData("attachment", "");
@@ -141,14 +139,11 @@ public class UploadController {
     @GetMapping("/getDicomDownload")
     public ResponseEntity<byte[]> getDicomDownloadPath(@RequestParam("directoryPath") String directoryPath) throws IOException {
         try {
-            // URL 디코딩 수행
             String decodedDirectoryPath = URLDecoder.decode(directoryPath, "UTF-8");
 
-            // 파일 경로를 생성하고 해당 파일의 내용을 바이트 배열로 읽어옴
             Path path = Paths.get(decodedDirectoryPath);
             byte[] data = Files.readAllBytes(path);
 
-            // 응답에 파일 내용과 헤더 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", path.getFileName().toString());
@@ -156,7 +151,6 @@ public class UploadController {
 
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         } catch (UnsupportedEncodingException e) {
-            // URL 디코딩 중 예외 처리
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

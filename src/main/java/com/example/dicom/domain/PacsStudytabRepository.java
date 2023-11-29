@@ -25,8 +25,10 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
 
     List<PacsStudytab> findByPidAndPnameAndReportstatus(String pid, String pname, int reportstatus, Sort sort);
 
+    List<PacsStudytab> findByPidOrPname(String pid, String pname, Sort sort);
 
-    
+    List<PacsStudytab> findByPidOrPnameAndReportstatus(String pid, String pname, int reportstatus, Sort sort);
+
 
     //상세 조회
     @Query(value = "SELECT * FROM STUDYTAB\n" +
@@ -68,4 +70,7 @@ public interface PacsStudytabRepository extends JpaRepository<PacsStudytab, Inte
             " AND studydate < TRUNC(SYSDATE)", nativeQuery = true)
     List<PacsStudytab> dateFindThirtyAgo();
 
+    List<PacsStudytab> findByPidAndPnameOrPidAndReportstatusOrPnameAndReportstatusOrPidAndPnameAndReportstatus(String pid, String pname, String pid2, int reportstatus, String pname2, int reportstatus2, String pid3, String pname3, int reportstatus3, Sort sort);
+
+    List<PacsStudytab> findByPidOrPnameOrPidAndPname(String pid, String pname, String pid2, String pname2,Sort sort);
 }

@@ -304,7 +304,6 @@ async function overlayAiPresent(i) {
                     }
                 });
 
-                // 닫힌 도형이면 마지막 점과 첫 번째 점을 연결
                 if (graphicObject.ClosedForPresentation === 'CLOSED') {
                     overlayCtx.closePath();
                 }
@@ -313,8 +312,6 @@ async function overlayAiPresent(i) {
                     overlayCtx.stroke();
                 } else {
                     overlayCtx.fillStyle = "#c0504d";
-                    const gradiants =
-                        overlayCtx.strokeStyle = "#7fff00";
                     overlayCtx.fill();
                     overlayCtx.stroke();
                 }
@@ -412,10 +409,10 @@ async function stackUpDown(element, firstCharacter, csViewportParent) {
 }
 
 
-//GridLayout 만들기
 let isTogleBoxVisible = false;
 const button = document.getElementById('toggleButton');
 button.addEventListener('click', togleBox);
+
 function togleBox() {
     const button = document.getElementById('toggleButton');
 
@@ -474,8 +471,6 @@ function togleBox() {
 }
 
 
-
-//마우스 위치에 따른 레이아웃 색상 변경
 function applyBackgroundColor(row, column) {
     const allDivs = document.querySelectorAll('.table');
 
@@ -489,7 +484,6 @@ function applyBackgroundColor(row, column) {
     });
 }
 
-//마우스 위치에 따른 레이아웃 색상 초기화
 function resetBackgroundColor() {
     const allDivs = document.querySelectorAll('.table');
 
@@ -498,7 +492,6 @@ function resetBackgroundColor() {
     });
 }
 
-//선택한 레이아웃 외 parentDiv none
 function hideDicomImage(index) {
     const parentDivs = document.getElementsByClassName('parentDiv');
     const parentDiv = parentDivs[index];
@@ -506,14 +499,12 @@ function hideDicomImage(index) {
 
 }
 
-//선택한 레이아웃 만큰 parentDiv block
 function showDicomImage(index) {
     const parentDivs = document.getElementsByClassName('parentDiv');
     const parentDiv = parentDivs[index];
     parentDiv.style.display = 'block';
 }
 
-//레이아웃 선택시 그리드 크기 설정
 function gridLayout(row, column) {
     const wadoBox = document.getElementById('dicomImageContainer');
     wadoBox.style.gridTemplateRows = `repeat(${row},1fr)`;
